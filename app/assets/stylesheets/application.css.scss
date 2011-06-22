@@ -1,0 +1,84 @@
+/*
+ * This is a manifest file that'll automatically include all the stylesheets available in this directory
+ * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
+ * the top of the compiled file, but it's generally better to create a new file per style scope.
+ *= require_self
+ *= require_tree . 
+*/
+
+$column: 96px;
+$padding: 12px;
+
+BODY {
+	background: #ccc;
+	margin: 0;
+	padding: 0;
+	font: 11px/16px Georgia, "Times New Roman", Serif;
+}
+
+#content {
+	position: relative; 
+	width: $column*9 + $padding*8;
+	margin: 12px auto 0 auto; 
+	background: #fff;
+	border: 1px solid #999;
+	margin-bottom: 16px;
+	padding: 0 $padding;
+}
+
+/* building blocks for lining on grids */
+
+.blocks {	
+	div.oneW, 
+    div.twoW, 
+    div.threeW, 
+    div.fourW, 
+    div.fiveW, 
+    div.sixW, 
+    div.sevenW, 
+    div.eightW,
+    div.nineW,
+    div.tenW {
+    	display: inline;
+    	float: left;
+    	margin-right: $padding;
+    }
+    
+    div.endcap {
+    	margin-right: 0;
+    }
+    
+    hr {
+    	border: 0;
+    	border-bottom: 1px solid #999;
+    	margin: 6px 0;	
+    	text-align: left;
+    }
+    
+}
+
+hr.tight {
+	margin: 0 0 12px 0;
+}
+
+.oneW   { width: $column; }
+.twoW   { width: $column * 2 + $padding; }
+.threeW { width: $column * 3 + $padding * 2; }
+.fourW  { width: $column * 4 + $padding * 3; }
+.fiveW  { width: $column * 5 + $padding * 4; }
+.sixW   { width: $column * 6 + $padding * 5; }
+.sevenW { width: $column * 7 + $padding * 6; }
+.eightW { width: $column * 8 + $padding * 7; }
+.nineW  { width: $column * 9 + $padding * 8; }
+
+.blocks.blockcaps, .blocks .blockcaps {
+	text-transform: uppercase;
+}
+
+.b_right {
+	text-align: right;
+}
+
+.greyed {
+	color: #666;
+}

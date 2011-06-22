@@ -1,0 +1,10 @@
+class CreateOutputs < ActiveRecord::Migration
+  def change
+    create_table :outputs do |t|
+      t.string :code, :null => false, :unique => true
+      t.string :size, :extension, :null => false
+      t.boolean :is_rich, :default => true
+      t.timestamps
+    end
+  end
+end

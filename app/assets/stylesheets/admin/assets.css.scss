@@ -1,0 +1,80 @@
+/*
+ asset admin
+*/
+
+$orange: #d1570d;
+
+.assetbox {
+	ul {
+		list-style-type: none;
+		margin-right: -12px;
+		padding: 0;
+		
+		li {
+			display: inline;
+			float: left;
+			width: 148px;
+			height: 210px;
+			margin-right: 10px;
+			margin-bottom: 12px;
+			background: #eee;
+			border: 1px solid #ddd;
+			padding-left: 4px;
+			padding-right: 4px;
+			
+			img {
+				margin-left: -4px;
+				margin-bottom: 4px;
+			}
+			
+			a {
+				color: inherit;
+				
+				:hover {
+					text-decoration: inherit;
+				}
+			}
+			
+			:hover {
+				background: #ffe;
+				border: 1px solid $orange;
+				cursor: pointer;
+			}
+		}
+	}
+}
+
+#filedrop {
+    background: #ffc;
+    border: 1px solid darken(#ffc,40%);
+    min-height: 32px;
+    
+	ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		min-height: 32px;
+		background: #ccc;
+		
+		li {
+			display: block;
+			padding: 4px;
+			margin-bottom: 2px;
+			border: 1px solid #aaa;
+			
+		}
+		
+		.ready {
+			background: #ffc;
+		}
+	
+		.uploading {
+			background: #cfc;
+		}
+		
+		.complete {
+			background: #afa;
+		}	
+		
+	}
+}

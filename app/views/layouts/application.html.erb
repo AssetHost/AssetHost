@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AssetHost</title>
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tag %>
+</head>
+<body>
+
+<div id="content">
+	<h1>AssetHost</h1>
+	<%= yield %>
+</div>
+
+</body>
+<%= render "shared/footerjs" %>
+</html>

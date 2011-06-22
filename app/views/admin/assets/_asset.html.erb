@@ -1,0 +1,8 @@
+<li><a href="<%= newsroom_asset_path asset %>">
+	<% if asset.image %>
+		<%= asset.image.tag(:ls) %>
+	<% end %>
+	
+	<%= asset.title %>
+	
+</a></li>
