@@ -1,6 +1,6 @@
-<li><a href="<%= newsroom_asset_path asset %>">
+<li><a href="<%= a_path asset %>">
 	<% if asset.image %>
-		<%= asset.image.tag(:ls) %>
+		<%= asset.image.tag(:t) %>
 	<% end %>
 	
 	<%= asset.title %>

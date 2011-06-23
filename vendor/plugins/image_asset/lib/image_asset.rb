@@ -8,7 +8,7 @@ module ImageAsset
         include InstanceMethods
         
         define_method "grab_dimensions_for_#{name}" do
-          if self.send("#{name}_changed?")
+          if self.send("#{name}").dirty?
             # need to extract dimensions from the attachment
             self.attachment_for(name)._grab_dimensions
           end

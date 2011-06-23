@@ -2,9 +2,13 @@
  asset admin
 */
 
+
+$column: 96px;
+$padding: 12px;
 $orange: #d1570d;
 
 .assetbox {
+    margin-right: -12px;
 	ul {
 		list-style-type: none;
 		margin-right: -12px;
@@ -13,39 +17,39 @@ $orange: #d1570d;
 		li {
 			display: inline;
 			float: left;
-			width: 148px;
-			height: 210px;
-			margin-right: 10px;
-			margin-bottom: 12px;
+			width: $column;
+			height: $column;
+			margin-right: $padding - 2;
+			margin-bottom: $padding;
 			background: #eee;
 			border: 1px solid #ddd;
-			padding-left: 4px;
-			padding-right: 4px;
 			
 			img {
-				margin-left: -4px;
-				margin-bottom: 4px;
 			}
 			
 			a {
 				color: inherit;
 				
 				:hover {
-					text-decoration: inherit;
+					text-decoration: none;
 				}
 			}
 			
-			:hover {
-				background: #ffe;
-				border: 1px solid $orange;
-				cursor: pointer;
-			}
+			
+		}
+		
+		li:hover {
+			border: 8px solid #ffc;
+			margin-left: -7px;
+			margin-top: -7px;
+			margin: -7px $padding - 9 $padding - 7 -7px;
+			cursor: pointer;
 		}
 	}
 }
 
 #filedrop {
-    background: #ffc;
+    background: #ffe;
     border: 1px solid darken(#ffc,40%);
     min-height: 32px;
     
@@ -54,7 +58,7 @@ $orange: #d1570d;
 		padding: 0;
 		margin: 0;
 		min-height: 32px;
-		background: #ccc;
+		background: #ffc;
 		
 		li {
 			display: block;
@@ -62,10 +66,18 @@ $orange: #d1570d;
 			margin-bottom: 2px;
 			border: 1px solid #aaa;
 			
+			span {
+			    display: inline;
+			    float: right;
+			    padding: 0 4px;
+			    color: #f00;
+			    border: 1px solid #fbb;
+			    background: #eee;
+			}
 		}
 		
 		.ready {
-			background: #ffc;
+			background: #efc;
 		}
 	
 		.uploading {
@@ -77,4 +89,58 @@ $orange: #d1570d;
 		}	
 		
 	}
+	
+	p.ahUp_upbutton {
+	   display: block;
+	   margin: 0;
+	   padding: 4px;
+	   border: 1px solid #aaa;
+	   background: #fff;
+	   text-align: center;
+	   font-weight: bold;
+	}
+	
+}
+
+form.formtastic {
+	legend {
+		font: normal 21px/24px sans-serif;
+		color: $orange;
+	}
+	
+	.input {
+        margin-bottom: 4px;
+	    
+    	.inline-hints {
+    		color: #777 !important;
+    		font-size: 12px;
+    		margin-top: 2px;
+    		margin-bottom: 2px;
+    	}
+    }
+	
+	
+	ol {
+		background: rgba(60,60,60,.2);
+		padding-left: 6px;
+	}
+	
+	label {
+		font-size: 14px;
+	}
+	
+	ol ol {
+	    background: inherit;
+	    padding: inherit;
+	}
+	
+	li fieldset legend {
+	    font: inherit;
+	    color: inherit;
+	}
+	
+	.required label {
+		font-weight: bold;
+	}
+	
 }

@@ -1,4 +1,5 @@
 class Admin::AssetsController < ApplicationController
+  skip_before_filter :verify_authenticity_token, :only => [:upload]
 
   def index
     @assets = Asset.paginate(
@@ -25,7 +26,7 @@ class Admin::AssetsController < ApplicationController
   
   def upload  
     file = params[:file]
-    
+        
     idkey = file.original_filename.sub(/\.\w{3}$/,'')
     
     a = Asset.new_with_unique_idkey(:idkey => idkey)
@@ -62,7 +63,7 @@ class Admin::AssetsController < ApplicationController
       a.update_attributes(v)
     }
     
-    redirect_to newsroom_assets_path
+    redirect_to a_index_path
   end
   
   #----------
@@ -85,7 +86,7 @@ class Admin::AssetsController < ApplicationController
     
     if @asset.update_attributes(params[:asset])
       flash[:notice] = "Successfully updated asset."
-      redirect_to newsroom_asset_path(@asset)
+      redirect_to a_path(@asset)
     else
       flash[:notice] = @asset.errors.full_messages.join("<br/>")
       render :action => :edit

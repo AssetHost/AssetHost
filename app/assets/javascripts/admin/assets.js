@@ -7,7 +7,8 @@ var AssetHostUpload = Class.create({
 		uploadClass : "uploading",
 		errorClass : "error",
 		pendingClass : "pending",
-		completeClass : "complete"
+		completeClass : "complete",
+		token: ''
     },
     
     initialize : function(options) {
@@ -25,7 +26,7 @@ var AssetHostUpload = Class.create({
 		this.fileUL = new Element("ul",{})
 		this.drop.update(this.fileUL)
 
-		this.uploadButton = new Element("li",{class:"ahUp_upbutton"})
+		this.uploadButton = new Element("p",{class:"ahUp_upbutton"})
 		this.uploadButton.update("Upload File(s)")
 		this.drop.insert({bottom:this.uploadButton})
 		this.uploadButton.hide()
@@ -43,6 +44,7 @@ var AssetHostUpload = Class.create({
 		evt.preventDefault();
 		
 		new Effect.Highlight(this.drop)
+		//alert("dragEnter!")
 		
 		return false;
 	},
@@ -163,6 +165,8 @@ var AssetHostUpload = Class.create({
 				this._setFileState(obj,this.options.completeClass)
 				obj.li.addClassName(this.options.completeClass)
 				
+				console.log("response is ",req.responseText)
+				
 				if (req.responseText != "ERROR") {
 					this._ids.push(req.responseText)					
 				}
@@ -187,11 +191,11 @@ var AssetHostUpload = Class.create({
 		this.drop.insert({bottom:link})		
 	},
 	
-	_setFileState : function(obj,class) {
+	_setFileState : function(obj,classname) {
 		// remove existing class(es)
 		$w(obj.li.className).each(function(c) {obj.li.removeClassName(c)})
 		
-		obj.li.addClassName(class)
+		obj.li.addClassName(classname)
 	},
 	
 	readableFileSize : function(size) {
@@ -203,4 +207,4 @@ var AssetHostUpload = Class.create({
 	    }
 	    return size.toFixed(1) + ' ' + units[i];
 	}
-})
+});

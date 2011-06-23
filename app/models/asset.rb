@@ -14,11 +14,9 @@ class Asset < ActiveRecord::Base
 		
 	has_attached_file :image, 
 	  :styles => Proc.new { Output.paperclip_sizes },
-	  :storage => :s3,
-	  :s3_credentials => "#{Rails.root}/config/s3.yml",
-	  :url => ":s3_alias_url",
-	  :s3_host_alias => "cache.blogdowntown.com",
-	  :path => "/images/:id_:style.:extension"
+	  :storage => :filesystem,
+	  :path => ":rails_root/public/images/:id_:style.:extension",
+	  :url => "/images/:id_:style.:extension"
 	  
   treat_as_image_asset :image
 	process_in_background :image

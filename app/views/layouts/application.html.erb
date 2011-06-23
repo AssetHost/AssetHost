@@ -9,9 +9,37 @@
 <body>
 
 <div id="content">
-	<h1>AssetHost</h1>
-	<%= yield %>
+	<div class="blocks">
+		<div class="threeW">
+			<h1><%= link_to "AssetHost", a_index_path %></h1>
+			<hr/>
+
+			<h3>Search</h3>
+			<form action="<%= search_a_index_path %>" method="GET">
+			    <input type="text" name="q" class="threeW"/>
+			    <%= submit_tag "Go", :style => "margin-left: 8px" %>
+			</form>
+
+			<hr/>
+
+			<h3>Upload Assets</h3>
+
+			<div id="filedrop" style="">
+				&nbsp;
+			</div>
+		</div>
+		<div class='sixW endcap'>
+			<%= yield %>
+		</div>
+	</div>
+	<br class="clear"/>
 </div>
+
+<% @js = ["/js/bdtwnUpload.js"] %>
+
+<% content_for :footerjss do %>
+	var ahUp = new AssetHostUpload({url:"<%= upload_a_index_path %>",posturl:"<%= metadata_a_index_path %>"})
+<% end %>
 
 </body>
 <%= render "shared/footerjs" %>

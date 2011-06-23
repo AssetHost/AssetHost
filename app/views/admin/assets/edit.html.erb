@@ -1,0 +1,31 @@
+<%
+	@page_title = "Edit Asset"
+%>
+
+<div class="fourW">
+	<h2>Edit Asset Information</h2>
+<%= semantic_form_for(@asset, :as => :asset, :url => a_path(@asset)) do |f| %>
+	<%= f.inputs :name => "Basics" do %>
+		<%= f.input :idkey %>
+		<%= f.input :title %>
+		<%= f.input :description, :as => :text, :input_html => {:rows => 3} %>
+	<% end %>
+	
+	<%= f.inputs :name => "Rights" do %>
+		<%= f.input :owner %>
+		<%= f.input :url %>
+	<% end %>
+	
+	<%= f.inputs :name => "Metadata" do %>
+		<%= f.input :image_taken, :as => :date %>
+	<% end %>
+	
+	<%= f.buttons %>
+<% end %>
+</div>
+<div class="twoW endcap">
+	<br/>
+	<%= @asset.image.tag(:ls) %>
+	
+	<p><I>options...</i></p>
+</div>
