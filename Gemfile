@@ -17,8 +17,12 @@ gem 'mysql2'
 gem 'rack-raw-upload', :git => "git://github.com/newbamboo/rack-raw-upload.git"
 gem 'capistrano'
 gem 'formtastic', '~> 2.0.0.rc1'
+
 gem "mini_exiftool"
 gem "paperclip", :git => 'git://github.com/thoughtbot/paperclip.git'
+gem "resque"
+gem "delayed_paperclip", :git => 'git://github.com/jstorimer/delayed_paperclip.git'
+
 gem "will_paginate", :git => 'git://github.com/xspond/will_paginate.git', :branch => 'rails3-1'
 #gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branch => "rails3"
 #gem 'thinking-sphinx', '2.0.1', :require => 'thinking_sphinx'

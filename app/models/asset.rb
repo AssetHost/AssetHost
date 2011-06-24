@@ -1,4 +1,5 @@
 class Asset < ActiveRecord::Base
+  @queue = :paperclip
   
   VIA_UNKNOWN = 0
   VIA_FLICKR = 1
@@ -15,8 +16,9 @@ class Asset < ActiveRecord::Base
 	has_attached_file :image, 
 	  :styles => Proc.new { Output.paperclip_sizes },
 	  :storage => :filesystem,
-	  :path => ":rails_root/public/images/:id_:style.:extension",
-	  :url => "/images/:id_:style.:extension"
+	  :path => ":rails_root/public/images/:id_:fingerprint_:style.:extension",
+	  :url => "/images/:id_:fingerprint_:style.:extension",
+	  :use_timestamp => false
 	  
   treat_as_image_asset :image
 	process_in_background :image

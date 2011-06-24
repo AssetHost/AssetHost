@@ -6,7 +6,7 @@ class CreateAssets < ActiveRecord::Migration
       t.belongs_to :creator, :null => false, :default => 1
       t.text :notes
             
-      t.string :image_file_name, :image_content_type, :image_copyright
+      t.string :image_file_name, :image_content_type, :image_copyright, :image_fingerprint
       t.datetime :image_updated_at
       t.boolean :image_processing, :default => false
       t.string :image_gravity, :null => false, :default => "center"
