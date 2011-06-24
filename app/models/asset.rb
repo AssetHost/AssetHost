@@ -101,4 +101,12 @@ class Asset < ActiveRecord::Base
   
   #----------
   
+  def rendered_outputs
+    @rendered ||= Output.paperclip_sizes.collect do |s|
+      ["#{s[0]} (#{self.image.width(s[0])}x#{self.image.height(s[0])})",s[0]]
+    end    
+  end
+  
+  #----------
+  
 end

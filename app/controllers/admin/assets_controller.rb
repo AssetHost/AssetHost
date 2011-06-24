@@ -58,7 +58,7 @@ class Admin::AssetsController < ApplicationController
   #----------
   
   def update_metadata
-    params[:assets].each {|k,v|
+    params[:asset].each {|k,v|
       a = Asset.find(k)
       a.update_attributes(v)
     }
@@ -70,6 +70,17 @@ class Admin::AssetsController < ApplicationController
   
   def show
     @asset = Asset.find(params[:id])
+  end
+  
+  #----------
+  
+  def preview
+    @asset = Asset.find(params[:id])
+    @output = Output.find_by_code(params[:output])
+    
+    render :update do |p|
+      p.replace_html "preview", :partial => "preview"
+    end
   end
   
   #----------

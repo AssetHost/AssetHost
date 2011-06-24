@@ -31,4 +31,13 @@
 <br class="clear"/>
 <hr/>
 
-<%= @asset.image.tag(:wide) %>
+<div id="preview_widget">
+	<%= form_tag preview_a_path(@asset), :remote => true, :method => :get do %>
+		<%= select_tag :output, options_for_select(@asset.rendered_outputs, :selected => :wide) %>
+		<%= submit_tag "Preview Output" %>
+	<% end %>
+</div>
+
+<div id="preview">
+	<%= render_asset(@asset,:wide) %>
+</div>

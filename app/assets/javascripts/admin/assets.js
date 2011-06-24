@@ -25,6 +25,10 @@ var AssetHostUpload = Class.create({
 		
 		this.fileUL = new Element("ul",{})
 		this.drop.update(this.fileUL)
+		
+		this._emptyEl = new Element("li",{class:"help"})
+		this._emptyEl.update("Drop File(s) Here")
+		this.fileUL.insert({bottom:this._emptyEl})		
 
 		this.uploadButton = new Element("p",{class:"ahUp_upbutton"})
 		this.uploadButton.update("Upload File(s)")
@@ -77,12 +81,14 @@ var AssetHostUpload = Class.create({
 		var li = new Element("li",{})
 		li.update(f.name + " (" + this.readableFileSize(f.size) + ")")
 		
+		var obj = {f:f,li:li,x:null}
+
 		var x = new Element("span",{})
 		x.insert("x")
 		x.observe("click",this._removeFile.bindAsEventListener(this,obj,li))
 		li.insert(x)
-				
-		var obj = {f:f,li:li,x:x}
+		
+		obj.x = x		
 
 		this.fileUL.insert({bottom:li})
 		this.files.push(obj)

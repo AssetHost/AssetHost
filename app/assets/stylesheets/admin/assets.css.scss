@@ -3,8 +3,8 @@
 */
 
 
-$column: 96px;
-$padding: 12px;
+$column: 88px;
+$padding: 18px;
 $orange: #d1570d;
 
 .assetbox {
@@ -34,8 +34,6 @@ $orange: #d1570d;
 					text-decoration: none;
 				}
 			}
-			
-			
 		}
 		
 		li:hover {
@@ -74,6 +72,13 @@ $orange: #d1570d;
 			    border: 1px solid #fbb;
 			    background: #eee;
 			}
+		}
+		
+		li.help {
+		    font-size: 16px;
+		    color: #aaa;
+		    text-align: center;
+		    padding: 12px;
 		}
 		
 		.ready {

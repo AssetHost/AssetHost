@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110621192823) do
+ActiveRecord::Schema.define(:version => 20110624153719) do
 
   create_table "assets", :force => true do |t|
     t.string   "idkey",                                    :null => false
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(:version => 20110621192823) do
     t.text     "notes"
     t.string   "image_file_name"
     t.string   "image_content_type"
+    t.string   "image_copyright"
     t.datetime "image_updated_at"
     t.boolean  "image_processing",   :default => false
     t.string   "image_gravity",      :default => "center", :null => false
@@ -29,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20110621192823) do
     t.integer  "image_height"
     t.integer  "image_file_size"
     t.integer  "image_version"
+    t.datetime "image_taken"
     t.integer  "native_id"
     t.string   "native_type"
     t.datetime "created_at"
@@ -36,10 +38,19 @@ ActiveRecord::Schema.define(:version => 20110621192823) do
   end
 
   create_table "outputs", :force => true do |t|
-    t.string   "code",                         :null => false
-    t.string   "size",                         :null => false
-    t.string   "extension",                    :null => false
-    t.boolean  "is_rich",    :default => true
+    t.integer  "site_package_id",                   :null => false
+    t.string   "code",                              :null => false
+    t.string   "size",                              :null => false
+    t.string   "extension",                         :null => false
+    t.boolean  "is_rich",         :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "site_packages", :force => true do |t|
+    t.string   "name",        :null => false
+    t.string   "url"
+    t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
