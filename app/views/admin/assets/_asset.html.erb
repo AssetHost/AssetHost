@@ -1,5 +1,13 @@
-<li><a href="<%= a_path asset %>">
+<li id="asset_<%= asset.id %>"><a href="<%= a_path asset %>">
 	<% if asset.image %>
 		<%= asset.image.tag(:thumb) %>
-	<% end %>	
+	<% end %>
+	<span id="asset_tip_<%= asset.id %>">
+		<h3><%= asset.title? ? asset.title : asset.idkey %></h3>
+		<%= asset.owner %>
+		<br/><%= [asset.image_width,asset.image_height].join("x") %>
+	</span>
 </a></li>
+<% content_for :footerjss do %>
+	new Tooltip($("asset_<%= asset.id %>"), {content:"asset_tip_<%= asset.id %>"})
+<% end %>

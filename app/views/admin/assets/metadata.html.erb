@@ -11,6 +11,7 @@
 				<%= af.inputs :name => "Asset #{asset.id}" do %>
 				<%= af.input :idkey %>
 				<%= af.input :title %>
+				<%= af.input :description, :as => :text, :input_html => {:rows => 3}%>
 				<%= af.input :owner %>
 				<%= af.input :url %>				
 				<% end %>

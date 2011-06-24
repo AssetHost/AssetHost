@@ -34,6 +34,10 @@ $orange: #d1570d;
 					text-decoration: none;
 				}
 			}
+			
+			span {
+			    display: none;
+			}
 		}
 		
 		li:hover {
@@ -45,6 +49,26 @@ $orange: #d1570d;
 		}
 	}
 }
+
+.tooltip {
+	position: absolute!important;
+	overflow:hidden;
+	font-size: 11px;
+	z-index: 10000!important;
+	background: transparentize(#fff,0.1);
+	text-align: left;
+	padding: 8px;
+	border-radius: 8px;
+	border: 2px solid $orange;
+	
+	h3 {
+	    margin-top: 0;
+	    margin-bottom: 2px;
+	    font: normal 12px Arial, Helvetica, sans-serif;
+	    color: $orange;
+	}
+}
+
 
 #filedrop {
     background: #ffe;

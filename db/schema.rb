@@ -24,6 +24,8 @@ ActiveRecord::Schema.define(:version => 20110624153719) do
     t.string   "image_content_type"
     t.string   "image_copyright"
     t.string   "image_fingerprint"
+    t.string   "image_title"
+    t.string   "image_description"
     t.datetime "image_updated_at"
     t.boolean  "image_processing",   :default => false
     t.string   "image_gravity",      :default => "center", :null => false
