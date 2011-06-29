@@ -12,10 +12,16 @@ class Output < ActiveRecord::Base
   def self.paperclip_sizes
     sizes = {}
     self.all.each do |o|
-      sizes[ o.code.to_sym ] = [o.size,o.extension.to_sym]
+      sizes.merge! o.paperclip_options
     end
     
     return sizes
+  end
+  
+  #----------
+  
+  def paperclip_options
+    { self.code.to_sym => { :geometry => self.size, :format => self.extension.to_sym, :prerender => self.prerender, :output => self.id } }
   end
 
 end

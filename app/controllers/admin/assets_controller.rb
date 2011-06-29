@@ -1,4 +1,6 @@
 class Admin::AssetsController < ApplicationController
+  before_filter :authenticate_user!
+  
   skip_before_filter :verify_authenticity_token, :only => [:upload]
 
   def index
@@ -63,7 +65,7 @@ class Admin::AssetsController < ApplicationController
       a.update_attributes(v)
     }
     
-    redirect_to a_index_path
+    redirect_to a_assets_path
   end
   
   #----------

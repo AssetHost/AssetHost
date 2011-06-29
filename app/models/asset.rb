@@ -12,12 +12,16 @@ class Asset < ActiveRecord::Base
   #  has created_at
   #  has updated_at
   #end
-		
+  
+  has_many :outputs, :class_name => "AssetOutput", :order => "created_at desc", :dependent => :destroy
+  		
 	has_attached_file :image, 
 	  :styles => Proc.new { Output.paperclip_sizes },
+	  :processors => [:asset_thumbnail],
 	  :storage => :filesystem,
-	  :path => ":rails_root/public/images/:id_:fingerprint_:style.:extension",
-	  :url => "/images/:id_:fingerprint_:style.:extension",
+	  :path => ":rails_root/public/images/:id_:fingerprint_:sprint.:extension",
+	  :trueurl => "/images/:id_:fingerprint_:sprint.:extension",
+	  :url => "/i/:fingerprint/:id-:style.:extension",
 	  :use_timestamp => false
 	  
   treat_as_image_asset :image

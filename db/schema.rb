@@ -10,7 +10,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110624153719) do
+ActiveRecord::Schema.define(:version => 20110628160033) do
+
+  create_table "asset_outputs", :force => true do |t|
+    t.integer  "asset_id",    :null => false
+    t.integer  "output_id",   :null => false
+    t.string   "fingerprint"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "assets", :force => true do |t|
     t.string   "idkey",                                    :null => false
@@ -41,19 +49,36 @@ ActiveRecord::Schema.define(:version => 20110624153719) do
   end
 
   create_table "outputs", :force => true do |t|
-    t.integer  "site_package_id",                   :null => false
-    t.string   "code",                              :null => false
-    t.string   "size",                              :null => false
-    t.string   "extension",                         :null => false
+    t.integer  "site_package_id",                    :null => false
+    t.string   "code",                               :null => false
+    t.string   "size",                               :null => false
+    t.string   "extension",                          :null => false
     t.boolean  "is_rich",         :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "prerender",       :default => false, :null => false
   end
 
   create_table "site_packages", :force => true do |t|
     t.string   "name",        :null => false
     t.string   "url"
     t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "email",                              :default => "",    :null => false
+    t.string   "encrypted_password",  :limit => 128, :default => "",    :null => false
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                      :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.string   "username",                                              :null => false
+    t.boolean  "is_admin",                           :default => false, :null => false
+    t.integer  "default_site_id",                                       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

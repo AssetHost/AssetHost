@@ -20,16 +20,57 @@ module ImageAsset
         #define_method "#{name}_changed?" do
         #  attachment_has_changed?(name)
         #end
+        
+        Paperclip.interpolates "sprint", do |attachment,style_name|
+          Paperclip.log("[EWR] Include styleprint!")
+          
+          sprint = nil
+          if style_name == :original
+            sprint = 'original'
+          else
+            o = Output.where(:code => style_name)
+            ao = attachment.instance.outputs.where(:output_id => o).first
+
+            if ao
+              sprint = ao.fingerprint
+            else
+              Paperclip.log("[EWR] Doh! Style path before style fingerprint")
+              return nil
+            end
+          end
+          
+          return sprint
+        end
     end
 
     module InstanceMethods
 
     end      
   end
+  
+  class ResqueJob
+    @queue = :paperclip
+    
+    def self.perform(instance_klass, instance_id, attachment_name, *style_args)
+      instance = instance_klass.constantize.find(instance_id)
+
+      ::Paperclip.log("[ewr] style_args is #{style_args}")
+      instance.send(attachment_name).reprocess!(*style_args)
+    end
+  end
 end
 
 module Paperclip
   class Attachment
+    def enqueue_styles(styles)
+      Resque.enqueue(ImageAsset::ResqueJob,self.instance.class.name,self.instance.id,self.name,styles)
+    end
+    
+    def trueurl(style_name = default_style, use_timestamp = @use_timestamp)
+      url = original_filename.nil? ? interpolate(@default_url, style_name) : interpolate(@options[:trueurl], style_name)
+      use_timestamp && updated_at ? [url, updated_at].compact.join(url.include?("?") ? "&" : "?") : url
+    end
+        
     def width(style = default_style)
       if s = self.styles[style]
         g = Paperclip::Geometry.parse(s.geometry)       
@@ -111,11 +152,7 @@ module Paperclip
     
     def _grab_dimensions
       return unless @queued_for_write[:original]
-      
-      #geo = Geometry.from_file(@queued_for_write[:original])
-      
-      puts "queued is #{@queued_for_write[:original].path}"
-      
+            
       p = MiniExiftool.new(@queued_for_write[:original].path)
       
       instance_write(:width,p.image_width)
@@ -128,6 +165,63 @@ module Paperclip
       true
       
       # TODO: now compute what we have for styles
+    end
+  end
+
+  class AssetThumbnail < Paperclip::Thumbnail
+    attr_accessor :prerender
+    attr_accessor :output
+    attr_accessor :asset
+    
+    def initialize file, options = {}, attachment = nil
+      @prerender = options[:prerender]
+      @output = options[:output]
+      @asset = attachment ? attachment.instance : nil
+      
+      Paperclip.log("asset is #{@asset} -- output is #{@output}")
+      super
+    end
+    
+    # Perform processing, if prerender == true or we've had to render 
+    # this output before. Afterward, delete our old AssetOutput entry if 
+    # it exists
+    def make
+      # do we have an AssetOutput already?
+      ao = @asset.outputs.where(:output_id => @output).first
+
+      Paperclip.log("[ewr] make for #{@output} -- ao is #{ ao }")
+      dst = nil
+
+      if @prerender || ao
+        tmpao = nil
+        if !ao || ao.fingerprint?
+          # register empty AssetObject to denote processing
+          tmpao = @asset.outputs.create(:output_id => @output)
+          Paperclip.log("[ewr] Created tmpao to note processing for #{@output}")
+        end
+        
+        # call thumbnail generator
+        dst = super
+        
+        # get fingerprint
+        print = Digest::MD5.hexdigest(dst.read)
+        dst.rewind if dst.respond_to?(:rewind)
+        
+        if tmpao
+          tmpao.fingerprint = print
+          tmpao.save
+        else
+          # create AssetOutput instance
+          @asset.outputs.create(:output_id => @output,:fingerprint => print)        
+        end
+      end
+      
+      if ao
+        # if we had an AssetOutput instance, delete it
+        ao.destroy
+      end
+      
+      return dst
     end
   end
 end

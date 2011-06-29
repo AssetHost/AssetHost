@@ -1,0 +1,7 @@
+<%= link_to package.name, a_package_path(package) %>
+
+<ul class="outputs">
+	<% for o in package.outputs %>
+		<li><%= o.code %> — <%= o.size %></li>
+	<% end %>
+</ul>

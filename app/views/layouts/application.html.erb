@@ -11,11 +11,21 @@
 <div id="content">
 	<div class="blocks">
 		<div class="threeW">
-			<h1><%= link_to "AssetHost", a_index_path %></h1>
+			<h1><%= link_to "AssetHost", a_assets_path %></h1>
 			<hr/>
-
+			
+			<% if current_user %>
+			<p><i>Logged in as <%= current_user.email %>. [<%= link_to "Log Out", destroy_user_session_path %>]</i></p>
+			<% end %>
+			
+			<% if current_user.is_admin? %>
+				<p><%= link_to "Manage Users", a_users_path %></p>
+				<p><%= link_to "Manage Site Packages", a_packages_path %></p>
+			<% end %>
+			
+			<hr/>
 			<h3>Search</h3>
-			<form action="<%= search_a_index_path %>" method="GET">
+			<form action="<%= search_a_assets_path %>" method="GET">
 			    <input type="text" name="q" class="threeW"/>
 			    <%= submit_tag "Go", :style => "margin-left: 8px" %>
 			</form>
@@ -39,7 +49,7 @@
 <% @js = ["/js/bdtwnUpload.js"] %>
 
 <% content_for :footerjss do %>
-	var ahUp = new AssetHostUpload({url:"<%= upload_a_index_path %>",posturl:"<%= metadata_a_index_path %>"})
+	var ahUp = new AssetHostUpload({url:"<%= upload_a_assets_path %>",posturl:"<%= metadata_a_assets_path %>"})
 <% end %>
 
 </body>
