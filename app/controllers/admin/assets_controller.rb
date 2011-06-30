@@ -99,7 +99,7 @@ class Admin::AssetsController < ApplicationController
     
     if @asset.update_attributes(params[:asset])
       flash[:notice] = "Successfully updated asset."
-      redirect_to a_path(@asset)
+      redirect_to a_asset_path(@asset)
     else
       flash[:notice] = @asset.errors.full_messages.join("<br/>")
       render :action => :edit

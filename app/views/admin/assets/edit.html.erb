@@ -18,6 +18,11 @@
 	
 	<%= f.inputs :name => "Metadata" do %>
 		<%= f.input :image_taken, :as => :date %>
+		<%= f.input :image_gravity, :as => :select, :collection => Asset::GRAVITY_OPTIONS %>
+	<% end %>
+	
+	<%= f.inputs :name => "Internal" do %>
+		<%= f.input :notes %>
 	<% end %>
 	
 	<%= f.buttons %>
@@ -25,7 +30,9 @@
 </div>
 <div class="twoW endcap">
 	<br/>
+	<div id="preview">
 	<%= @asset.image.tag(:lsquare) %>
+	</div>
 	
 	<p><I>options...</i></p>
 </div>

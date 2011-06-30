@@ -21,7 +21,7 @@ class Output < ActiveRecord::Base
   #----------
   
   def paperclip_options
-    { self.code.to_sym => { :geometry => self.size, :format => self.extension.to_sym, :prerender => self.prerender, :output => self.id } }
+    { self.code.to_sym => { :geometry => '', :size => self.size, :format => self.extension.to_sym, :prerender => self.prerender, :output => self.id } }
   end
 
 end

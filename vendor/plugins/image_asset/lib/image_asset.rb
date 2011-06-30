@@ -16,14 +16,8 @@ module ImageAsset
         
         # register our event handler
         self.send("before_#{name}_post_process", :"grab_dimensions_for_#{name}")
-
-        #define_method "#{name}_changed?" do
-        #  attachment_has_changed?(name)
-        #end
         
         Paperclip.interpolates "sprint", do |attachment,style_name|
-          Paperclip.log("[EWR] Include styleprint!")
-          
           sprint = nil
           if style_name == :original
             sprint = 'original'
@@ -53,8 +47,6 @@ module ImageAsset
     
     def self.perform(instance_klass, instance_id, attachment_name, *style_args)
       instance = instance_klass.constantize.find(instance_id)
-
-      ::Paperclip.log("[ewr] style_args is #{style_args}")
       instance.send(attachment_name).reprocess!(*style_args)
     end
   end
@@ -71,16 +63,25 @@ module Paperclip
       use_timestamp && updated_at ? [url, updated_at].compact.join(url.include?("?") ? "&" : "?") : url
     end
         
+    # TODO: Now that AssetOutput tracks rendered styles, width and height could be cached
+    # instead of computing them on each request
     def width(style = default_style)
       if s = self.styles[style]
-        g = Paperclip::Geometry.parse(s.geometry)       
-        if g.modifier == '#'
-          # match w/h from style
-          return g.width.to_i
-        end 
+        # load dimensions
+        if ao = self.instance.outputs.where(:output_id => Output.where(:code => style).first).first
+          return ao.width
+        else
+          
+        end
         
-        factor = self._compute_style_ratio(s)
-        return ((self.instance_read("width") || 0) * factor).round
+        #g = Paperclip::Geometry.parse(s.geometry)       
+        #if g.modifier == '#'
+          # match w/h from style
+        #  return g.width.to_i
+        #end 
+        
+        #factor = self._compute_style_ratio(s)
+        #return ((self.instance_read("width") || 0) * factor).round
       end
 
       nil
@@ -88,14 +89,21 @@ module Paperclip
     
     def height(style = default_style)
       if s = self.styles[style] 
-        g = Paperclip::Geometry.parse(s.geometry)       
-        if g.modifier == '#'
-          # match w/h from style
-          return g.width.to_i
-        end 
+        # load dimensions
+        if ao = self.instance.outputs.where(:output_id => Output.where(:code => style).first).first
+          return ao.height
+        else
+          
+        end
         
-        factor = self._compute_style_ratio(s)
-        return ((self.instance_read("height") || 0) * factor).round
+        #g = Paperclip::Geometry.parse(s.geometry)       
+        #if g.modifier == '#'
+          # match w/h from style
+        #  return g.width.to_i
+        #end 
+        
+        #factor = self._compute_style_ratio(s)
+        #return ((self.instance_read("height") || 0) * factor).round
       end
 
       nil
@@ -136,9 +144,16 @@ module Paperclip
         return nil
       end
       
+      # load dimensions
+      width = height = nil
+      if ao = self.instance.outputs.where(:output_id => Output.where(:code => style).first).first
+        width = ao.width
+        height = ao.height
+      end
+      
       htmlargs = args.collect { |k,v| %Q!#{k}="#{v}"! }.join(" ")
       
-      return %Q(<img src="#{self.url(style)}" width="#{self.width(style)}" height="#{self.height(style)}" alt="#{self.instance.title}" #{htmlargs}/>).html_safe
+      return %Q(<img src="#{self.url(style)}" width="#{width}" height="#{height}" alt="#{self.instance.title}" #{htmlargs}/>).html_safe
     end
     
     def has?(style = default_style)
@@ -175,11 +190,19 @@ module Paperclip
     
     def initialize file, options = {}, attachment = nil
       @prerender = options[:prerender]
+      @size = options[:size].gsub(">",'')
       @output = options[:output]
       @asset = attachment ? attachment.instance : nil
       
       Paperclip.log("asset is #{@asset} -- output is #{@output}")
+      
       super
+            
+      @convert_options = [ 
+        "-gravity #{ @asset.image_gravity || "Center" }", "-strip", "-quality 70", @convert_options 
+      ].flatten.compact
+      
+      Paperclip.log("[ewr] Convert options are #{@convert_options}")
     end
     
     # Perform processing, if prerender == true or we've had to render 
@@ -200,19 +223,43 @@ module Paperclip
           Paperclip.log("[ewr] Created tmpao to note processing for #{@output}")
         end
         
+        if @size =~ /(\d+)?x?(\d+)?(\#)?$/ && $~[3]
+          # crop...  scale using dimensions as minimums, then crop to dimensions
+          scale = "-scale #{$~[1]}x#{$~[2]}^"
+          crop = "-crop #{$~[1]}x#{$~[2]}+0+0"
+          
+          @convert_options = [@convert_options.shift,scale,crop,@convert_options].flatten
+        else
+          # don't crop
+          scale = "-scale #{$~[1]}x#{$~[2]}"
+          @convert_options = [scale,@convert_options].flatten
+        end
+        
         # call thumbnail generator
         dst = super
+        
+        # need to get dimensions
+        width = height = nil
+        begin
+          Paperclip.log("Calling geo.from_file for #{dst.path}")
+          geo = Geometry.from_file dst.path
+          width = geo.width.to_i
+          height = geo.height.to_i
+          Paperclip.log("geo run was successful -- #{width}x#{height}")
+        rescue NotIdentifiedByImageMagickError => e
+          # hmmm... do nothing?
+        end
         
         # get fingerprint
         print = Digest::MD5.hexdigest(dst.read)
         dst.rewind if dst.respond_to?(:rewind)
         
         if tmpao
-          tmpao.fingerprint = print
+          tmpao.attributes = { :fingerprint => print, :width => width, :height => height }
           tmpao.save
         else
           # create AssetOutput instance
-          @asset.outputs.create(:output_id => @output,:fingerprint => print)        
+          @asset.outputs.create(:output_id => @output,:fingerprint => print, :width => width, :height => height)        
         end
       end
       

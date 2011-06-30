@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110630171946) do
+ActiveRecord::Schema.define(:version => 20110630212458) do
 
   create_table "asset_outputs", :force => true do |t|
     t.integer  "asset_id",    :null => false
@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(:version => 20110630171946) do
     t.string   "fingerprint"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "width"
+    t.integer  "height"
   end
 
   create_table "assets", :force => true do |t|

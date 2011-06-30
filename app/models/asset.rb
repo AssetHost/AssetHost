@@ -13,6 +13,18 @@ class Asset < ActiveRecord::Base
   #  has updated_at
   #end
   
+  GRAVITY_OPTIONS = [
+    [ "Center (default)",  "Center"    ],
+    [ "Top-Middle",        "North"     ],
+    [ "Bottom-Middle",     "South"     ],
+    [ "Middle-Left",       "West"      ],
+    [ "Middle-Right",      "East"      ],
+    [ "Top Left",          "NorthWest" ],
+    [ "Top Right",         "NorthEast" ],
+    [ "Bottom Left",       "SouthWest" ],
+    [ "Bottom Right",      "SouthEast" ]
+  ]
+  
   has_many :outputs, :class_name => "AssetOutput", :order => "created_at desc", :dependent => :destroy
   		
 	has_attached_file :image, 
