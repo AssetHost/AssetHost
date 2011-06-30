@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110628160033) do
+ActiveRecord::Schema.define(:version => 20110630171946) do
 
   create_table "asset_outputs", :force => true do |t|
     t.integer  "asset_id",    :null => false
@@ -35,7 +35,6 @@ ActiveRecord::Schema.define(:version => 20110628160033) do
     t.string   "image_title"
     t.string   "image_description"
     t.datetime "image_updated_at"
-    t.boolean  "image_processing",   :default => false
     t.string   "image_gravity",      :default => "center", :null => false
     t.integer  "image_width"
     t.integer  "image_height"
