@@ -25,9 +25,7 @@ AssetHost::Application.configure do
   # Do not compress assets
   config.assets.compress = false
   
-  config.after_initialize do
-    Workling::Remote.dispatcher = Workling::Remote::Runners::NotRemoteRunner.new
-    
+  config.after_initialize do    
     Formtastic::FormBuilder.all_fields_required_by_default = false
     
     Paperclip.options[:command_path] = "/usr/local/ImageMagick/bin/"
