@@ -1,6 +1,6 @@
 <li id="asset_<%= asset.id %>"><a href="<%= a_asset_path asset %>">
 	<% if asset.image %>
-		<%= asset.image.tag(:thumb) %>
+		<%= asset.image.tag(:thumb, :draggable => true) %>
 	<% end %>
 	<span id="asset_tip_<%= asset.id %>">
 		<h3><%= asset.title? ? asset.title : asset.idkey %></h3>

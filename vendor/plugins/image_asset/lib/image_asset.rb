@@ -133,7 +133,7 @@ module Paperclip
       return factor
     end
 
-    def tag(style = default_style,*args)
+    def tag(style = default_style,args)
       if !args
         args = {}
       end

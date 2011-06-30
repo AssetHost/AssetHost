@@ -14,15 +14,15 @@ class Asset < ActiveRecord::Base
   #end
   
   GRAVITY_OPTIONS = [
-    [ "Center (default)",  "Center"    ],
-    [ "Top-Middle",        "North"     ],
-    [ "Bottom-Middle",     "South"     ],
-    [ "Middle-Left",       "West"      ],
-    [ "Middle-Right",      "East"      ],
-    [ "Top Left",          "NorthWest" ],
-    [ "Top Right",         "NorthEast" ],
-    [ "Bottom Left",       "SouthWest" ],
-    [ "Bottom Right",      "SouthEast" ]
+    [ "Center (default)", "Center"    ],
+    [ "Top",              "North"     ],
+    [ "Bottom",           "South"     ],
+    [ "Left",             "West"      ],
+    [ "Right",            "East"      ],
+    [ "Top Left",         "NorthWest" ],
+    [ "Top Right",        "NorthEast" ],
+    [ "Bottom Left",      "SouthWest" ],
+    [ "Bottom Right",     "SouthEast" ]
   ]
   
   has_many :outputs, :class_name => "AssetOutput", :order => "created_at desc", :dependent => :destroy
@@ -32,8 +32,8 @@ class Asset < ActiveRecord::Base
 	  :processors => [:asset_thumbnail],
 	  :storage => :filesystem,
 	  :path => ":rails_root/public/images/:id_:fingerprint_:sprint.:extension",
-	  :trueurl => "/images/:id_:fingerprint_:sprint.:extension",
-	  :url => "/i/:fingerprint/:id-:style.:extension",
+	  :trueurl => "http://localhost:3000/images/:id_:fingerprint_:sprint.:extension",
+	  :url => "http://localhost:3000/i/:fingerprint/:id-:style.:extension",
 	  :use_timestamp => false
 	  
   treat_as_image_asset :image
