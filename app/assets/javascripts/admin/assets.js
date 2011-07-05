@@ -8,7 +8,10 @@ var AssetHostUpload = Class.create({
 		errorClass : "error",
 		pendingClass : "pending",
 		completeClass : "complete",
-		token: ''
+		token: '',
+		emptyText: "Drop File(s) Here",
+		afterText: "Go to Metadata Entry",
+		allowMultiple: true
     },
     
     initialize : function(options) {
@@ -27,7 +30,7 @@ var AssetHostUpload = Class.create({
 		this.drop.update(this.fileUL)
 		
 		this._emptyEl = new Element("li",{class:"help"})
-		this._emptyEl.update("Drop File(s) Here")
+		this._emptyEl.update(this.options.emptyText)
 		this.fileUL.insert({bottom:this._emptyEl})		
 
 		this.uploadButton = new Element("p",{class:"ahUp_upbutton"})
@@ -74,6 +77,9 @@ var AssetHostUpload = Class.create({
 	},
 	
 	_addFileToList : function(f) {
+	    if ( !this.options.allowMultiple && this.files.length )
+	        return false
+	    
 		if ( this._uploading.length )
 			return false
 		
@@ -192,7 +198,7 @@ var AssetHostUpload = Class.create({
 		link.update(
 			new Element("a",{
 				href: (this.options.posturl+"?ids=" + this._ids.join(","))
-			}).update("Go to Metadata Entry")
+			}).update(this.options.afterText)
 		)
 		this.drop.insert({bottom:link})		
 	},

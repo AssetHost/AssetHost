@@ -1,7 +1,7 @@
 class Admin::AssetsController < ApplicationController
   before_filter :authenticate_user!
   
-  skip_before_filter :verify_authenticity_token, :only => [:upload]
+  skip_before_filter :verify_authenticity_token, :only => [:upload, :replace]
 
   def index
     @assets = Asset.paginate(
@@ -101,6 +101,26 @@ class Admin::AssetsController < ApplicationController
     else
       flash[:notice] = @asset.errors.full_messages.join("<br/>")
       render :action => :edit
+    end
+  end
+  
+  #----------
+  
+  def replace
+    @asset = Asset.find(params[:id])
+    
+    if !params[:file]
+      render :text => 'ERROR' and return
+    end
+    
+    # tell paperclip to replace our image
+    @asset.image = params[:file]
+    
+    if @asset.save
+      render :text => @asset.id
+    else
+      puts "Error: #{@asset.errors.to_s}"
+      render :text => 'ERROR'
     end
   end
   

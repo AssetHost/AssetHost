@@ -34,4 +34,19 @@
 	</div>
 	
 	<p><I>options...</i></p>
+		
+	<hr/>
+	
+	<h3>Replace Image</h3>
+	
+	<div id="replacedrop" style="">
+		&nbsp;
+	</div>
+	
+	
 </div>
+
+<% @js = ["/js/bdtwnUpload.js"] %>
+<% content_for :footerjss do %>
+	var ahReplace = new AssetHostUpload({dropEl:"replacedrop",emptyText:"Drop Replacement Image Here", afterText: "View Replaced Image", url:"<%= replace_a_asset_path(@asset) %>",posturl:"<%= a_asset_path(@asset) %>",allowMultiple:false})
+<% end %>

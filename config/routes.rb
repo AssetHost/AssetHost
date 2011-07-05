@@ -17,6 +17,7 @@ AssetHost::Application.routes.draw do
 
       member do
         get :preview
+        post :replace
       end
     end
   end
