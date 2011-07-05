@@ -38,65 +38,15 @@ class Asset < ActiveRecord::Base
 	  
   treat_as_image_asset :image
 	process_in_background :image
-		
-	validates :idkey, :uniqueness => true, :presence => true, :length => { :minimum => 4 }
-    
+		    
   #----------
   
   def Asset.find_or_import(url)
-    if url =~ /cache.blogdowntown.com\/images\/([\w\-_]+)_\w{1,2}\.jpg/
-      return Asset.find($~[1])
-    elsif a = Asset.find_by_idkey(url)
-      return a
-    else
-      import = AssetImporter.import(url)
-
-      if import
-        asset = Asset.new_with_unique_idkey(
-          :idkey => import.photoid,
-          :title => import.title,
-          :description => import.description,
-          :owner => import.owner
-        )
-
-        asset.image = import.image_file
-
-        return asset
-      else
-        return nil
-      end
-    end
-  end
-  
-  #----------
-  
-  def Asset.new_with_unique_idkey(params)
-    # try this key as is
-    if Asset.find_by_idkey(params[:idkey])
-      # doh.  need to mix it up
-      Asset.new_with_unique_idkey(params.merge({:idkey => params[:idkey] + "-1"}))
-    else
-      return Asset.new(params)
-    end
-  end
-  
-  def Asset.new_via_import(url)
-    import = AssetImporter.import(url)
-    
-    if import
-      asset = Asset.new_with_unique_idkey(
-        :idkey => import.photoid,
-        :title => import.title,
-        :description => import.description,
-        :owner => import.owner
-      )
-      
-      asset.image = import.image_file
-      
+    if asset = AssetImporter.import(url)
       return asset
     else
       return nil
-    end
+    end    
   end
   
   #----------

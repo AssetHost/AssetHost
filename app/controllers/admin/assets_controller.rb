@@ -28,10 +28,8 @@ class Admin::AssetsController < ApplicationController
   
   def upload  
     file = params[:file]
-        
-    idkey = file.original_filename.sub(/\.\w{3}$/,'')
-    
-    a = Asset.new_with_unique_idkey(:idkey => idkey)
+            
+    a = Asset.new(:title => file.original_filename.sub(/\.\w{3}$/,''))
     a.image = file
     
     if a.save

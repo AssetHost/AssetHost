@@ -5,12 +5,10 @@ en:
     formtastic:
         labels:
             asset:
-                idkey: "ID Key"
                 url: "URL"
                 image_taken: "Image Taken"
         hints:
             asset:
-                idkey: "Unique key for asset"
                 title: "Used as ALT text on image tags"
                 owner: "Copyright text for asset"
                 url: "URL for original asset (if required for use)"

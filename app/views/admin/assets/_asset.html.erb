@@ -4,7 +4,7 @@
 		
 	<% end %>
 	<span id="asset_tip_<%= asset.id %>">
-		<h3><%= asset.title? ? asset.title : asset.idkey %></h3>
+		<h3><%= asset.title %></h3>
 		<%= asset.owner %>
 		<br/><%= [asset.image_width,asset.image_height].join("x") %>
 	</span>

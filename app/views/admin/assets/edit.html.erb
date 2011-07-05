@@ -6,7 +6,6 @@
 	<h2>Edit Asset Information</h2>
 <%= semantic_form_for(@asset, :as => :asset, :url => a_asset_path(@asset)) do |f| %>
 	<%= f.inputs :name => "Basics" do %>
-		<%= f.input :idkey %>
 		<%= f.input :title %>
 		<%= f.input :description, :as => :text, :input_html => {:rows => 3} %>
 	<% end %>

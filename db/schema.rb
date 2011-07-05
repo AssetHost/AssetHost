@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110630212458) do
+ActiveRecord::Schema.define(:version => 20110705173740) do
 
   create_table "asset_outputs", :force => true do |t|
     t.integer  "asset_id",    :null => false
@@ -23,7 +23,6 @@ ActiveRecord::Schema.define(:version => 20110630212458) do
   end
 
   create_table "assets", :force => true do |t|
-    t.string   "idkey",                                    :null => false
     t.string   "title"
     t.string   "description"
     t.string   "owner"

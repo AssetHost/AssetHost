@@ -5,11 +5,8 @@
 <h1><%= @page_title %></h1>
 
 <div class="threeW">
-	<h3>ID Key:</h3>
-	<%= @asset.idkey %> (<%= link_to "Edit Metadata", edit_a_asset_path %>)
-	
 	<h3>Title:</h3>
-	<%= @asset.title %>
+	<%= @asset.title %> (<%= link_to "Edit Metadata", edit_a_asset_path %>)
 	
 	<h3>Image Dimensions:</h3>
 	<%= [@asset.image_width,@asset.image_height].join(" x ") %>
