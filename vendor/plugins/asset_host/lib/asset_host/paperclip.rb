@@ -59,17 +59,20 @@ end
 
 module Paperclip
   class Attachment
+    
     def enqueue_styles(styles)
       Resque.enqueue(AssetHost::ResqueJob,self.instance.class.name,self.instance.id,self.name,styles)
     end
+    
+    #----------
     
     def trueurl(style_name = default_style, use_timestamp = @use_timestamp)
       url = original_filename.nil? ? interpolate(@default_url, style_name) : interpolate(@options[:trueurl], style_name)
       use_timestamp && updated_at ? [url, updated_at].compact.join(url.include?("?") ? "&" : "?") : url
     end
+    
+    #----------
         
-    # TODO: Now that AssetOutput tracks rendered styles, width and height could be cached
-    # instead of computing them on each request
     def width(style = default_style)
       if s = self.styles[style]
         # load dimensions
@@ -82,6 +85,8 @@ module Paperclip
 
       nil
     end
+    
+    #----------
     
     def height(style = default_style)
       if s = self.styles[style] 
@@ -96,12 +101,16 @@ module Paperclip
       nil
     end
     
+    #----------
+    
     def isPortrait?
       w = self.instance_read("width")
       h = self.instance_read("height")
       
       (h > w) ? true : false
     end
+    
+    #----------
     
     def _compute_style_ratio(style)
       w = self.instance_read("width")
@@ -119,12 +128,22 @@ module Paperclip
       
       return factor
     end
-
-    def tag(style = default_style,args={})
-      if !args
-        args = {}
+    
+    #----------
+    
+    def tags(args = {})
+      tags = {}
+      
+      self.styles.each do |style,v|
+        tags[style] = self.tag(style,args)
       end
       
+      return tags
+    end
+    
+    #----------
+
+    def tag(style = default_style,args={})
       s = self.styles[style]
       
       if !s
@@ -142,15 +161,8 @@ module Paperclip
       
       return %Q(<img src="#{self.url(style)}" width="#{width}" height="#{height}" alt="#{self.instance.title}" #{htmlargs}/>).html_safe
     end
-    
-    def has?(style = default_style)
-      if s = self.styles[style]
-       factor = self._compute_style_ratio(s)
-       return (factor <= 1) 
-      end
-
-      nil
-    end
+        
+    #----------
     
     def _grab_dimensions
       return unless @queued_for_write[:original]

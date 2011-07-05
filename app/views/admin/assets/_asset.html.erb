@@ -1,6 +1,7 @@
 <li id="asset_<%= asset.id %>"><a href="<%= a_asset_path asset %>">
 	<% if asset.image %>
 		<%= asset.image.tag(:thumb, :draggable => true) %>
+		
 	<% end %>
 	<span id="asset_tip_<%= asset.id %>">
 		<h3><%= asset.title? ? asset.title : asset.idkey %></h3>
@@ -10,4 +11,9 @@
 </a></li>
 <% content_for :footerjss do %>
 	new Tooltip($("asset_<%= asset.id %>"), {content:"asset_tip_<%= asset.id %>"})
+	Element.observe($$('#asset_<%= asset.id %> img')[0],'dragstart',function (evt) { 
+		console.log("dragstart on <%= asset.id %>... setting data")
+		evt.dataTransfer.setData('text/uri-list','http://localhost:3000<%= escape_javascript(api_asset_path(asset)) %>') 
+	})
+
 <% end %>

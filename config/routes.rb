@@ -21,15 +21,19 @@ AssetHost::Application.routes.draw do
     end
   end
   
-  namespace :api do
+  namespace :api do    
     resources :assets, :id => /\d+/ do
       member do
         get 'tag/:style', :action => :tag
       end
     end 
+
+    match 'as_asset', :to => "utility#as_asset", :as => "as_asset"
   end
     
   match '/i/:aprint/:id-:style.:extension', :to => 'public#image', :as => :image, :constraints => { :id => /\d+/, :style => /[^\.]+/}
+  
+  match '/test', :to => "public#test"
         
   root :to => 'public#index'
 end

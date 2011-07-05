@@ -51,4 +51,10 @@ class PublicController < ApplicationController
       redirect_to @asset.image.url(style.first.code) and return
     end    
   end
+  
+  #----------
+  
+  def test
+    render :layout => "preauth"
+  end
 end

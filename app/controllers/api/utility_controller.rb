@@ -7,10 +7,16 @@ class Api::UtilityController < ApplicationController
     end
     
     # see if we have a loader for this URL
-    if asset = AssetHost.as_asset(url)
-
+    if asset = AssetHost.as_asset(params[:url])
+      render :json => { 
+        :id => asset.id, 
+        :title => asset.title, 
+        :description => asset.description, 
+        :owner => asset.owner,
+        :tags => asset.image.tags
+      }
     else
-      
+      render :json => { :error => "Unable to find or load an asset at the URL #{params[:url]}" }, :status => :not_found
     end
   end
 end

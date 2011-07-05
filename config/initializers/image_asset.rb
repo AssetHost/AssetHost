@@ -1,1 +1,1 @@
-require 'image_asset'
+require 'asset_host'

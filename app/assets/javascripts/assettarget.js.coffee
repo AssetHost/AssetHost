@@ -31,9 +31,22 @@ class window.AssetHostTarget
     
     _drop: (evt) ->
         console.log "drop evt: ", evt 
-        console.log "uri-list is ", evt.dataTransfer.getData('text/uri-list')
+        
+        uri = evt.dataTransfer.getData('text/uri-list')
+        
+        console.log "uri-list is ", uri
+        
+        new Ajax.Request("/api/as_asset",{
+            parameters: { url: uri},
+            onSuccess: (resp) => @_handleResponse resp
+        })
 		
         evt.stopPropagation()
         evt.preventDefault()
         false
     
+    _handleResponse: (resp) ->
+        console.log 'resp is ', resp
+        
+        if resp
+            $('preview').update resp.responseJSON.tags.wide
