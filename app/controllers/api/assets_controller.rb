@@ -1,5 +1,19 @@
 class Api::AssetsController < ApplicationController
 
+  def show
+    asset = Asset.find(params[:id])
+    
+    render :json => { 
+      :id => asset.id, 
+      :title => asset.title, 
+      :description => asset.description, 
+      :owner => asset.owner,
+      :tags => asset.image.tags
+    }
+  end
+  
+  #----------
+
   def tag
     # look up Asset
     asset = Asset.find(params[:id])
@@ -14,7 +28,16 @@ class Api::AssetsController < ApplicationController
       height = ao.height
     end
         
-    render :json => { :id => asset.id, :tag => asset.image.tag(params[:style].to_sym), :updated_at => asset.image_updated_at }
+    render :json => { 
+      :id => asset.id, 
+      :tag => asset.image.tag(params[:style].to_sym), 
+      :updated_at => asset.image_updated_at, 
+      :owner => asset.owner, 
+      :width => width, 
+      :height => height
+    }
   end
-
+  
+  #----------
+  
 end

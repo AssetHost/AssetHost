@@ -5,7 +5,9 @@ AssetHost::Application.routes.draw do
     
     resources :users
     
-    resources :packages
+    resources :packages do
+      resources :outputs
+    end
 
     resources :assets, :id => /\d+/ do
       collection do 
@@ -25,6 +27,7 @@ AssetHost::Application.routes.draw do
   namespace :api do    
     resources :assets, :id => /\d+/ do
       member do
+        get 'r/:context/(:scheme)', :action => :render
         get 'tag/:style', :action => :tag
       end
     end 

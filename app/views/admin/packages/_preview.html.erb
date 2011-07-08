@@ -1,0 +1,7 @@
+<h3><%= output.code %> (<%= output.size %>) <% if output.prerender? %>(Prerender)<% end %></h3>
+
+<p>
+	<%= link_to "Edit Output", a_package_output_path(@package,output) %>
+</p>
+
+<%= asset.image.tag(output.code) %>

@@ -144,7 +144,7 @@ module Paperclip
     #----------
 
     def tag(style = default_style,args={})
-      s = self.styles[style]
+      s = self.styles[style.to_sym]
       
       if !s
         return nil
@@ -189,7 +189,7 @@ module Paperclip
     
     def initialize file, options = {}, attachment = nil
       @prerender = options[:prerender]
-      @size = options[:size].gsub(">",'')
+      @size = options[:size]
       @output = options[:output]
       @asset = attachment ? attachment.instance : nil
       
@@ -222,7 +222,7 @@ module Paperclip
           Paperclip.log("[ewr] Created tmpao to note processing for #{@output}")
         end
         
-        if @size =~ /(\d+)?x?(\d+)?(\#)?$/ && $~[3]
+        if @size =~ /(\d+)?x?(\d+)?([\#>])?$/ && $~[3] == "#"
           # crop...  scale using dimensions as minimums, then crop to dimensions
           scale = "-scale #{$~[1]}x#{$~[2]}^"
           crop = "-crop #{$~[1]}x#{$~[2]}+0+0"
@@ -230,7 +230,8 @@ module Paperclip
           @convert_options = [@convert_options.shift,scale,crop,@convert_options].flatten
         else
           # don't crop
-          scale = "-scale #{$~[1]}x#{$~[2]}"
+          scale = "-scale '#{$~[1]}x#{$~[2]}#{$~[3]}'"
+          Paperclip.log("[ewr] calling scale of #{scale}")
           @convert_options = [scale,@convert_options].flatten
         end
         

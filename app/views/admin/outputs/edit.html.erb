@@ -1,0 +1,19 @@
+<%
+	@page_title = "Output: #{@package.name}/#{@output.code}"
+%>
+
+<h1><%= @page_title %></h1>
+
+<%= semantic_form_for(@output, :as => :output, :url => a_package_output_path(@package,@output)) do |f| %>
+	<%= f.inputs :name => "Metadata" do %>
+		<%= f.input :code %>
+		<%= f.input :size %>
+		<%= f.input :prerender %>
+	<% end %>
+	
+	<%= f.inputs :name => "Output" do %>
+		<%= f.input :template %>
+	<% end %>
+	
+	<%= f.buttons %>
+<% end %>

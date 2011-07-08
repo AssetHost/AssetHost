@@ -5,4 +5,8 @@ require File.expand_path('../config/application', __FILE__)
 require 'rake'
 require 'resque/tasks'
 
+namespace :resque do
+  task :setup => :environment
+end
+
 AssetHost::Application.load_tasks

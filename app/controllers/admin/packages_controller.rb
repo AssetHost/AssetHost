@@ -5,4 +5,9 @@ class Admin::PackagesController < ApplicationController
   def index
     @packages = SitePackage.all
   end
+  
+  def show
+    @package = SitePackage.find(params[:id])
+    @asset = Asset.find(params[:asset]||:first)
+  end
 end

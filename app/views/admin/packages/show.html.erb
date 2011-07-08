@@ -1,0 +1,7 @@
+<%
+	@page_title = "Site Package - #{@package.name}"
+%>
+
+<h1><%= @page_title %></h1>
+
+<%= render :partial => "preview", :collection => @package.outputs, :as => :output, :locals => { :asset => @asset } %>

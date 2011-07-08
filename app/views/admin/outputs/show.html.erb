@@ -1,0 +1,16 @@
+<%
+	@page_title = "Output: #{@package.name}/#{@output.code}"
+%>
+
+<h1><%= @page_title %></h1>
+
+<p><b>Size:</b> <%= @output.size %></p>
+
+<p><b>Prerender?</b> <%= @output.prerender? ? "Yes" : "No" %></p>
+
+<p>
+	<b>Template:</b>
+	<%= @output.template || "<i>None</i>".html_safe %>
+</p>
+
+[<%= link_to "Edit", edit_a_package_output_path(@package,@output) %>]
