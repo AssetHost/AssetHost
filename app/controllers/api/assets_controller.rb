@@ -1,5 +1,31 @@
 class Api::AssetsController < ApplicationController
 
+  def index
+    @assets = Asset.paginate(
+      :order => "updated_at desc",
+      :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
+      :per_page => 24
+    )
+    
+    render :json => { 
+      :assets => @assets.collect { |a| { 
+        :id => a.id, 
+        :title => a.title, 
+        :owner => a.owner, 
+        :size => [a.image.width,a.image.height].join('x'), 
+        :tags => a.image.tags,
+        :url => "http://localhost:3000/assets/#{a.id}/" 
+      } },
+      :pages => {
+        :page => @assets.current_page,
+        :pages => @assets.total_pages,
+        :results => @assets.total_entries
+      } 
+    }
+  end
+  
+  #----------
+
   def show
     asset = Asset.find(params[:id])
     

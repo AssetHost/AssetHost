@@ -1,3 +1,32 @@
 /*
  public
 */
+
+#assets_loading {
+    position: absolute;
+    height: 490px;
+    width: 620px;
+    background: #fcc;
+}
+
+#my_assets {
+    min-height: 490px;
+}
+
+.page_prev {
+    display: inline;
+    float: left;
+    width: 160px;
+}
+
+.page_info {
+    text-align: center;
+}
+
+.page_next {
+    display: inline;
+    float: right;
+    width: 160px;
+    text-align: right;
+    margin-right: 12px;
+}

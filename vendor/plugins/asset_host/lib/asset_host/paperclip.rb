@@ -60,6 +60,17 @@ end
 module Paperclip
   class Attachment
     
+    # Overwrite styles loader to allow caching despite dynamic loading
+    def styles
+      if !@normalized_styles
+        @normalized_styles = ActiveSupport::OrderedHash.new
+        @styles.call(self).each do |name, args|
+          @normalized_styles[name] = Paperclip::Style.new(name, args.dup, self)
+        end
+      end
+      @normalized_styles
+    end
+    
     def enqueue_styles(styles)
       Resque.enqueue(AssetHost::ResqueJob,self.instance.class.name,self.instance.id,self.name,styles)
     end
