@@ -11,10 +11,11 @@ class Api::AssetsController < ApplicationController
       :assets => @assets.collect { |a| { 
         :id => a.id, 
         :title => a.title, 
+        :description => a.description,
         :owner => a.owner, 
-        :size => [a.image.width,a.image.height].join('x'), 
+        :size => [a.image_width,a.image_height].join('x'), 
         :tags => a.image.tags,
-        :url => "http://localhost:3000/assets/#{a.id}/" 
+        :url => "http://localhost:3000/api/assets/#{a.id}/" 
       } },
       :pages => {
         :page => @assets.current_page,

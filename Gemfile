@@ -2,7 +2,8 @@ source 'http://rubygems.org'
 source 'http://gems.github.com/'
 
 gem 'rails', '3.1.0rc4'
-gem 'prototype-rails', :git => "git://github.com/rubychan/prototype-rails.git"
+#gem 'prototype-rails', :git => "git://github.com/rubychan/prototype-rails.git"
+gem 'jquery-rails'
 gem 'sass'
 gem 'coffee-script'
 gem 'uglifier'

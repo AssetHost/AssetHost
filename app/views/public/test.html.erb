@@ -5,7 +5,7 @@
 <div class="threeW">
 	<h2>Selected Assets:</h2>
 	
-	<div id="my_assets" style="background: #ffc;height: 320px">
+	<div id="my_assets" style="">
 	<p><i>Drop assets here to add them to your story</i></p>
 	</div>
 	
@@ -25,5 +25,6 @@
 <br class="clear"/>
 
 <script type="text/javascript">
-	aSelect = new AssetHostChooserUI()
+	aBrowser = new AssetHostBrowserUI()
+	aSelect = new AssetHostChooserUI({browser:aBrowser})
 </script>
