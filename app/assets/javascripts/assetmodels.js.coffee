@@ -3,6 +3,7 @@ class window.AssetHostModels
 
     @Asset:
         Backbone.Model.extend({
+            urlRoot: "/api/assets/"
             modal: ->
                 @_modal ?= new AssetHostModels.AssetModalView({model: this})
                 

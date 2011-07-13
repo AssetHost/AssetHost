@@ -40,6 +40,7 @@ class Api::AssetsController < ApplicationController
       :title => asset.title, 
       :description => asset.description, 
       :owner => asset.owner,
+      :size => [asset.image_width,asset.image_height].join('x'),
       :tags => asset.image.tags
     }
   end

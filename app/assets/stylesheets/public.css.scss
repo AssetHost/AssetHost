@@ -61,8 +61,30 @@ div#asset_modal {
     border: solid 1px #bbb;
     background: #fff;
     opacity: 0.0;
+    
+    -webkit-transition: -opacity 0.0s ease-out;    
+}
+
+div#asset_modal.show {
+    opacity: 1.0;
+    z-index: 100;
+    -webkit-transition-duration: 0.25s;
+}
+
+
+/* Overlay */
+#simplemodal-overlay {
+    background-color:#000;
+    cursor:wait;
+}
+
+/* Container */
+#simplemodal-container {
+    width:600px; 
+    background-color:#fff;
     -webkit-box-shadow: 0px 3px 6px rgba(0,0,0,0.25);
-    -webkit-transition: -opacity 0.0s ease-out;
+    border:4px solid #444; 
+    padding:12px;
     
     img {
         display: inline;
@@ -80,10 +102,26 @@ div#asset_modal {
         color: #444;
         margin: 0;
     }
-}
-
-div#asset_modal.show {
-    opacity: 1.0;
-    z-index: 100;
-    -webkit-transition-duration: 0.25s;
+    
+    .simplemodal-data {
+        padding:8px;
+    }
+        
+    a {
+        color:#ddd;
+    }
+    a.modalCloseImg {
+        background:url(/img/x.png) no-repeat; 
+        width:25px; 
+        height:29px; 
+        display:inline; 
+        z-index:3200; 
+        position:absolute; 
+        top:-15px; 
+        right:-16px; 
+        cursor:pointer;
+    }
+    h3 {
+        color:#84b8d9;
+    } 
 }

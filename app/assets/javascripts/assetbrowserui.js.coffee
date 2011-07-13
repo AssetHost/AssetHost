@@ -3,7 +3,6 @@ class window.AssetHostBrowserUI
         {
             assetBrowserEl: "#asset_browser",
             assetLoadingEl: "#assets_loading",
-            modal: "#asset_modal",
             server: "localhost:3000"
         }
         
@@ -18,10 +17,11 @@ class window.AssetHostBrowserUI
         
         @_loadingAssets = false
         
-        if !@modal.length
-            @modal = $ '<div/>', {id: @options['modal'].replace('#','')}
-            $(@browser).before @modal
-            
+        @router = new @Router
+        @router.bind("route:asset",(id) => @previewAsset id )
+        @router.bind("route:index", => @clearDisplay() )
+        Backbone.history.start()
+                    
         @assets.bind 'reset', (assets) => @_renderAssets(assets)
                 
         # load recent assets into asset browser
@@ -56,7 +56,7 @@ class window.AssetHostBrowserUI
             $(el).bind 'dragstart', a, (evt) ->
                 evt.originalEvent.dataTransfer.setData('text/uri-list',evt.data.get('url'))
                 
-            $(el).bind 'click', a, (evt) => @previewAsset(evt.data)
+            $(el).bind 'click', a, (evt) => @router.navigate("#/a/"+evt.data.get('id'),true)
         
         @browser.html ul
         
@@ -69,8 +69,54 @@ class window.AssetHostBrowserUI
     
     #----------
     
-    previewAsset: (asset) ->  
-        $(@modal).html asset.modal().render().el
-        $(@modal).addClass("show").show()
+    clearDisplay: ->
+        console.log "in clearDisplay"
+        # clear any asset modal
+        $.modal.close()
+    
+    #----------
+    
+    previewAsset: (id) ->
+        console.log "in previewAsset for ",id
         
-        $(@modal).find('img').bind "click", (evt) => @modal.removeClass("show").hide()
+        # check if we have the asset
+        asset = @assets.get(id) 
+
+        if !asset
+            a = new AssetHostModels.Asset({id:id})
+            a.fetch({success:(a)=>@_previewAsset(a)})
+        else 
+            @_previewAsset(asset)
+        
+    _previewAsset: (asset) ->
+        console.log "_previewAsset for ",asset.toJSON()
+        $(asset.modal().render().el).modal({
+            overlayClose: true,
+            onClose: (modal) => @router.navigate("/");$.modal.close()
+        })
+    
+    #----------    
+    
+    Router:
+        Backbone.Router.extend({
+            routes:
+                {
+                    '/a/:id': "asset",
+                    '/s/:query': "search",
+                    '/s/:query/:p': "search",
+                    '/': "index",
+                    '': "index"
+                    
+                }
+                
+            asset: ->
+                console.log "in asset function"
+                
+            search: -> 
+                console.log "in search function"
+                
+            index: ->
+                console.log "in index function"
+                
+                
+        })
