@@ -2,7 +2,12 @@ class window.AssetHostModels
     constructor: ->
 
     @Asset:
-        Backbone.Model.extend({})
+        Backbone.Model.extend({
+            modal: ->
+                @_modal ?= new AssetHostModels.AssetModalView({model: this})
+                
+            
+        })
         
     @Assets: 
         Backbone.Collection.extend({
@@ -38,4 +43,22 @@ class window.AssetHostModels
                     
                 @page = @page - 1
                 @fetch()
+        })
+        
+    @AssetModalView:
+        Backbone.View.extend({
+            template:
+                '''
+                <div class="ah_asset_browse">
+                    <%= tags.lead %>
+                    <h1><%= title %></h1>
+                    <h2><%= owner %></h2>
+                    <h2><%= size %></h2>
+                    <p><%= description %></p> 
+                </div>
+                '''
+            render: ->
+                $( @el ).html( _.template(@template,@model.toJSON()))
+            
+                return this
         })

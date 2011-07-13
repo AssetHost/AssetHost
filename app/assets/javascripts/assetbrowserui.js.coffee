@@ -6,7 +6,7 @@ class window.AssetHostBrowserUI
             modal: "#asset_modal",
             server: "localhost:3000"
         }
-
+        
     constructor: (options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
                 
@@ -69,19 +69,8 @@ class window.AssetHostBrowserUI
     
     #----------
     
-    previewAsset: (asset) ->            
-        # create our elements
-        div = $('<div/>',{class:'ah_browse_asset'})
-            .html(asset.get('tags').lead)
-            .append($ '<h1/>', {text: asset.get('title')} )
-            .append($ '<h2/>', {text: asset.get('owner')} )
-            .append($ '<h2/>', {text: asset.get('size')} )
-            .append($ '<p/>', {text: asset.get('description')} )
-            .append($('<div/>', {text: "Close",href: ""}).bind("click",(el) => $(@modal).removeClass("show").hide(); false ))
-        
-        #use_link = new Element('a',{class:'awesome large'}).update("Use This Asset")
-        #use_link.observe()
-        #div.insert({bottom:use_link})
-        
-        $(@modal).html div        
+    previewAsset: (asset) ->  
+        $(@modal).html asset.modal().render().el
         $(@modal).addClass("show").show()
+        
+        $(@modal).find('img').bind "click", (evt) => @modal.removeClass("show").hide()
