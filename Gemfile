@@ -25,7 +25,7 @@ gem "resque"
 gem "delayed_paperclip", :git => 'git://github.com/jstorimer/delayed_paperclip.git'
 
 gem "will_paginate", :git => 'git://github.com/xspond/will_paginate.git', :branch => 'rails3-1'
-#gem 'thinking-sphinx', '2.0.1', :require => 'thinking_sphinx'
+gem 'thinking-sphinx', :git => 'git://github.com/freelancing-god/thinking-sphinx.git', :branch => 'rails3'
 
 gem 'devise'
 gem "oa-core", :require => "omniauth/core"

@@ -1,14 +1,25 @@
 class Api::AssetsController < ApplicationController
 
   def index
-    @assets = Asset.paginate(
-      :order => "updated_at desc",
-      :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
-      :per_page => 24
-    )
+    if params[:q]
+      @assets = Asset.search(params[:q],
+        :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
+        :per_page => 24,
+        :field_weights => { :title => 10, :description => 3 }
+      )
+    else
+      @assets = Asset.paginate(
+        :order => "updated_at desc",
+        :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
+        :per_page => 24
+      )
+    end
     
-    render :json => { 
-      :assets => @assets.collect { |a| { 
+    response.headers['X-Next-Page'] = @assets.next_page.to_s
+    response.headers['X-Total-Entries'] = @assets.total_entries.to_s
+    
+    render :json => 
+      @assets.collect { |a| { 
         :id => a.id, 
         :title => a.title, 
         :description => a.description,
@@ -16,13 +27,7 @@ class Api::AssetsController < ApplicationController
         :size => [a.image_width,a.image_height].join('x'), 
         :tags => a.image.tags,
         :url => "http://localhost:3000/api/assets/#{a.id}/" 
-      } },
-      :pages => {
-        :page => @assets.current_page,
-        :pages => @assets.total_pages,
-        :results => @assets.total_entries
-      } 
-    }
+      } }
   end
   
   #----------

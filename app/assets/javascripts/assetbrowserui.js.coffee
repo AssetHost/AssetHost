@@ -9,19 +9,22 @@ class window.AssetHostBrowserUI
 
     constructor: (options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
-        
+                
+        @assets = new AssetHostModels.Assets
+                
         @browser = $( @options['assetBrowserEl'] )
         @aloaderEl = $( @options['assetLoadingEl'] )
         @modal = $( @options['modal'] )
         
-        if !@modal
-            @modal = new Element('div',{id:@options['modal']})
-            @browser.insert({before:@modal})
+        @_loadingAssets = false
+        
+        if !@modal.length
+            @modal = $ '<div/>', {id: @options['modal'].replace('#','')}
+            $(@browser).before @modal
             
-        #@modal.removeClassName('show')
+        @assets.bind 'reset', (assets) => @_renderAssets(assets)
                 
         # load recent assets into asset browser
-        @_loadingAssets = false
         @loadAssets { query: '', page: 1 }
     
     #---------------------#
@@ -35,55 +38,30 @@ class window.AssetHostBrowserUI
         @assetsLoading true
         
         # fire off AJAX API request
-        jQuery.ajax("/api/assets",{
-            parameters: { query: options['query'] || '', page: options['page'] || 1 },
-            method: 'get',
-            success: (data) =>
-                ul = $("<ul/>")
-                
-                # for each asset, create an element on @browser
-                for a in data.assets
-                    el = $("<li/>",{id: a.id}).html(a.tags.thumb)
-                    $(ul).append el
-
-                    $(el).bind 'dragstart', a, (evt) ->
-                        evt.originalEvent.dataTransfer.setData('text/uri-list',evt.data.url)
-                        
-                    #$(el).bind 'click', a, (evt) => @previewAsset(evt.data)
-
-                @browser.html ul
-                
-                # add pagination links
-                pagination = ''
-                
-                ###
-                if h.pages.page > 1
-                    prev = new Element('a',{class: "page_prev",href:""})
-                    prev.insert("Previous Page")
-                    prev.observe 'click', (evt) => 
-                        @loadAssets { query: options['query'], page: h.pages.page - 1 }
-                        evt.preventDefault()
-                    @browser.insert { bottom: prev }
-                    
-                if h.pages.page < h.pages.pages
-                    npage = new Element('a',{class: "page_next",href:""})
-                    npage.insert("Next Page")
-                    npage.observe 'click', (evt) => 
-                        @loadAssets { query: options['query'], page: h.pages.page + 1 }
-                        evt.preventDefault()
-                    @browser.insert { bottom: npage }
-
-                pinfo = new Element('p',{class: "page_info"})
-                pinfo.insert("Page #{h.pages.page} of #{h.pages.pages}")
-                @browser.insert { bottom: pinfo }
-                ###
-                    
-                # turn off our load status
-                @assetsLoading false
+        @assets.fetch({
+            parameters: { q: options['query'] }
         })
         
         return false
         
+    #----------
+    
+    _renderAssets: (assets) ->
+        ul = $("<ul/>")
+                
+        assets.each (a) =>
+            el = $("<li/>",{id: a.get('id')}).html(a.get('tags').thumb)
+            $(ul).append el
+
+            $(el).bind 'dragstart', a, (evt) ->
+                evt.originalEvent.dataTransfer.setData('text/uri-list',evt.data.get('url'))
+                
+            $(el).bind 'click', a, (evt) => @previewAsset(evt.data)
+        
+        @browser.html ul
+        
+        @assetsLoading false
+    
     #----------
     
     assetsLoading: (bool) ->
@@ -93,16 +71,17 @@ class window.AssetHostBrowserUI
     
     previewAsset: (asset) ->            
         # create our elements
-        div = new Element('div',{class:'ah_browse_asset'})
-        div.insert({bottom:asset.tags.lead})
-        div.insert({bottom:new Element('h1').update(asset.title)})
-        div.insert({bottom:new Element('h2').update(asset.owner)})
-        div.insert({bottom:new Element('h2').update(asset.size)})
-        div.insert({bottom:new Element('p').update(asset.description)})
+        div = $('<div/>',{class:'ah_browse_asset'})
+            .html(asset.get('tags').lead)
+            .append($ '<h1/>', {text: asset.get('title')} )
+            .append($ '<h2/>', {text: asset.get('owner')} )
+            .append($ '<h2/>', {text: asset.get('size')} )
+            .append($ '<p/>', {text: asset.get('description')} )
+            .append($('<div/>', {text: "Close",href: ""}).bind("click",(el) => $(@modal).removeClass("show").hide(); false ))
         
-        use_link = new Element('a',{class:'awesome large'}).update("Use This Asset")
-        use_link.observe()
-        div.insert({bottom:use_link})
+        #use_link = new Element('a',{class:'awesome large'}).update("Use This Asset")
+        #use_link.observe()
+        #div.insert({bottom:use_link})
         
-        @modal.update(div)
-        @modal.addClassName("show")
+        $(@modal).html div        
+        $(@modal).addClass("show").show()

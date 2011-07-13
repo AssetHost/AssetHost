@@ -6,12 +6,12 @@ class Asset < ActiveRecord::Base
   VIA_LOCAL = 2
   VIA_UPLOAD = 3
   		
-	#define_index do
-  #  indexes title
-  #  indexes description
-  #  has created_at
-  #  has updated_at
-  #end
+	define_index do
+    indexes title
+    indexes description
+    has created_at
+    has updated_at
+  end
   
   GRAVITY_OPTIONS = [
     [ "Center (default)", "Center"    ],
