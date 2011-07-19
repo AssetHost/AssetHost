@@ -11,68 +11,107 @@ class window.AssetHostBrowserUI
                 
         @assets = new AssetHostModels.Assets
                 
-        @browser = $( @options['assetBrowserEl'] )
+        @browserEl = $( @options['assetBrowserEl'] )
+        @browser = new AssetHostModels.AssetBrowserView({collection: @assets})
+
+        @browserEl.after( @browser.pages().el )
+        
         @aloaderEl = $( @options['assetLoadingEl'] )
         @modal = $( @options['modal'] )
         
+        # add search box
+        @search = new AssetHostModels.AssetSearchView({collection:@assets})
+        $('#search_box').html @search.render().el
+        
         @_loadingAssets = false
+        
+        # -- Handle Routing -- #
         
         @router = new @Router
         @router.bind("route:asset",(id) => @previewAsset id )
         @router.bind("route:index", => @clearDisplay() )
+        @router.bind("route:search", (page,query=null) => 
+            @clearDisplay()
+            @loadAssets { query: query, page: page }
+        )
+        
+        # -- Handle Events from UI Elements -- #
+
+        @browser.pages().bind("page", (page) => 
+            @clearDisplay()
+            @loadAssets { page: page }
+            @navToAssets()
+        )
+        
+        @search.bind "search", (query) => 
+            @clearDisplay()
+            @loadAssets { query: query, page: 1 }
+            @navToAssets()
+            
         Backbone.history.start()
-                    
-        @assets.bind 'reset', (assets) => @_renderAssets(assets)
+        
+        $(@browserEl).delegate "li", "dragstart", (evt) ->
+            if (url = $(evt.currentTarget).attr('data-asset-url'))
+                evt.originalEvent.dataTransfer.setData('text/uri-list',url)
+                                    
+        @assets.bind 'reset', (assets) => 
+            @browserEl.html @browser.render().el
+            @assetsLoading false
                 
         # load recent assets into asset browser
-        @loadAssets { query: '', page: 1 }
+        if !@_assetsLoading
+            @loadAssets { query: '', page: 1, force: true }
     
     #---------------------#
     # -- Asset Browser -- #
     #---------------------#
         
+    navToAssets: ->
+        page = @assets.page()
+        query = @assets.query()
+        
+        console.log "navToAssets page/query are ",page,query
+        
+        if page && query
+            @router.navigate("/p/#{page}/#{query}")
+        else if page && page != 1
+            @router.navigate("/p/#{page}")
+        else
+            @router.navigate("/")
+    
     # given a query string and/or page number, grab assets via the API and 
     # fill in the asset browser
     loadAssets: (options = {}) -> 
-        # display loading status
-        @assetsLoading true
+        qDirty = options['query'] && options['query'] != @assets.query()
+        pDirty = options['page'] && Number(options['page']) != Number(@assets.page())
+                        
+        if qDirty || pDirty || options['force']
+            # display loading status
+            @assetsLoading true
         
-        # fire off AJAX API request
-        @assets.fetch({
-            parameters: { q: options['query'] }
-        })
+            # fire off AJAX API request
+            @assets.query(options['query'])
+            @assets.page(options['page'])
+            @assets.fetch()
         
-        return false
+            return false
         
     #----------
-    
-    _renderAssets: (assets) ->
-        ul = $("<ul/>")
-                
-        assets.each (a) =>
-            el = $("<li/>",{id: a.get('id')}).html(a.get('tags').thumb)
-            $(ul).append el
-
-            $(el).bind 'dragstart', a, (evt) ->
-                evt.originalEvent.dataTransfer.setData('text/uri-list',evt.data.get('url'))
-                
-            $(el).bind 'click', a, (evt) => @router.navigate("#/a/"+evt.data.get('id'),true)
         
-        @browser.html ul
-        
-        @assetsLoading false
-    
-    #----------
-    
     assetsLoading: (bool) ->
-        if bool then @aloaderEl.show() else @aloaderEl.hide()
+        if bool
+            @aloaderEl.show()
+            @_assetsLoading = true
+        else 
+            @aloaderEl.hide()
+            @_assetsLoading = false
     
     #----------
     
     clearDisplay: ->
         console.log "in clearDisplay"
         # clear any asset modal
-        $.modal.close()
+        $(".ui-dialog-titlebar-close").trigger('click')
     
     #----------
     
@@ -89,11 +128,7 @@ class window.AssetHostBrowserUI
             @_previewAsset(asset)
         
     _previewAsset: (asset) ->
-        console.log "_previewAsset for ",asset.toJSON()
-        $(asset.modal().render().el).modal({
-            overlayClose: true,
-            onClose: (modal) => @router.navigate("/");$.modal.close()
-        })
+        asset.modal().open({close: => @navToAssets()})
     
     #----------    
     
@@ -102,8 +137,8 @@ class window.AssetHostBrowserUI
             routes:
                 {
                     '/a/:id': "asset",
-                    '/s/:query': "search",
-                    '/s/:query/:p': "search",
+                    '/p/:p/:query': "search",
+                    '/p/:p': "search",
                     '/': "index",
                     '': "index"
                     

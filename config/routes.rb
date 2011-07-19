@@ -22,6 +22,8 @@ AssetHost::Application.routes.draw do
         post :replace
       end
     end
+    
+    match 'chooser', :to => "home#chooser", :as => 'chooser'
   end
   
   namespace :api do    

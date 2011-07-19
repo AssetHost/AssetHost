@@ -2,29 +2,22 @@
 	@page_title = "Drop Test"
 %>
 
-<div class="threeW">
-	<h2>Selected Assets:</h2>
-	
-	<div id="my_assets" style="">
-	<p><i>Drop assets here to add them to your story</i></p>
-	</div>
-	
-	<hr/>
-		
-</div>
-<div class="sixW endcap">
-	<div class="twoW"><h2>Search:</h2></div>
-	<div class="fourW endcap"><p><i>Search box</i></p></div>
-	<br class="clear"/>
-	
-	<div id="assets_loading">&nbsp;</div>
-	<div id="asset_browser" class="assetbox"></div>
-	
-</div>
-
-<br class="clear"/>
+<p><a href="#" id="popup1">Pop Up Asset Chooser</a></p>
 
 <script type="text/javascript">
-	aBrowser = new AssetHostBrowserUI()
-	aSelect = new AssetHostChooserUI({browser:aBrowser})
+	$('#popup1').bind('click',function(evt) {
+		newwindow = window.open("/a/chooser?callback=fooCallback",'chooser','height=620,width=1000')
+		newwindow.fooCallback = function(chooser) {
+			chooser.bind('saveAndClose',function(json) {
+				console.log('got saveAndClose with JSON of ', json)
+				newwindow.close()
+			})			
+		}
+		
+		if (window.focus) {
+			newwindow.focus()
+		}
+		
+		return false;
+	})
 </script>

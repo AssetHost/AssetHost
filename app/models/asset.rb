@@ -69,6 +69,15 @@ class Asset < ActiveRecord::Base
   
   #----------
   
+  def output_by_style(style)
+    @_outputs ||= self.outputs.inject({}) do |h,o|
+      h[o.output.code] = o
+      h
+    end
+    
+    @_outputs[style.to_s] || false
+  end
+  
   def rendered_outputs
     @rendered ||= Output.paperclip_sizes.collect do |s|
       ["#{s[0]} (#{self.image.width(s[0])}x#{self.image.height(s[0])})",s[0]]

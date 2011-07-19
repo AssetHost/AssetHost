@@ -1,7 +1,7 @@
 class Api::AssetsController < ApplicationController
 
   def index
-    if params[:q]
+    if params[:q] && params[:q] != ''
       @assets = Asset.search(params[:q],
         :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
         :per_page => 24,

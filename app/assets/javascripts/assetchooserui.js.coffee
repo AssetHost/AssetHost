@@ -12,18 +12,38 @@ class window.AssetHostChooserUI
     constructor: (options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
         
+        # add in events
+        _.extend(this, Backbone.Events)
+        
+        # do we have an asset browser to attach to?
+        @browser = this.options.browser || false 
+        
         @drop = $( @options['dropEl'] )
         
-        @myassets = []
-        @myassetsEl = $("<ul/>",{class:"my_assets"})
-            
+        @myassets = new AssetHostModels.Assets
+        @assetsView = new AssetHostModels.AssetDropView({collection: @myassets})
+        
+        @assetsView.bind 'click', (asset) =>  
+            asset.editModal().open()
+        
+        @assetsView.bind 'remove', (asset) => 
+            if confirm("Remove?")
+                @myassets.remove(asset)
+                
+        @browser.assets.bind "selected", (asset) => 
+            console.log "got selected from ", asset
+            @myassets.add(asset)
+            asset.editModal().open()
+                    
         @uploads = []
         @uploadsEl = $("<ul/>",{class:"my_uploads"})
 
-        @drop.append(@myassetsEl,@uploadsEl)
-            
-        # do we have an asset browser to attach to?
-        @browser = this.options.browser || false 
+        @saveAndClose = new AssetHostModels.SaveAndCloseView({collection: @myassets}).render()
+        
+        @saveAndClose.bind('saveAndClose', (json) => console.log "saving and closing ",json;@trigger('saveAndClose',json))
+
+        @drop.append(@assetsView.el,@uploadsEl)
+        @drop.after(@saveAndClose.el)
             
         # attach drag-n-drop listeners to my_assets
         @drop.bind "dragenter", (evt) => @_dropDragEnter evt
@@ -69,7 +89,7 @@ class window.AssetHostChooserUI
                     # did we get an Asset in response?
                     if data.id
                         # Yes...  Add as asset
-                        @addMyAsset data
+                        @myassets.add(data)
                     else
                         # No...  Display error
                         alert data.error
@@ -78,53 +98,5 @@ class window.AssetHostChooserUI
         evt.stopPropagation()
         evt.preventDefault()
         false
-        
-    #----------
-    
-    addMyAsset: (asset) ->
-        console.log "adding asset #{asset.id}"
-        
-        # -- create asset thumbnail element -- #
-        
-        # <li><img/> 
-        #   <b>ID: TITLE</b>
-        #   <p>CAPTION [edit]</p>
-        # </li>
-        
-        caption = @chopCaption(asset.description)
-        
-        li = $("<li/>",{id:"mya_#{asset.id}"})
-            .append(
-                asset.tags.thumb,
-                $("<b/>").text("#{asset.id}: #{asset.title}"),
-                $("<p/>").text(caption)
-            )
-        
-        asset.li = li
-
-        @myassets.push asset
-        @myassetsEl.append li
-        
-        # -- make the asset thumbnail list sortable -- #
-        
-        # -- add a link to edit caption interface -- #
-        
-        
-        
-        asset
     
     #----------
-        
-    chopCaption: (caption,count=100) ->
-        chopped = caption
-        
-        if caption and caption.length > count
-            regstr = "^(.{#{count}}\\w*)\\W"
-            chopped = caption.match(new RegExp(regstr))
-            
-            if chopped
-                chopped = "#{chopped[1]}..."
-            else
-                chopped = caption
-                
-        chopped

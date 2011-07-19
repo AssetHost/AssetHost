@@ -1,0 +1,36 @@
+<%
+	@page_title = "Drop Test"
+%>
+
+<div class="threeW">
+	<h2>Selected Assets:</h2>
+	
+	<div id="my_assets" style="">
+	<p><i>Drop assets here to add them to your story</i></p>
+	</div>	
+</div>
+<div class="sixW endcap">
+	<div class="twoW"><h2>Search:</h2></div>
+	<div class="fourW endcap" id="search_box"></div>
+	<br class="clear"/>
+	
+	<div id="assets_loading">&nbsp;</div>
+	<div id="asset_browser" class="assetbox"></div>
+	
+</div>
+
+<br class="clear"/>
+
+<script type="text/javascript">
+	chooser = new AssetHostChooserUI({browser:new AssetHostBrowserUI()})
+	
+	<% if params[:callback] && params[:callback] =~ /^[\w\d_-]+$/ %>
+	$().ready(function() {
+		<%= params[:callback] %>(chooser)
+	})
+	<% end %>
+	
+	$(".ui-widget-overlay").live('click', function(){
+	   $(".ui-dialog-titlebar-close").trigger('click');
+	});
+</script>

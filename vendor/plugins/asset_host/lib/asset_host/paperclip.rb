@@ -87,10 +87,19 @@ module Paperclip
     def width(style = default_style)
       if s = self.styles[style]
         # load dimensions
-        if ao = self.instance.outputs.where(:output_id => Output.where(:code => style).first).first
+        if ao = self.instance.output_by_style(style)
           return ao.width
         else
           # TODO: Need to add code to guess dimensions if we don't yet have an output
+          g = Paperclip::Geometry.parse(s.processor_options[:size])       
+          if g.modifier == '#'
+            # match w/h from style
+            return g.width.to_i
+          end 
+
+          factor = self._compute_style_ratio(s)
+          width = ((self.instance_read("width") || 0) * factor).round
+          return width < self.instance_read("width") ? width : self.instance_read("width")
         end
       end
 
@@ -102,10 +111,21 @@ module Paperclip
     def height(style = default_style)
       if s = self.styles[style] 
         # load dimensions
-        if ao = self.instance.outputs.where(:output_id => Output.where(:code => style).first).first
+        if ao = self.instance.output_by_style(style)
           return ao.height
         else
-          # TODO: Need to add code to guess dimensions if we don't yet have an output          
+          # TODO: Need to add code to guess dimensions if we don't yet have an output  
+          g = Paperclip::Geometry.parse(s.processor_options[:size])       
+          if g.modifier == '#'
+            # match w/h from style
+            return g.width.to_i
+          end 
+
+          factor = self._compute_style_ratio(s)
+          height = ((self.instance_read("height") || 0) * factor).round
+          
+          return height < self.instance_read("height") ? height : self.instance_read("height")
+                  
         end
       end
 
@@ -131,7 +151,7 @@ module Paperclip
         return 0
       end
       
-      g = Paperclip::Geometry.parse(style.geometry)
+      g = Paperclip::Geometry.parse(style.processor_options[:size])
       ratio = Paperclip::Geometry.new( g.width/w, g.height/h )
       
       # we need to compute off the smaller number
@@ -161,16 +181,9 @@ module Paperclip
         return nil
       end
       
-      # load dimensions
-      width = height = nil
-      if ao = self.instance.outputs.where(:output_id => Output.where(:code => style).first).first
-        width = ao.width
-        height = ao.height
-      end
-      
       htmlargs = args.collect { |k,v| %Q!#{k}="#{v}"! }.join(" ")
       
-      return %Q(<img src="#{self.url(style)}" width="#{width}" height="#{height}" alt="#{self.instance.title}" #{htmlargs}/>).html_safe
+      return %Q(<img src="#{self.url(style)}" width="#{self.width(style)}" height="#{self.height(style)}" alt="#{self.instance.title}" #{htmlargs}/>).html_safe
     end
         
     #----------
