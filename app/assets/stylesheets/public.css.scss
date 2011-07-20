@@ -29,7 +29,6 @@
            border: 1px solid #aaa;
            padding: 2px;
            margin-bottom: 4px;
-           height: 86px;
            
            button {
               display: inline;
@@ -42,7 +41,27 @@
                margin: -2px 4px 0 -2px;
            }
        }
-    }
+   }
+       
+   ul.assets li {
+       height: 86px;
+   }
+       
+   ul.uploads li {
+       height: 32px;
+   }
+       
+   ul.uploads li.uploading {
+       background: #cfc;
+   }
+   
+   ul.uploads li.pending {
+       background: #afc;
+   }
+       
+   ul.uploads li.complete {
+       background: #afa;
+   }
 }
 
 ul.pages {

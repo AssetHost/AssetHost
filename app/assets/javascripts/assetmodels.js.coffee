@@ -70,6 +70,9 @@ class window.AssetHostModels
     
     @AssetDropView:
         Backbone.View.extend({
+            tagName: "ul"
+            className: "assets"
+                
             events:
                 {
                     'click li button': '_remove',
@@ -84,7 +87,6 @@ class window.AssetHostModels
             
             template:
                 '''
-                <ul>
                 <% assets.each(function(a) { %>
                     <li data-asset-id="<%= a.get('id') %>">
                         <button class="delete small awesome red">x</button>
@@ -93,7 +95,6 @@ class window.AssetHostModels
                         <p><%= a.chopCaption() %></p>
                     </li>
                 <% }); %>
-                </ul>
                 '''
                         
             _remove: (evt) -> 

@@ -29,13 +29,26 @@ class Admin::AssetsController < ApplicationController
   def upload  
     file = params[:file]
             
-    a = Asset.new(:title => file.original_filename.sub(/\.\w{3}$/,''))
-    a.image = file
+    asset = Asset.new(:title => file.original_filename.sub(/\.\w{3}$/,''))
+    asset.image = file
     
-    if a.save
-      render :text => a.id
+    [
+      ['title','image_title'],
+      ['description','image_description'],
+      ['owner','image_copyright']
+    ].each {|f| asset[f[0]] = asset[f[1]] }
+    
+    if asset.save
+      render :json => { 
+        :id => asset.id, 
+        :title => asset.title, 
+        :description => asset.description, 
+        :owner => asset.owner,
+        :size => [asset.image_width,asset.image_height].join('x'),
+        :tags => asset.image.tags
+      }
     else
-      puts "Error: #{a.errors.to_s}"
+      puts "Error: #{asset.errors.to_s}"
       render :text => 'ERROR'
     end
   end
