@@ -1,4 +1,7 @@
 module AssetHost::Loaders
+  # needed by Paperclip::Upfile
+  require 'mime/types'
+  
   class Flickr < AssetHost::Loaders::Base
     attr_reader :source, :id
     
@@ -53,7 +56,6 @@ module AssetHost::Loaders
 
       # create asset
       a = ::Asset.new(
-        :idkey => self.id,
         :title => p["title"]["_content"],
         :description => p["description"]["_content"],
         :owner => p['owner']['realname'] || p['owner']["username"],

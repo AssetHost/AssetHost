@@ -59,10 +59,21 @@ Amazon's S3.
 
 # External Requirements
 
-### Async Processing via Redis
+### Async Workers via Redis
 
 The AssetHost server uses Redis (via the Resque gem) to coordinate async 
-processing of images.
+processing of images.  Configure for your Redis setup in config/resque.yml.
+
+### Image Processing via ImageMagick
+
+AssetHost, via Paperclip, does image processing using ImageMagick.  If 
+needed, make sure to specify Paperclip.options[:command_path] in your config.
+
+### Text Search via Sphinx
+
+Searches are done via Sphinx, using the Thinking Sphinx gem.  Set up your 
+configuration in config/sphinx.yml, and make sure you have an external trigger
+for indexing (cron, etc).
 
 # Credits
 
