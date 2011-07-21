@@ -53,6 +53,16 @@ class window.AssetHostChooserUI
         @drop.bind "dragenter", (evt) => @_dropDragEnter evt
         @drop.bind "dragover", (evt) => @_dropDragOver evt
         @drop.bind "drop", (evt) => @_dropDrop evt
+        
+    #----------
+    
+    selectAssets: (assets) ->
+        for obj in assets
+            asset = @myassets.get(obj.id)
+
+            if !asset
+                asset = new AssetHostModels.Asset({id:obj.id,description:obj.description})
+                asset.fetch({success:(a)=>a.set({description:obj.description});@myassets.add(a)})
     
     #----------
     

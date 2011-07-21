@@ -8,9 +8,13 @@
 <div id="results"></div>
 
 <script type="text/javascript">
+	myAssets = []
+
 	$('#popup1').bind('click',function(evt) {
 		newwindow = window.open("/a/chooser?callback=fooCallback",'chooser','height=620,width=1000')
 		newwindow.fooCallback = function(chooser) {
+			chooser.selectAssets(myAssets)
+			
 			chooser.bind('saveAndClose',function(json) {
 				console.log('got saveAndClose with JSON of ', json)
 				
@@ -23,16 +27,15 @@
 					el.append($("<p/>",{text: a.description}))
 					
 					assets.push( el[0] )
-					console.log("built html for ",a,el)
+					
+					myAssets.push({
+						id: a.id,
+						description: a.description
+					})
 				})
 				
-				console.log("pusshing assets ",assets)
 				newwindow.close()
-				
-
 				$("#results").html(assets)
-				console.log("set results html to ",assets)
-				
 			})			
 		}
 		
