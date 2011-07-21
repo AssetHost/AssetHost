@@ -20,7 +20,7 @@ gem 'capistrano'
 gem 'formtastic', '~> 2.0.0.rc1'
 
 gem "mini_exiftool"
-gem "paperclip", :git => 'git://github.com/SCPR/paperclip.git', :ref => "b1fff14"
+gem "paperclip", :git => 'git://github.com/SCPR/paperclip.git'
 gem "resque"
 gem "delayed_paperclip", :git => 'git://github.com/jstorimer/delayed_paperclip.git'
 

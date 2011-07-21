@@ -1,7 +1,6 @@
 GIT
   remote: git://github.com/SCPR/paperclip.git
-  revision: b1fff14f6183b2bdea1e6ebe5c5ee0b6d2ff357e
-  ref: b1fff14
+  revision: 321ecfc4c35598394aed1ffabe44c222f742d0d6
   specs:
     paperclip (2.3.12)
       activerecord (>= 2.3.0)
