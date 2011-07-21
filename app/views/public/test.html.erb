@@ -4,13 +4,35 @@
 
 <p><a href="#" id="popup1">Pop Up Asset Chooser</a></p>
 
+<h2>Results:</h2>
+<div id="results"></div>
+
 <script type="text/javascript">
 	$('#popup1').bind('click',function(evt) {
 		newwindow = window.open("/a/chooser?callback=fooCallback",'chooser','height=620,width=1000')
 		newwindow.fooCallback = function(chooser) {
 			chooser.bind('saveAndClose',function(json) {
 				console.log('got saveAndClose with JSON of ', json)
+				
+				assets = []
+				
+				_(json).each( function(a) {
+					el = $("<div/>",{'class':"asset"})
+										
+					el.append(a.tags.lead)
+					el.append($("<p/>",{text: a.description}))
+					
+					assets.push( el[0] )
+					console.log("built html for ",a,el)
+				})
+				
+				console.log("pusshing assets ",assets)
 				newwindow.close()
+				
+
+				$("#results").html(assets)
+				console.log("set results html to ",assets)
+				
 			})			
 		}
 		
