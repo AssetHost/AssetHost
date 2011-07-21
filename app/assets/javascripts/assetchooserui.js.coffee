@@ -232,6 +232,7 @@ class window.AssetHostChooserUI
                     
                 @collection.bind 'remove', (f) => 
                     console.log "remove event from ", f
+                    $(@_views[f.cid].el).detach()
                     delete @_views[f.cid]
                     @render()
 
@@ -250,8 +251,9 @@ class window.AssetHostChooserUI
                     # create a view unless one exists
                     @_views[f.cid] ?= new AssetHostChooserUI.QueuedFileView({model:f})
                 
-                # add in view elements
-                $(@el).html( _(@_views).map (v) -> v.el )
+                # make sure all of our view elements are added
+                $(@el).append( _(@_views).map (v) -> v.el )
+                console.log "rendered files el is ",@el
                 
                 return this
         })
