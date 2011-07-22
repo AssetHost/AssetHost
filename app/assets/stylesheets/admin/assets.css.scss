@@ -22,10 +22,24 @@ $orange: #d1570d;
 			margin-right: $padding - 2;
 			margin-bottom: $padding;
 			background: #eee;
-			border: 1px solid #ddd;
 			
-			img {
+			button {
+			    padding: 0;
+    			border: 1px solid #ddd;
+			    
+    			img {
+    			    
+    			}
 			}
+			
+			button:hover {
+    			border: 8px solid #ffc;
+    			margin-left: -7px;
+    			margin-top: -7px;
+    			margin: -7px $padding - 9 $padding - 7 -7px;
+    			cursor: pointer;
+    		}
+			
 			
 			a {
 				color: inherit;
@@ -38,14 +52,6 @@ $orange: #d1570d;
 			span {
 			    display: none;
 			}
-		}
-		
-		li:hover {
-			border: 8px solid #ffc;
-			margin-left: -7px;
-			margin-top: -7px;
-			margin: -7px $padding - 9 $padding - 7 -7px;
-			cursor: pointer;
 		}
 	}
 }

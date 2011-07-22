@@ -48,7 +48,12 @@ class window.AssetHostBrowserUI
             @loadAssets { query: query, page: 1 }
             @navToAssets()
             
-        Backbone.history.start()
+        @browser.bind "click", (asset) =>
+            console.log "clicked asset ", asset 
+            @clearDisplay()
+            asset.modal().show()
+            
+        Backbone.history.start({pushState: true, root: @options['root_path']})
         
         $(@browserEl).delegate "li", "dragstart", (evt) ->
             if (url = $(evt.currentTarget).attr('data-asset-url'))

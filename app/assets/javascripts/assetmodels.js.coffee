@@ -145,37 +145,54 @@ class window.AssetHostModels
         
     #----------
     
-    @AssetBrowserView:
-        Backbone.View.extend({                
+    @AssetBrowserAssetView:
+        Backbone.View.extend({
+            tagName: "li"
+            events: {'click button': '_click'}
             template:
                 '''
-                <ul>
-                <% collection.each(function(item) { %>
-                    <li id="ab_<%= item.get('id') %>" data-asset-url="<%= item.get('url') %>">
-                        <a href="#/a/<%= item.get('id') %>"><%= item.get('tags').thumb %></a>
-                    </li>
-                    <span id="asset_tip_<%= item.get('id') %>" style="display: none">
-                        <h3><%= item.get('title') %></h3>
-                		<%= item.get('owner') %>
-                		<br/><%= item.get('size') %>            		
-                    </span>
-                <% }); %>
-                </ul>
+                    <button><%= tags.thumb %></button>
+                    <span id="asset_tip_<%= id %>" style="display: none">
+                        <h3><%= title %></h3>
+                		<%= owner %>
+                		<br/><%= size %>            		
+                    </span>          
                 '''
+                
+            initialize: ->
+                @id = "ab_#{@model.get('id')}"
+                $(@el).attr("data-asset-url",@model.get('url'))
+                
+                @render()
+                @model.bind "change", => @render()
+                
+            _click: -> console.log("click on ",@model);@model.modal().open()    
+                
+            render: ->
+                $( @el ).html( _.template @template, @model.toJSON() )
+                return this
+        })
+    
+    @AssetBrowserView:
+        Backbone.View.extend({
+            tagName: "ul"
             
-            tipTemplate:
-                '''
-                
-                '''
-                
+            initialize: ->
+                @_views = {}
+                @collection.bind "reset", => 
+                    _(@_views).each (a) => $(a.el).detach(); @_views = {}
+                            
             pages: ->
                 @_pages ?= (new AssetHostModels.PaginationLinks(@collection)).render()
             
             render: ->
-                console.log("collection query is ",@collection.query())
-                $( @el ).html( _.template(@template,{collection:@collection,query:encodeURIComponent(@collection.query())}) )
-            
-                #$( @el ).find('li').tooltipsy({content:$("asset_tip_")})
+                # set up views for each collection member
+                @collection.each (a) => 
+                    # create a view unless one exists
+                    @_views[a.cid] ?= new AssetHostModels.AssetBrowserAssetView({model:a})
+                
+                # make sure all of our view elements are added
+                $(@el).append( _(@_views).map (v) -> v.el )
             
                 return this
         })
