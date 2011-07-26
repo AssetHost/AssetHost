@@ -3,7 +3,7 @@ class window.AssetHostBrowserUI
         {
             assetBrowserEl: "#asset_browser",
             assetLoadingEl: "#assets_loading",
-            server: "localhost:3000"
+            server: ""
         }
         
     constructor: (options) ->

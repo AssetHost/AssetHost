@@ -2,7 +2,7 @@ class window.AssetHostChooserUI
     DefaultOptions:
         {
             dropEl: "#my_assets",
-            server: "localhost:3000",
+            server: "<%= ASSET_SERVER %>",
             modal: "asset_modal",
             browser: ''
         }

@@ -32,8 +32,8 @@ class Asset < ActiveRecord::Base
 	  :processors => [:asset_thumbnail],
 	  :storage => :filesystem,
 	  :path => ":rails_root/public/images/:id_:fingerprint_:sprint.:extension",
-	  :trueurl => "http://localhost:3000/images/:id_:fingerprint_:sprint.:extension",
-	  :url => "http://localhost:3000/i/:fingerprint/:id-:style.:extension",
+	  :trueurl => "http://#{ASSET_SERVER}/images/:id_:fingerprint_:sprint.:extension",
+	  :url => "http://#{ASSET_SERVER}/i/:fingerprint/:id-:style.:extension",
 	  :use_timestamp => false
 	  
   treat_as_image_asset :image
@@ -49,7 +49,7 @@ class Asset < ActiveRecord::Base
       :owner => self.owner, 
       :size => [self.image_width,self.image_height].join('x'), 
       :tags => self.image.tags,
-      :url => "http://localhost:3000/api/assets/#{self.id}/" 
+      :url => "http://#{ASSET_SERVER}/api/assets/#{self.id}/" 
     }
   end
   

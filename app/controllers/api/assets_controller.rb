@@ -26,7 +26,7 @@ class Api::AssetsController < ApplicationController
         :owner => a.owner, 
         :size => [a.image_width,a.image_height].join('x'), 
         :tags => a.image.tags,
-        :url => "http://localhost:3000/api/assets/#{a.id}/" 
+        :url => "http://#{ASSET_SERVER}/api/assets/#{a.id}/" 
       } }
   end
   

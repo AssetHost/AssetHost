@@ -23,7 +23,9 @@
 
 <script type="text/javascript">
 	chooser = new AssetHostChooserUI({
+	    server: "<%= ASSET_SERVER %>",
 		browser:new AssetHostBrowserUI({
+		    server: "<%= ASSET_SERVER %>",
 			assets:<%= (@assets.map { |a| a.json }).to_json.html_safe %>,
 			page: <%= @assets.current_page %>,
 			total: <%= @assets.total_entries %>
