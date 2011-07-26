@@ -169,9 +169,7 @@ class window.AssetHostModels
                     (evt) => console.log("click on ",@model);@model.modal().open(), 
                     true
                 )
-                
-                console.log "binding to ", $(@el).find('button')
-                
+                                
                 @model.bind "change", => @render()
                                 
                                 
@@ -179,6 +177,8 @@ class window.AssetHostModels
                 $( @el ).html( _.template @template, @model.toJSON() )
                 return this
         })
+        
+    #----------
     
     @AssetBrowserView:
         Backbone.View.extend({
@@ -218,7 +218,7 @@ class window.AssetHostModels
                     <h2><%= size %></h2>
                     <p><%= description %></p> 
                 
-                    <button class="select large awesome orange">Use This Asset</button>
+                    <button class="select large awesome orange">Select Asset</button>
                 </div>
                 '''
 

@@ -20,8 +20,10 @@ AssetHost::Application.routes.draw do
       member do
         get :preview
         post :replace
-      end
+      end      
     end
+    
+    match '/assets/p/(:page)', :to => "assets#index", :as => "asset_page"
     
     match 'chooser', :to => "home#chooser", :as => 'chooser'
   end

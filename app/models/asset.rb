@@ -41,6 +41,20 @@ class Asset < ActiveRecord::Base
 		    
   #----------
   
+  def json
+    { 
+      :id => self.id, 
+      :title => self.title, 
+      :description => self.description,
+      :owner => self.owner, 
+      :size => [self.image_width,self.image_height].join('x'), 
+      :tags => self.image.tags,
+      :url => "http://localhost:3000/api/assets/#{self.id}/" 
+    }
+  end
+  
+  #----------
+  
   def Asset.find_or_import(url)
     if asset = AssetImporter.import(url)
       return asset

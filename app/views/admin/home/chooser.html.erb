@@ -22,7 +22,13 @@
 <br class="clear"/>
 
 <script type="text/javascript">
-	chooser = new AssetHostChooserUI({browser:new AssetHostBrowserUI()})
+	chooser = new AssetHostChooserUI({
+		browser:new AssetHostBrowserUI({
+			assets:<%= (@assets.map { |a| a.json }).to_json.html_safe %>,
+			page: <%= @assets.current_page %>,
+			total: <%= @assets.total_entries %>
+		})
+	})
 	
 	<% if params[:callback] && params[:callback] =~ /^[\w\d_-]+$/ %>
 	$().ready(function() {

@@ -9,8 +9,13 @@ class window.AssetHostBrowserUI
     constructor: (options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
                 
-        @assets = new AssetHostModels.Assets
-                
+        @assets = new AssetHostModels.Assets(@options['assets']||[])
+        if @options['page']
+            @assets.page( @options['page'] ) 
+        
+        if @options['total']
+            @assets.total_entries = @options['total']
+                        
         @browserEl = $( @options['assetBrowserEl'] )
         @browser = new AssetHostModels.AssetBrowserView({collection: @assets})
 
@@ -64,8 +69,10 @@ class window.AssetHostBrowserUI
             @assetsLoading false
                 
         # load recent assets into asset browser
-        if !@_assetsLoading
-            @loadAssets { query: '', page: 1, force: true }
+        #if !@_assetsLoading
+        #    @loadAssets { query: '', page: 1, force: true }
+    
+        @assets.trigger('reset')
     
     #---------------------#
     # -- Asset Browser -- #
