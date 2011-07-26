@@ -43,13 +43,19 @@ class Api::AssetsController < ApplicationController
       :size => [asset.image_width,asset.image_height].join('x'),
       :tags => asset.image.tags
     }
+  rescue
+    render :text => "Asset not found", :status => :not_found
   end
   
   #----------
 
   def tag
-    # look up Asset
-    asset = Asset.find(params[:id])
+    begin
+      # look up Asset
+      asset = Asset.find(params[:id])
+    rescue
+      render :text => "Asset not found", :status => :not_found and return
+    end
     
     # look up output style
     output = Output.where(:code => params[:style]).first

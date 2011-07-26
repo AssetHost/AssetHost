@@ -148,7 +148,6 @@ class window.AssetHostModels
     @AssetBrowserAssetView:
         Backbone.View.extend({
             tagName: "li"
-            events: {'click button': '_click'}
             template:
                 '''
                     <button><%= tags.thumb %></button>
@@ -162,12 +161,20 @@ class window.AssetHostModels
             initialize: ->
                 @id = "ab_#{@model.get('id')}"
                 $(@el).attr("data-asset-url",@model.get('url'))
-                
+
                 @render()
+                
+                $(@el).find('button')[0].addEventListener(
+                    "click", 
+                    (evt) => console.log("click on ",@model);@model.modal().open(), 
+                    true
+                )
+                
+                console.log "binding to ", $(@el).find('button')
+                
                 @model.bind "change", => @render()
-                
-            _click: -> console.log("click on ",@model);@model.modal().open()    
-                
+                                
+                                
             render: ->
                 $( @el ).html( _.template @template, @model.toJSON() )
                 return this

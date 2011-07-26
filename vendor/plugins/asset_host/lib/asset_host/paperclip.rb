@@ -240,9 +240,9 @@ module Paperclip
 
       if @prerender || ao
         tmpao = nil
-        if !ao || ao.fingerprint?
+        if !ao 
           # register empty AssetObject to denote processing
-          tmpao = @asset.outputs.create(:output_id => @output)
+          ao = @asset.outputs.create(:output_id => @output)
           Paperclip.log("[ewr] Created tmpao to note processing for #{@output}")
         end
         
@@ -278,20 +278,10 @@ module Paperclip
         print = Digest::MD5.hexdigest(dst.read)
         dst.rewind if dst.respond_to?(:rewind)
         
-        if tmpao
-          tmpao.attributes = { :fingerprint => print, :width => width, :height => height }
-          tmpao.save
-        else
-          # create AssetOutput instance
-          @asset.outputs.create(:output_id => @output,:fingerprint => print, :width => width, :height => height)        
-        end
+        ao.attributes = { :fingerprint => print, :width => width, :height => height }
+        ao.save
       end
-      
-      if ao
-        # if we had an AssetOutput instance, delete it
-        ao.destroy
-      end
-      
+            
       return dst
     end
   end
