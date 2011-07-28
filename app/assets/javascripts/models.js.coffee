@@ -16,7 +16,7 @@ class AssetHost.Models
             #----------
             
             chopCaption: (count=100) ->
-                chopped = this.get('description')
+                chopped = this.get('caption')
 
                 if chopped and chopped.length > count
                     regstr = "^(.{#{count}}\\w*)\\W"
@@ -25,7 +25,7 @@ class AssetHost.Models
                     if chopped
                         chopped = "#{chopped[1]}..."
                     else
-                        chopped = this.get('description')
+                        chopped = this.get('caption')
 
                 chopped
         })
@@ -224,7 +224,7 @@ class AssetHost.Models
                     <h1><%= title %></h1>
                     <h2><%= owner %></h2>
                     <h2><%= size %></h2>
-                    <p><%= description %></p> 
+                    <p><%= caption %></p> 
                 
                     <button class="select large awesome orange">Select Asset</button>
                 </div>
@@ -260,7 +260,7 @@ class AssetHost.Models
                     <h1><%= title %></h1>
                     <h2><%= owner %></h2>
                     
-                    <textarea rows="4" style="width: 100%"><%= description %></textarea>
+                    <textarea rows="4" style="width: 100%"><%= caption %></textarea>
                     <button class="large awesome orange">Save Caption</button>
                 </div>
                 '''
@@ -278,7 +278,7 @@ class AssetHost.Models
             
             save_caption: -> 
                 caption = $( @el ).find("textarea")[0].value
-                @model.set({description:caption})
+                @model.set({caption:caption})
                 @close()
                 
             render: ->

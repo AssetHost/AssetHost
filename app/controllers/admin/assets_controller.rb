@@ -17,7 +17,7 @@ class Admin::AssetsController < ApplicationController
 	    :per_page => 36,
 	    :field_weights => {
 	      :title => 10,
-	      :description => 5
+	      :caption => 5
 	    },
 	    :order => "created_at DESC, @relevance DESC"
 	    
@@ -34,7 +34,7 @@ class Admin::AssetsController < ApplicationController
     
     [
       ['title','image_title'],
-      ['description','image_description'],
+      ['caption','image_description'],
       ['owner','image_copyright']
     ].each {|f| asset[f[0]] = asset[f[1]] }
     
@@ -42,7 +42,7 @@ class Admin::AssetsController < ApplicationController
       render :json => { 
         :id => asset.id, 
         :title => asset.title, 
-        :description => asset.description, 
+        :caption => asset.caption, 
         :owner => asset.owner,
         :size => [asset.image_width,asset.image_height].join('x'),
         :tags => asset.image.tags
@@ -60,7 +60,7 @@ class Admin::AssetsController < ApplicationController
     
     # pre-fill with metadata from IPTC / EXIF
     @assets.each {|a|
-      ([['title','image_title'],['description','image_description'],['owner','image_copyright']]).each {|f|
+      ([['title','image_title'],['caption','image_description'],['owner','image_copyright']]).each {|f|
         if a[f[0]] == nil
           a[f[0]] = a[f[1]]
         end

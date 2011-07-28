@@ -8,7 +8,7 @@ class Asset < ActiveRecord::Base
   		
 	define_index do
     indexes title
-    indexes description
+    indexes caption
     has created_at
     has updated_at
   end
@@ -45,7 +45,7 @@ class Asset < ActiveRecord::Base
     { 
       :id => self.id, 
       :title => self.title, 
-      :description => self.description,
+      :caption => self.caption,
       :owner => self.owner, 
       :size => [self.image_width,self.image_height].join('x'), 
       :tags => self.image.tags,

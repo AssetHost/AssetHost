@@ -24,13 +24,13 @@
 					el = $("<div/>",{'class':"asset"})
 										
 					el.append(a.tags.lead)
-					el.append($("<p/>",{text: a.description}))
+					el.append($("<p/>",{text: a.caption}))
 					
 					assets.push( el[0] )
 					
 					myAssets.push({
 						id: a.id,
-						description: a.description
+						caption: a.caption
 					})
 				})
 				

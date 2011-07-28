@@ -5,7 +5,7 @@ class Api::AssetsController < ApplicationController
       @assets = Asset.search(params[:q],
         :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
         :per_page => 24,
-        :field_weights => { :title => 10, :description => 3 }
+        :field_weights => { :title => 10, :caption => 3 }
       )
     else
       @assets = Asset.paginate(
@@ -23,7 +23,7 @@ class Api::AssetsController < ApplicationController
       @assets.collect { |a| { 
         :id => a.id, 
         :title => a.title, 
-        :description => a.description,
+        :caption => a.caption,
         :owner => a.owner, 
         :size => [a.image_width,a.image_height].join('x'), 
         :tags => a.image.tags,
@@ -41,7 +41,7 @@ class Api::AssetsController < ApplicationController
     render :json => { 
       :id => asset.id, 
       :title => asset.title, 
-      :description => asset.description, 
+      :caption => asset.caption, 
       :owner => asset.owner,
       :size => [asset.image_width,asset.image_height].join('x'),
       :tags => asset.image.tags

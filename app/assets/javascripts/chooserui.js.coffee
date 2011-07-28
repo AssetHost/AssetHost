@@ -62,8 +62,8 @@ class AssetHost.ChooserUI
             asset = @myassets.get(obj.id)
 
             if !asset
-                asset = new AssetHost.Models.Asset({id:obj.id,description:obj.description})
-                asset.fetch({success:(a)=>a.set({description:obj.description});@myassets.add(a)})
+                asset = new AssetHost.Models.Asset({id:obj.id,caption:obj.caption})
+                asset.fetch({success:(a)=>a.set({caption:obj.caption});@myassets.add(a)})
     
     #----------
     

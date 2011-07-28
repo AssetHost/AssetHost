@@ -11,7 +11,7 @@ class Api::UtilityController < ApplicationController
       render :json => { 
         :id => asset.id, 
         :title => asset.title, 
-        :description => asset.description, 
+        :caption => asset.caption, 
         :owner => asset.owner,
         :tags => asset.image.tags,
         :size => [asset.image_width,asset.image_height].join('x')
