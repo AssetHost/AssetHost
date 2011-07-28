@@ -58,7 +58,7 @@ class AssetHost.ChooserUI
     #----------
     
     selectAssets: (assets) ->
-        for obj in assets
+        _(assets).each (obj) => 
             asset = @myassets.get(obj.id)
 
             if !asset

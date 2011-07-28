@@ -34,7 +34,8 @@ class AssetHost.CMSPlugin
                 _(evt.data).each (a,i) =>
                     # do we have this asset?
                     if asset = @assets.get(a.id)
-                        # yes...
+                        # yes... check for changed caption
+                        asset.set({caption:a.caption})
                     else
                         # no, needs to be added
                         asset = new AssetHost.Models.Asset(a)
