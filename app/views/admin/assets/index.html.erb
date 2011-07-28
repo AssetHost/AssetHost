@@ -8,8 +8,7 @@
 <div class='assetbox' id='asset_browser'></div>
 
 <script type="text/javascript">
-	var browser = new AssetHostBrowserUI({
-	    server: "<%= ASSET_SERVER %>",
+	var browser = new AssetHost.BrowserUI({
 		root_path: '/a/assets',
 		assets:<%= (@assets.map { |a| a.json }).to_json.html_safe %>,
 		page: <%= @assets.current_page %>,

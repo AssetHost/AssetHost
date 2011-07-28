@@ -1,15 +1,16 @@
-class window.AssetHostBrowserUI
+#= require assethost
+
+class AssetHost.BrowserUI
     DefaultOptions:
         {
             assetBrowserEl: "#asset_browser",
             assetLoadingEl: "#assets_loading",
-            server: ""
         }
         
     constructor: (options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
                 
-        @assets = new AssetHostModels.Assets(@options['assets']||[])
+        @assets = new AssetHost.Models.PaginatedAssets(@options['assets']||[])
         if @options['page']
             @assets.page( @options['page'] ) 
         
@@ -17,7 +18,7 @@ class window.AssetHostBrowserUI
             @assets.total_entries = @options['total']
                         
         @browserEl = $( @options['assetBrowserEl'] )
-        @browser = new AssetHostModels.AssetBrowserView({collection: @assets})
+        @browser = new AssetHost.Models.AssetBrowserView({collection: @assets})
 
         @browserEl.after( @browser.pages().el )
         
@@ -25,7 +26,7 @@ class window.AssetHostBrowserUI
         @modal = $( @options['modal'] )
         
         # add search box
-        @search = new AssetHostModels.AssetSearchView({collection:@assets})
+        @search = new AssetHost.Models.AssetSearchView({collection:@assets})
         $('#search_box').html @search.render().el
         
         @_loadingAssets = false
@@ -134,7 +135,7 @@ class window.AssetHostBrowserUI
         asset = @assets.get(id) 
 
         if !asset
-            a = new AssetHostModels.Asset({id:id})
+            a = new AssetHost.Models.Asset({id:id})
             a.fetch({success:(a)=>@_previewAsset(a)})
         else 
             @_previewAsset(asset)

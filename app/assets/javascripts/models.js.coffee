@@ -1,15 +1,17 @@
-class window.AssetHostModels
+#= require assethost
+
+class AssetHost.Models
     constructor: ->
 
     @Asset:
         Backbone.Model.extend({
-            urlRoot: "/api/assets/"
+            urlRoot: "http://#{AssetHost.SERVER}/api/assets/"
             
             modal: ->
-                @_modal ?= new AssetHostModels.AssetModalView({model: this})
+                @_modal ?= new AssetHost.Models.AssetModalView({model: this})
                 
             editModal: ->
-                @_emodal ?= new AssetHostModels.AssetEditModalView({model: this})
+                @_emodal ?= new AssetHost.Models.AssetEditModalView({model: this})
                 
             #----------
             
@@ -29,8 +31,14 @@ class window.AssetHostModels
         })
         
     #----------
+    
+    @Assets:
+        Backbone.Collection.extend({
+            baseUrl: "/api/assets",
+            model: @Asset
+        })
         
-    @Assets: 
+    @PaginatedAssets: 
         Backbone.Collection.extend({
             baseUrl: "/api/assets",
             model: @Asset,
@@ -190,13 +198,13 @@ class window.AssetHostModels
                     _(@_views).each (a) => $(a.el).detach(); @_views = {}
                             
             pages: ->
-                @_pages ?= (new AssetHostModels.PaginationLinks(@collection)).render()
+                @_pages ?= (new AssetHost.Models.PaginationLinks(@collection)).render()
             
             render: ->
                 # set up views for each collection member
                 @collection.each (a) => 
                     # create a view unless one exists
-                    @_views[a.cid] ?= new AssetHostModels.AssetBrowserAssetView({model:a})
+                    @_views[a.cid] ?= new AssetHost.Models.AssetBrowserAssetView({model:a})
                 
                 # make sure all of our view elements are added
                 $(@el).append( _(@_views).map (v) -> v.el )

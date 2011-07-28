@@ -22,22 +22,28 @@
 <br class="clear"/>
 
 <script type="text/javascript">
-	chooser = new AssetHostChooserUI({
-	    server: "<%= ASSET_SERVER %>",
-		browser:new AssetHostBrowserUI({
-		    server: "<%= ASSET_SERVER %>",
+	chooser = new AssetHost.ChooserUI({
+		browser:new AssetHost.BrowserUI({
 			assets:<%= (@assets.map { |a| a.json }).to_json.html_safe %>,
 			page: <%= @assets.current_page %>,
 			total: <%= @assets.total_entries %>
 		})
 	})
 	
-	<% if params[:callback] && params[:callback] =~ /^[\w\d_-]+$/ %>
-	$().ready(function() {
-		<%= params[:callback] %>(chooser)
-	})
-	<% end %>
+	window.opener.postMessage("LOADED","*")
 	
+	$(window).bind("message", function (evt) {
+	    evt = evt.originalEvent
+	    
+	    chooser.selectAssets(evt.data)
+        console.log("got message of ", evt)
+        
+        chooser.bind('saveAndClose',function(json) {
+           evt.source.postMessage(json,evt.origin)
+           window.close()
+        })
+	})
+    	
 	$(".ui-widget-overlay").live('click', function(){
 	   $(".ui-dialog-titlebar-close").trigger('click');
 	});

@@ -1,8 +1,9 @@
-class window.AssetHostChooserUI
+#= require assethost
+
+class AssetHost.ChooserUI
     DefaultOptions:
         {
             dropEl: "#my_assets",
-            server: "<%= ASSET_SERVER %>",
             modal: "asset_modal",
             browser: ''
         }
@@ -20,8 +21,8 @@ class window.AssetHostChooserUI
         
         @drop = $( @options['dropEl'] )
         
-        @myassets = new AssetHostModels.Assets
-        @assetsView = new AssetHostModels.AssetDropView({collection: @myassets})
+        @myassets = new AssetHost.Models.PaginatedAssets
+        @assetsView = new AssetHost.Models.AssetDropView({collection: @myassets})
         
         @assetsView.bind 'click', (asset) =>  
             asset.editModal().open()
@@ -35,14 +36,14 @@ class window.AssetHostChooserUI
             @myassets.add(asset)
             asset.editModal().open()
                     
-        @uploads = new AssetHostChooserUI.QueuedFiles
+        @uploads = new AssetHost.ChooserUI.QueuedFiles
         @uploads.bind "uploaded", (f) =>
             @myassets.add(f.get('ASSET'))
             @uploads.remove(f)
         
-        @uploadsView = new AssetHostChooserUI.QueuedFilesView({collection:@uploads})
+        @uploadsView = new AssetHost.ChooserUI.QueuedFilesView({collection:@uploads})
         
-        @saveAndClose = new AssetHostModels.SaveAndCloseView({collection: @myassets}).render()
+        @saveAndClose = new AssetHost.Models.SaveAndCloseView({collection: @myassets}).render()
         
         @saveAndClose.bind('saveAndClose', (json) => console.log "saving and closing ",json;@trigger('saveAndClose',json))
 
@@ -61,7 +62,7 @@ class window.AssetHostChooserUI
             asset = @myassets.get(obj.id)
 
             if !asset
-                asset = new AssetHostModels.Asset({id:obj.id,description:obj.description})
+                asset = new AssetHost.Models.Asset({id:obj.id,description:obj.description})
                 asset.fetch({success:(a)=>a.set({description:obj.description});@myassets.add(a)})
     
     #----------
@@ -237,7 +238,7 @@ class window.AssetHostChooserUI
                 
                 @collection.bind 'add', (f) => 
                     console.log "add event from ", f
-                    @_views[f.cid] = new AssetHostChooserUI.QueuedFileView({model:f})
+                    @_views[f.cid] = new AssetHost.ChooserUI.QueuedFileView({model:f})
                     @render()
                     
                 @collection.bind 'remove', (f) => 
@@ -259,7 +260,7 @@ class window.AssetHostChooserUI
                 # set up views for each collection member
                 @collection.each (f) => 
                     # create a view unless one exists
-                    @_views[f.cid] ?= new AssetHostChooserUI.QueuedFileView({model:f})
+                    @_views[f.cid] ?= new AssetHost.ChooserUI.QueuedFileView({model:f})
                 
                 # make sure all of our view elements are added
                 $(@el).append( _(@_views).map (v) -> v.el )

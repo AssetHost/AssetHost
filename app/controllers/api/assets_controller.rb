@@ -17,6 +17,7 @@ class Api::AssetsController < ApplicationController
     
     response.headers['X-Next-Page'] = @assets.next_page.to_s
     response.headers['X-Total-Entries'] = @assets.total_entries.to_s
+    response.headers['Access-Control-Allow-Origin'] = "*"
     
     render :json => 
       @assets.collect { |a| { 
@@ -34,6 +35,8 @@ class Api::AssetsController < ApplicationController
 
   def show
     asset = Asset.find(params[:id])
+    
+    response.headers['Access-Control-Allow-Origin'] = "*"
     
     render :json => { 
       :id => asset.id, 
@@ -66,6 +69,8 @@ class Api::AssetsController < ApplicationController
       width = ao.width
       height = ao.height
     end
+    
+    response.headers['Access-Control-Allow-Origin'] = "*"
         
     render :json => { 
       :id => asset.id, 
