@@ -36,12 +36,18 @@ class AssetHost.Models
         Backbone.Collection.extend({
             baseUrl: "/api/assets",
             model: @Asset
+            
+            # If we have an ORDER attribute, sort by that.  Otherwise, sort by just 
+            # the asset ID.  
+            comparator: (asset) ->
+                asset.get("ORDER") || asset.get("id")
+            
+            #----------
+
         })
         
     @PaginatedAssets: 
-        Backbone.Collection.extend({
-            baseUrl: "/api/assets",
-            model: @Asset,
+        @Assets.extend({
             
             initialize: ->
                 _.bindAll(this, 'parse','url')
@@ -113,12 +119,15 @@ class AssetHost.Models
                 @trigger 'click', @collection.get( $(evt.currentTarget).attr('data-asset-id') )
             
             render: ->
-                console.log "rendering myassets"
                 $( @el ).html( _.template(@template,{assets:@collection}))
-                $( @el ).find("ul").sortable({
+                $( @el ).sortable({
                     update: (evt,ui) => 
-                        ids = _(evt.target.children).map (li) -> $(li).attr('data-asset-id')
-                        console.log("new order is ",ids)
+                        console.log "ui is ",ui
+                        console.log "ul children is ",evt.target.children
+                        _(evt.target.children).each (li,idx) => 
+                            id = $(li).attr('data-asset-id')
+                            @collection.get(id).attributes.ORDER = idx+1
+                            console.log("set idx for #{id} to #{idx+1}")
                 })
                 this
         })

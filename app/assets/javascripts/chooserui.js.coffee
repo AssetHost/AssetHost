@@ -21,7 +21,7 @@ class AssetHost.ChooserUI
         
         @drop = $( @options['dropEl'] )
         
-        @myassets = new AssetHost.Models.PaginatedAssets
+        @myassets = new AssetHost.Models.Assets
         @assetsView = new AssetHost.Models.AssetDropView({collection: @myassets})
         
         @assetsView.bind 'click', (asset) =>  
@@ -62,7 +62,7 @@ class AssetHost.ChooserUI
             asset = @myassets.get(obj.id)
 
             if !asset
-                asset = new AssetHost.Models.Asset({id:obj.id,caption:obj.caption})
+                asset = new AssetHost.Models.Asset(obj)
                 asset.fetch({success:(a)=>a.set({caption:obj.caption});@myassets.add(a)})
     
     #----------
