@@ -51,7 +51,7 @@ class Asset < ActiveRecord::Base
       :tags => self.image.tags,
       :url => "http://#{ASSET_SERVER}/api/assets/#{self.id}/",
       :created_at => self.created_at,
-      :taken_at => self.taken_at || self.created_at
+      :taken_at => self.image_taken || self.created_at
     }
   end
   
