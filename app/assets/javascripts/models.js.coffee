@@ -40,7 +40,7 @@ class AssetHost.Models
             # If we have an ORDER attribute, sort by that.  Otherwise, sort by just 
             # the asset ID.  
             comparator: (asset) ->
-                asset.get("ORDER") || asset.get("id")
+                asset.get("ORDER") || -Number(asset.get("id"))
             
             #----------
 

@@ -49,7 +49,9 @@ class Asset < ActiveRecord::Base
       :owner => self.owner, 
       :size => [self.image_width,self.image_height].join('x'), 
       :tags => self.image.tags,
-      :url => "http://#{ASSET_SERVER}/api/assets/#{self.id}/" 
+      :url => "http://#{ASSET_SERVER}/api/assets/#{self.id}/",
+      :created_at => self.created_at,
+      :taken_at => self.taken_at || self.created_at
     }
   end
   
