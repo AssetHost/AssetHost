@@ -3,7 +3,8 @@ class AssetHost.CMSPlugin
         {
             el: "",
             server: '',
-            assets: []
+            assets: [],
+            token: ''
         }
 
     #----------

@@ -1,8 +1,10 @@
 #= require assethost
 
+
+
 class AssetHost.Models
     constructor: ->
-
+        
     @Asset:
         Backbone.Model.extend({
             urlRoot: "http://#{AssetHost.SERVER}/api/assets/"
@@ -12,6 +14,16 @@ class AssetHost.Models
                 
             editModal: ->
                 @_emodal ?= new AssetHost.Models.AssetEditModalView({model: this})
+                
+            #----------
+            
+            url: ->
+                url = if this.isNew() then @urlRoot else @urlRoot + encodeURIComponent(@id)
+                
+                if AssetHost.TOKEN
+                    url = url + "?" + $.param({auth_token:AssetHost.TOKEN})
+                    
+                url
                 
             #----------
             
