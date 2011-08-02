@@ -85,6 +85,10 @@ module Paperclip
     #----------
         
     def width(style = default_style)
+      if !self.instance_read("width")
+        return nil
+      end
+      
       if s = self.styles[style]
         # load dimensions
         if ao = self.instance.output_by_style(style)
@@ -109,6 +113,10 @@ module Paperclip
     #----------
     
     def height(style = default_style)
+      if !self.instance_read("height")
+        return nil
+      end
+
       if s = self.styles[style] 
         # load dimensions
         if ao = self.instance.output_by_style(style)

@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  devise :database_authenticatable, :rememberable
+  devise :database_authenticatable, :token_authenticatable, :rememberable
 
   belongs_to :default_site, :class_name => "SitePackage"
   
