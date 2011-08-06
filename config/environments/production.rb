@@ -12,10 +12,10 @@ AssetHost::Application.configure do
   config.serve_static_assets = false
 
   # Compress JavaScripts and CSS
-  config.assets.compress = true
+  config.assets.compress = false
 
   # Specify the default JavaScript compressor
-  config.assets.js_compressor  = :uglifier
+ # config.assets.js_compressor  = :uglifier
 
   # Specifies the header that your server uses for sending files
   # (comment out if your front-end server doesn't support this)
@@ -31,7 +31,7 @@ AssetHost::Application.configure do
   # config.logger = SyslogLogger.new
 
   # Use a different cache store in production
-  # config.cache_store = :mem_cache_store
+  config.cache_store = :redis_store, "redis://localhost:6379"
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
@@ -51,6 +51,11 @@ AssetHost::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+  
+  config.after_initialize do 
+    Formtastic::FormBuilder.all_fields_required_by_default = false
+    Paperclip.options[:command_path] = "/usr/local/ImageMagick/bin/"
+  end
   
   ASSET_SERVER = "assethost.dev"
   

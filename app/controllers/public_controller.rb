@@ -4,6 +4,12 @@ class PublicController < ApplicationController
   # If so, redirect to the image file. If not, fire off a render process for 
   # the style.
   def image
+    # if we have a cache key with aprint and style, assume we're good 
+    # to just return that value
+    if img = read_fragment("img:"+[params[:aprint],params[:style]].join(":"))
+      redirect_to img, status => :found and return
+    end
+    
     @asset = Asset.where(:id => params[:id]).first
     
     # valid id?
@@ -28,7 +34,10 @@ class PublicController < ApplicationController
     if ao.first
       if ao.first.fingerprint
         # Yes, return a temporary redirect to the true image URL
-        redirect_to @asset.image.trueurl(style.first.code), :status => :found and return        
+        url = @asset.image.trueurl(style.first.code)
+        write_fragment("img:"+[@asset.image_fingerprint,style.first.code].join(":"), url)
+        
+        redirect_to url, :status => :found and return        
       else
         # we're in the middle of rendering
         # sleep for 500ms to try and let the render complete, then try again

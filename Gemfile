@@ -1,17 +1,10 @@
 source 'http://rubygems.org'
 source 'http://gems.github.com/'
 
-gem 'rails', '3.1.0rc4'
-#gem 'prototype-rails', :git => "git://github.com/rubychan/prototype-rails.git"
+gem 'rails', '3.1.0rc5'
 gem 'jquery-rails'
-gem 'sass'
-gem 'coffee-script'
-gem 'uglifier'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
-#gem 'sqlite3'
+gem "redis-store", "1.0.0.rc1"
 
 gem 'mysql2'
 
@@ -30,3 +23,11 @@ gem 'thinking-sphinx', :git => 'git://github.com/freelancing-god/thinking-sphinx
 gem 'devise'
 gem "oa-core", :require => "omniauth/core"
 gem "oa-oauth", :require => "omniauth/oauth"
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails', "~> 3.1.0.rc"
+  gem 'coffee-rails', "~> 3.1.0.rc"
+  gem 'uglifier'
+end
