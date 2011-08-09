@@ -16,15 +16,14 @@ module AssetHost
         end
         
         # register our event handler
-        self.send("before_#{name}_post_process", :"grab_dimensions_for_#{name}")
+        self.send("before_save", :"grab_dimensions_for_#{name}")
         
         ::Paperclip.interpolates "sprint", do |attachment,style_name|
           sprint = nil
           if style_name == :original
             sprint = 'original'
           else
-            o = Output.where(:code => style_name)
-            ao = attachment.instance.outputs.where(:output_id => o).first
+            ao = attachment.instance.output_by_style(style_name)
 
             if ao
               sprint = ao.fingerprint
@@ -197,9 +196,16 @@ module Paperclip
     #----------
     
     def _grab_dimensions
+      Paperclip.log("[ewr] grabbing dimensions for #{@queued_for_write[:original]}")
+
       return unless @queued_for_write[:original]
-            
-      p = MiniExiftool.new(@queued_for_write[:original].path)
+      
+      begin
+        p = MiniExiftool.new(@queued_for_write[:original].path)
+      rescue
+        Paperclip.log("[ewr] Failed to call MiniExifTool")
+        return false
+      end
       
       instance_write(:width,p.image_width)
       instance_write(:height,p.image_height)
