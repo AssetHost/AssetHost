@@ -15,8 +15,16 @@ module AssetHost
           end
         end
         
+        define_method "rerender_on_gravity_change_for_#{name}" do 
+          if self[:image_gravity] && self.changed.include?("image_gravity")
+            ::Paperclip.log("[ewr] Reprocessing because of gravity change")
+            self.attachment_for(name).enqueue
+          end
+        end
+        
         # register our event handler
         self.send("before_save", :"grab_dimensions_for_#{name}")
+        self.send("after_save", :"rerender_on_gravity_change_for_#{name}")
         
         ::Paperclip.interpolates "sprint", do |attachment,style_name|
           sprint = nil
@@ -68,6 +76,10 @@ module Paperclip
         end
       end
       @normalized_styles
+    end
+    
+    def enqueue
+      Resque.enqueue(AssetHost::ResqueJob,self.instance.class.name,self.instance.id,self.name)
     end
     
     def enqueue_styles(styles)
@@ -273,24 +285,29 @@ module Paperclip
           @convert_options = [scale,@convert_options].flatten
         end
         
+        Paperclip.log("[ewr] Final convert_options are #{@convert_options}")
+        
         # call thumbnail generator
         dst = super
         
         # need to get dimensions
         width = height = nil
         begin
-          Paperclip.log("Calling geo.from_file for #{dst.path}")
+          Paperclip.log("[ewr] Calling geo.from_file for #{dst.path}")
           geo = Geometry.from_file dst.path
           width = geo.width.to_i
           height = geo.height.to_i
-          Paperclip.log("geo run was successful -- #{width}x#{height}")
+          Paperclip.log("[ewr] geo run was successful -- #{width}x#{height}")
         rescue NotIdentifiedByImageMagickError => e
           # hmmm... do nothing?
         end
         
         # get fingerprint
+        Paperclip.log("[ewr] dst path is #{dst.path}")
         print = Digest::MD5.hexdigest(dst.read)
         dst.rewind if dst.respond_to?(:rewind)
+        
+        Paperclip.log("[ewr] dst print is #{print}")
         
         ao.attributes = { :fingerprint => print, :width => width, :height => height }
         ao.save

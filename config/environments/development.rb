@@ -30,7 +30,5 @@ AssetHost::Application.configure do
     
     Paperclip.options[:command_path] = "/usr/local/ImageMagick/bin/"
     Paperclip.options[:swallow_stderr] = false
-    
-    ASSET_SERVER = "localhost:3000"
   end
 end

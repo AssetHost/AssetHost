@@ -51,12 +51,11 @@ AssetHost::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
-  
+    
   config.after_initialize do 
     Formtastic::FormBuilder.all_fields_required_by_default = false
     Paperclip.options[:command_path] = "/usr/local/ImageMagick/bin/"
   end
   
-  ASSET_SERVER = "assethost.dev"
   
 end

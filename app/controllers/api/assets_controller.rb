@@ -22,15 +22,7 @@ class Api::AssetsController < ApplicationController
     response.headers['Access-Control-Allow-Origin'] = "*"
     
     render :json => 
-      @assets.collect { |a| { 
-        :id => a.id, 
-        :title => a.title, 
-        :caption => a.caption,
-        :owner => a.owner, 
-        :size => [a.image_width,a.image_height].join('x'), 
-        :tags => a.image.tags,
-        :url => "http://#{ASSET_SERVER}/api/assets/#{a.id}/" 
-      } }
+      @assets.collect { |a| a.json }
   end
   
   #----------
@@ -40,14 +32,7 @@ class Api::AssetsController < ApplicationController
     
     response.headers['Access-Control-Allow-Origin'] = "*"
     
-    render :json => { 
-      :id => asset.id, 
-      :title => asset.title, 
-      :caption => asset.caption, 
-      :owner => asset.owner,
-      :size => [asset.image_width,asset.image_height].join('x'),
-      :tags => asset.image.tags
-    }
+    render :json => asset.json
   rescue
     render :text => "Asset not found", :status => :not_found
   end

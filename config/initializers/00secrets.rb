@@ -15,3 +15,5 @@ end
 # -- now define our secrets -- #
 
 FLICKR_API_KEY = AssetHostSecrets[:flickr_api_key]
+ASSET_SERVER = AssetHostSecrets[:asset_server]    
+

@@ -32,8 +32,8 @@ class Asset < ActiveRecord::Base
 	  :processors => [:asset_thumbnail],
 	  :storage => :filesystem,
 	  :path => ":rails_root/public/images/:id_:fingerprint_:sprint.:extension",
-	  :trueurl => "http://#{ASSET_SERVER}/images/:id_:fingerprint_:sprint.:extension",
-	  :url => "http://#{ASSET_SERVER}/i/:fingerprint/:id-:style.:extension",
+	  :trueurl => "http://#{::ASSET_SERVER}/images/:id_:fingerprint_:sprint.:extension",
+	  :url => "http://#{::ASSET_SERVER}/i/:fingerprint/:id-:style.:extension",
 	  :use_timestamp => false
 	  
   treat_as_image_asset :image
@@ -43,15 +43,16 @@ class Asset < ActiveRecord::Base
   
   def json
     { 
-      :id => self.id, 
-      :title => self.title, 
-      :caption => self.caption,
-      :owner => self.owner, 
-      :size => [self.image_width,self.image_height].join('x'), 
-      :tags => self.image.tags,
-      :url => "http://#{ASSET_SERVER}/api/assets/#{self.id}/",
+      :id         => self.id, 
+      :title      => self.title, 
+      :caption    => self.caption,
+      :owner      => self.owner, 
+      :size       => [self.image_width,self.image_height].join('x'), 
+      :sizes      => Output.paperclip_sizes.inject({}) { | h, (s,v) | h[s] = { :width => self.image.width(s), :height => self.image.height(s) }; h },
+      :tags       => self.image.tags,
+      :url        => "http://#{ASSET_SERVER}/api/assets/#{self.id}/",
       :created_at => self.created_at,
-      :taken_at => self.image_taken || self.created_at
+      :taken_at   => self.image_taken || self.created_at
     }
   end
   
