@@ -57,7 +57,7 @@ module AssetHost::Loaders
       # create asset
       a = ::Asset.new(
         :title => p["title"]["_content"],
-        :description => p["description"]["_content"],
+        :caption => p["description"]["_content"],
         :owner => p['owner']['realname'] || p['owner']["username"],
         :image_taken => p["dates"]["taken"],
         :url => p['urls']['url'][0]['_content'],

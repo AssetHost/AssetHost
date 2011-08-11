@@ -100,6 +100,7 @@ class AssetHost.CMSPlugin
                 for a in remove
                     @assets.remove(a)
                     
+                @assets.sort()
                 @assetsView.render()
                     
                 @trigger("assets",@assets.toJSON())
@@ -131,7 +132,7 @@ class AssetHost.CMSPlugin
 
             render: ->
                 if @model.get('tags')
-                    idx = _(@model.collection.models).indexOf(@model)
+                    idx = @model.collection.indexOf(@model)
                                         
                     if @options.rows[idx]
                         extras = @options.rows[idx].extras
