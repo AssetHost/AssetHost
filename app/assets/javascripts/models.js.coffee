@@ -445,3 +445,157 @@ class AssetHost.Models
                 
                 this
         })
+        
+    #----------
+        
+    @queuedSync: (method,model,success,error) ->
+        console.log "in sync"
+
+    @QueuedFile:
+        Backbone.Model.extend({
+            sync: @queuedSync
+            urlRoot: '/a/assets/upload'
+
+            upload: ->
+                return false if @xhr
+
+                @xhr = new XMLHttpRequest
+
+                $(@xhr.upload).bind "progress", (evt) => 
+                    evt = evt.originalEvent
+                    @set {"PERCENT": if evt.lengthComputable then Math.floor(evt.loaded/evt.total*100) else evt.loaded}
+
+                $(@xhr.upload).bind "complete", (evt) =>
+                    @set {"STATUS": "pending"} 
+
+                @xhr.onreadystatechange = (req) => 
+                    console.log "in onreadystatechange",req
+                    if @xhr.readyState == 4 && @xhr.status == 200
+                        console.log "got complete status"
+                        @set {"STATUS": "complete"}
+
+                        if req.responseText != "ERROR"
+                            @set {"ASSET": $.parseJSON(@xhr.responseText)}
+                            @trigger "uploaded", this
+
+                @xhr.open('POST',this.urlRoot, true);
+                @xhr.setRequestHeader('X_FILE_NAME', @get('file').fileName)
+                @xhr.setRequestHeader('CONTENT_TYPE', @get('file').type)
+                @xhr.setRequestHeader('HTTP_X_FILE_UPLOAD','true')
+
+                # and away we go...
+                @xhr.send @get('file')                
+                @set {"STATUS": "uploading"}
+
+            readableSize: ->
+                return false if !@get('size')
+                size = @get('size')
+
+                units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+                i = 0;
+
+                while size >= 1024
+                    size /= 1024
+                    ++i
+
+                size.toFixed(1) + ' ' + units[i];
+
+
+        })
+
+    #----------
+
+    @QueuedFiles: 
+        Backbone.Collection.extend({
+            model: @QueuedFile
+
+
+        })
+
+    #----------
+
+    @QueuedFileView:
+        Backbone.View.extend({
+            events:
+                {
+                    'click button.remove': '_remove',
+                    'click button.upload': '_upload'
+                }
+
+            tagName: "li"
+            template:
+                '''
+                <%= name %>: <%= size %> 
+                <% if (STATUS == 'uploading') { %>
+                    (<%= PERCENT %>%)
+                <% }; %>
+                <button class="remove small awesome red">x</button>
+                <button class="upload small awesome green">Upload</button>
+                '''
+
+            initialize: ->
+                @render()
+                @model.bind "change", => @render()
+
+            _remove: (evt) ->
+                console.log "calling remove for ",this
+                @model.collection.remove(@model)    
+
+            _upload: (evt) ->
+                @model.upload()
+
+            render: ->
+                $( @el ).attr('class',@model.get("STATUS"))
+
+                $( @el ).html( _.template(@template,{
+                    name: @model.get('name'),
+                    size: @model.readableSize(),
+                    STATUS: @model.get('STATUS'),
+                    PERCENT: @model.get('PERCENT')
+                }))
+
+                return this
+        })
+
+    #----------
+
+    @QueuedFilesView:
+        Backbone.View.extend({ 
+            tagName: "ul"
+            className: "uploads"
+
+            initialize: ->
+                @_views = {}
+
+                @collection.bind 'add', (f) => 
+                    console.log "add event from ", f
+                    @_views[f.cid] = new Models.QueuedFileView({model:f})
+                    @render()
+
+                @collection.bind 'remove', (f) => 
+                    console.log "remove event from ", f
+                    $(@_views[f.cid].el).detach()
+                    delete @_views[f.cid]
+                    @render()
+
+                @collection.bind 'reset', (f) => 
+                    console.log "reset event from ", f
+                    @_views = {}
+
+                console.log "collection is ", @collection
+
+            _reset: (f) ->
+                console.log "reset event from ",f
+
+            render: ->
+                # set up views for each collection member
+                @collection.each (f) => 
+                    # create a view unless one exists
+                    @_views[f.cid] ?= new Models.QueuedFileView({model:f})
+
+                # make sure all of our view elements are added
+                $(@el).append( _(@_views).map (v) -> v.el )
+                console.log "rendered files el is ",@el
+
+                return this
+        })

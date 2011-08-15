@@ -109,24 +109,27 @@ ul.asset_sizes {
 		list-style-type: none;
 		padding: 0;
 		margin: 0;
-		min-height: 32px;
 		background: #ffc;
 		
 		li {
 			display: block;
-			padding: 4px;
+			padding: 2px;
 			margin-bottom: 2px;
 			border: 1px solid #aaa;
-			
-			span {
-			    display: inline;
-			    float: right;
-			    padding: 0 4px;
-			    color: #f00;
-			    border: 1px solid #fbb;
-			    background: #eee;
-			}
+						
+			button {
+               display: inline;
+               float: right;
+            }
+
+            img {
+                display: inline;
+                float: left;
+                margin: -2px 4px 0 -2px;
+            }
+            
 		}
+		
 		
 		li.help {
 		    font-size: 16px;
@@ -148,6 +151,11 @@ ul.asset_sizes {
 		}	
 		
 	}
+	
+	ul.uploads li {
+           height: 32px;
+    }
+	
 	
 	p.ahUp_upbutton {
 	   display: block;

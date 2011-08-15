@@ -24,19 +24,12 @@
 			<% end %>
 			
 			<hr/>
-			<h3>Search</h3>
-			<form action="<%= search_a_assets_path %>" method="GET">
-			    <input type="text" name="q" class="threeW"/>
-			    <%= submit_tag "Go", :style => "margin-left: 8px" %>
-			</form>
-
-			<hr/>
 
 			<h3>Upload Assets</h3>
-
+			
 			<div id="filedrop" style="">
-				&nbsp;
-			</div>
+        	<p style="font-size:24px;color: #aaa;text-align: center">Drop File(s) Here</i></p>
+        	</div>
 		</div>
 		<div class='sixW endcap'>
 			<%= yield %>
@@ -46,10 +39,12 @@
 	<br/>
 </div>
 
-<% @js = ["/js/bdtwnUpload.js"] %>
-
 <% content_for :footerjss do %>
-	var ahUp = new AssetHostUpload({url:"<%= upload_a_assets_path %>",posturl:"<%= metadata_a_assets_path %>"})
+    chooser = new AssetHost.ChooserUI({
+		dropEl: "#filedrop",
+		saveButton: 0,
+		afterUpload: { text: "Manage Metadata", url: "<%= metadata_a_assets_path %>" } 
+	})
 <% end %>
 
 </body>

@@ -13,6 +13,14 @@
     background: #fcc;
 }
 
+ul.assets, ul.uploads li {
+    overflow: auto;
+    
+    p {
+       margin: 2px 0;
+    }
+}
+
 #my_assets {
     height: 430px;
     overflow: auto;

@@ -5,7 +5,8 @@ class AssetHost.ChooserUI
         {
             dropEl: "#my_assets",
             modal: "asset_modal",
-            browser: ''
+            browser: '',
+            saveButton: 1
         }
 
     #----------
@@ -21,6 +22,10 @@ class AssetHost.ChooserUI
         
         @drop = $( @options['dropEl'] )
         
+        # hang onto whatever starts out in drop... we'll use it when it's empty
+        @emptyMsg = $ '<div/>', { html: @drop.html() }
+        @drop.html @emptyMsg
+        
         @myassets = new AssetHost.Models.Assets
         @assetsView = new AssetHost.Models.AssetDropView({collection: @myassets})
         
@@ -31,30 +36,50 @@ class AssetHost.ChooserUI
             if confirm("Remove?")
                 @myassets.remove(asset)
                 
-        @browser.assets.bind "selected", (asset) => 
-            console.log "got selected from ", asset
-            @myassets.add(asset)
-            asset.editModal().open()
+        if @browser
+            @browser.assets.bind "selected", (asset) => 
+                console.log "got selected from ", asset
+                @myassets.add(asset)
+                asset.editModal().open()
                     
-        @uploads = new AssetHost.ChooserUI.QueuedFiles
+        @uploads = new AssetHost.Models.QueuedFiles
         @uploads.bind "uploaded", (f) =>
             @myassets.add(f.get('ASSET'))
             @uploads.remove(f)
         
-        @uploadsView = new AssetHost.ChooserUI.QueuedFilesView({collection:@uploads})
+        @uploadsView = new AssetHost.Models.QueuedFilesView({collection:@uploads})
         
-        @saveAndClose = new AssetHost.Models.SaveAndCloseView({collection: @myassets}).render()
+        # manage the msg that shows when we have no assets or uploads
+        @myassets.bind "all", () => @_manageEmptyMsg()
+        @uploads.bind "all", () => @_manageEmptyMsg()
         
-        @saveAndClose.bind('saveAndClose', (json) => console.log "saving and closing ",json;@trigger('saveAndClose',json))
-
+        # manage the upload all button
+        @uploadAll = new ChooserUI.UploadAllButton({collection:@uploads})
+        @drop.after @uploadAll.el
+        
+        # add our two lists into the drop zone
         @drop.append(@assetsView.el,@uploadsView.el)
-        @drop.after(@saveAndClose.el)
+        
+        if @options.saveButton
+            @saveAndClose = new AssetHost.Models.SaveAndCloseView({collection: @myassets}).render()
+            @saveAndClose.bind 'saveAndClose', (json) => @trigger('saveAndClose',json)
+            @drop.after @saveAndClose.el
             
         # attach drag-n-drop listeners to my_assets
         @drop.bind "dragenter", (evt) => @_dropDragEnter evt
         @drop.bind "dragover", (evt) => @_dropDragOver evt
         @drop.bind "drop", (evt) => @_dropDrop evt
-        
+            
+    #----------
+    
+    _manageEmptyMsg: ->
+        if @myassets.length + @uploads.length > 0
+            # turn empty msg off
+            $(@emptyMsg).slideUp()
+        else
+            # turn empty msg on
+            $(@emptyMsg).slideDown()
+    
     #----------
     
     selectAssets: (assets) ->
@@ -117,154 +142,32 @@ class AssetHost.ChooserUI
     
     #----------
     
-    @queuedSync: (method,model,success,error) ->
-        console.log "in sync"
-                
-    @QueuedFile:
-        Backbone.Model.extend({
-            sync: @queuedSync
-            urlRoot: '/a/assets/upload'
-            
-            upload: ->
-                return false if @xhr
-                
-                @xhr = new XMLHttpRequest
-                
-                $(@xhr.upload).bind "progress", (evt) => 
-                    evt = evt.originalEvent
-                    @set {"PERCENT": if evt.lengthComputable then Math.floor(evt.loaded/evt.total*100) else evt.loaded}
-                    
-                $(@xhr.upload).bind "complete", (evt) =>
-                    @set {"STATUS": "pending"} 
-                
-                @xhr.onreadystatechange = (req) => 
-                    console.log "in onreadystatechange",req
-                    if @xhr.readyState == 4 && @xhr.status == 200
-                        console.log "got complete status"
-                        @set {"STATUS": "complete"}
-                        
-                        if req.responseText != "ERROR"
-                            @set {"ASSET": $.parseJSON(@xhr.responseText)}
-                            @trigger "uploaded", this
-                
-                @xhr.open('POST',this.urlRoot, true);
-                @xhr.setRequestHeader('X_FILE_NAME', @get('file').fileName)
-                @xhr.setRequestHeader('CONTENT_TYPE', @get('file').type)
-                @xhr.setRequestHeader('HTTP_X_FILE_UPLOAD','true')
-                    
-                # and away we go...
-                @xhr.send @get('file')                
-                @set {"STATUS": "uploading"}
-            
-            readableSize: ->
-                return false if !@get('size')
-                size = @get('size')
-                
-                units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-                i = 0;
-
-                while size >= 1024
-                    size /= 1024
-                    ++i
-
-                size.toFixed(1) + ' ' + units[i];
-                
-            
-        })
-    
-    #----------
-        
-    @QueuedFiles: 
-        Backbone.Collection.extend({
-            model: @QueuedFile
-
-
-        })
-        
-    #----------
-    
-    @QueuedFileView:
+    @UploadAllButton:
         Backbone.View.extend({
-            events:
-                {
-                    'click button.remove': '_remove',
-                    'click button.upload': '_upload'
-                }
-            
-            tagName: "li"
             template:
-                '''
-                <%= name %>: <%= size %> 
-                <% if (STATUS == 'uploading') { %>
-                    (<%= PERCENT %>%)
-                <% }; %>
-                <button class="remove small awesome red">x</button>
-                <button class="upload small awesome green">Upload</button>
-                '''
-            
+                """
+                <button id="uploadAll" class="large awesome orange">
+                    Upload All
+                    <% if (count) { %>(<%= count %> Images)<% } %>
+                </button>
+                """
+                
+            events: { 'click button': 'uploadAll' }
+                
             initialize: ->
-                @render()
-                @model.bind "change", => @render()
-                
-            _remove: (evt) ->
-                console.log "calling remove for ",this
-                @model.collection.remove(@model)    
-                
-            _upload: (evt) ->
-                @model.upload()
-            
-            render: ->
-                $( @el ).attr('class',@model.get("STATUS"))
-                
-                $( @el ).html( _.template(@template,{
-                    name: @model.get('name'),
-                    size: @model.readableSize(),
-                    STATUS: @model.get('STATUS'),
-                    PERCENT: @model.get('PERCENT')
-                }))
+                @collection.bind "all", => @render()
 
-                return this
-        })
-        
-    #----------
-        
-    @QueuedFilesView:
-        Backbone.View.extend({ 
-            tagName: "ul"
-            className: "uploads"
-            
-            initialize: ->
-                @_views = {}
+            uploadAll: -> 
+                @collection.each (f) -> 
+                    if !f.xhr
+                        f.upload()
+                                
+            render: ->
+                staged = @collection.reduce( 
+                    (i,f) -> if f.xhr then i else i+1
+                , 0)
                 
-                @collection.bind 'add', (f) => 
-                    console.log "add event from ", f
-                    @_views[f.cid] = new AssetHost.ChooserUI.QueuedFileView({model:f})
-                    @render()
+                $( @el ).html if staged > 0 then _.template(@template,{count:staged}) else ''
                     
-                @collection.bind 'remove', (f) => 
-                    console.log "remove event from ", f
-                    $(@_views[f.cid].el).detach()
-                    delete @_views[f.cid]
-                    @render()
-
-                @collection.bind 'reset', (f) => 
-                    console.log "reset event from ", f
-                    @_views = {}
-                                        
-                console.log "collection is ", @collection
-                
-            _reset: (f) ->
-                console.log "reset event from ",f
-                       
-            render: ->
-                # set up views for each collection member
-                @collection.each (f) => 
-                    # create a view unless one exists
-                    @_views[f.cid] ?= new AssetHost.ChooserUI.QueuedFileView({model:f})
-                
-                # make sure all of our view elements are added
-                $(@el).append( _(@_views).map (v) -> v.el )
-                console.log "rendered files el is ",@el
-                
-                return this
+                return @
         })
