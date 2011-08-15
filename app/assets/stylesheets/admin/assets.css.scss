@@ -7,6 +7,30 @@ $column: 88px;
 $padding: 18px;
 $orange: #d1570d;
 
+ul.asset_sizes {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    
+    li {
+        display: inline;
+        float: left;
+        padding: 8px;
+        margin-right: 8px;
+        border: 1px solid $orange;
+        color: #444;
+        
+        h1 {
+           margin-top: 0;
+           margin-bottom: 4px;
+        }        
+    }
+    
+    li.selected {
+        background-color: #ddd;
+    }
+}
+
 .assetbox {
     margin-right: -12px;
 	ul {

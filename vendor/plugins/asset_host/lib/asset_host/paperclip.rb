@@ -227,8 +227,6 @@ module Paperclip
       instance_write(:taken,p.datetime_original)
       
       true
-      
-      # TODO: now compute what we have for styles
     end
   end
 

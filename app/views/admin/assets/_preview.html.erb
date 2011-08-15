@@ -1,1 +1,1 @@
-<%= render_asset @asset, @output.code %>
+$('#preview').html("<%= escape_javascript(render_asset @asset, @output.code) %>")

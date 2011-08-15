@@ -32,6 +32,9 @@ class Admin::AssetsController < ApplicationController
     asset = Asset.new(:title => file.original_filename.sub(/\.\w{3}$/,''))
     asset.image = file
     
+    # force _grab_dimensions to run early so that we can load in EXIF
+    asset.image._grab_dimensions()
+    
     [
       ['title','image_title'],
       ['caption','image_description'],
@@ -39,14 +42,7 @@ class Admin::AssetsController < ApplicationController
     ].each {|f| asset[f[0]] = asset[f[1]] }
     
     if asset.save
-      render :json => { 
-        :id => asset.id, 
-        :title => asset.title, 
-        :caption => asset.caption, 
-        :owner => asset.owner,
-        :size => [asset.image_width,asset.image_height].join('x'),
-        :tags => asset.image.tags
-      }
+      render :json => asset.json
     else
       puts "Error: #{asset.errors.to_s}"
       render :text => 'ERROR'
@@ -57,15 +53,6 @@ class Admin::AssetsController < ApplicationController
   
   def metadata
     @assets = Asset.find(params[:ids].split(','))
-    
-    # pre-fill with metadata from IPTC / EXIF
-    @assets.each {|a|
-      ([['title','image_title'],['caption','image_description'],['owner','image_copyright']]).each {|f|
-        if a[f[0]] == nil
-          a[f[0]] = a[f[1]]
-        end
-      }
-    }
   end
   
   #----------
@@ -91,8 +78,9 @@ class Admin::AssetsController < ApplicationController
     @asset = Asset.find(params[:id])
     @output = Output.find_by_code(params[:output])
     
-    render :update do |p|
-      p.replace_html "preview", :partial => "preview"
+    
+    respond_to do |format|
+      format.js { render :partial => "preview" }
     end
   end
   

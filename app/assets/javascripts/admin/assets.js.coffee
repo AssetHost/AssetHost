@@ -190,7 +190,9 @@ class window.AssetHostUpload
                 console.log "response is", req.responseText
                 
                 if req.responseText != "ERROR"
-                    @_ids.push req.responseText
+                    json = $.parseJSON req.responseText
+                    console.log "pushing JSON: ", json
+                    @_ids.push json
                     
                 @_uploading = _(@_uploading).without obj
                 
@@ -203,7 +205,7 @@ class window.AssetHostUpload
                     
     _uploadingComplete: ->
         link = $("<li/>").append(
-            $ "<a/>", { href: @options.posturl+"?ids="+@_ids.join(","), text: @options.afterText }
+            $ "<a/>", { href: @options.posturl+"?ids="+_(@_ids).map( (k) -> k.id ).join(","), text: @options.afterText }
         )
 
         $(@drop).append link

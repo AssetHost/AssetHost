@@ -2,39 +2,33 @@
 	@page_title = "Asset: #{@asset.title}"
 %>
 
-<h1><%= @page_title %></h1>
+<div id="asset"></div>
 
-<div class="threeW">
-	<h3>Title:</h3>
-	<%= @asset.title %> (<%= link_to "Edit Metadata", edit_a_asset_path %>)
-	
-	<h3>Image Dimensions:</h3>
-	<%= [@asset.image_width,@asset.image_height].join(" x ") %>
-	
-	<h3>Taken At:</h3>
-	<%= @asset.image_taken %>
-</div>
-<div class="threeW endcap">
-	
-	<h3>Caption:</h3>
-	<%= @asset.caption %>
-	
-	<h3>Copyright:</h3>
-	<%= @asset.owner %>
-	
-	<h3>Notes:</h3>
-	<%= @asset.notes %>
-</div>
-<br class="clear"/>
-<hr/>
-
-<div id="preview_widget">
-	<%= form_tag preview_a_asset_path(@asset), :remote => true, :method => :get do %>
-		<%= select_tag :output, options_for_select(@asset.rendered_outputs, :selected => :wide) %>
-		<%= submit_tag "Preview Output" %>
+<div id="editform">
+<%= semantic_form_for(@asset, :as => :asset, :url => a_asset_path(@asset)) do |f| %>
+	<%= f.inputs :name => "Basics" do %>
+		<%= f.input :title %>
+		<%= f.input :caption, :as => :text, :input_html => {:rows => 3} %>
 	<% end %>
+	
+	<%= f.inputs :name => "Rights" do %>
+		<%= f.input :owner %>
+		<%= f.input :url %>
+	<% end %>
+	
+	<%= f.inputs :name => "Metadata" do %>
+		<%= f.input :image_taken, :as => :date %>
+		<%= f.input :image_gravity, :as => :select, :collection => Asset::GRAVITY_OPTIONS %>
+	<% end %>
+	
+	<%= f.inputs :name => "Internal" do %>
+		<%= f.input :notes %>
+	<% end %>
+	
+	<%= f.buttons %>
+<% end %>
 </div>
 
-<div id="preview">
-	<%= render_asset(@asset,:wide) %>
-</div>
+<script type="text/javascript">
+    assetAdm = new AssetHost.AssetAdmin(<%= @asset.json.to_json.html_safe %>,{el:"#asset"})
+</script>

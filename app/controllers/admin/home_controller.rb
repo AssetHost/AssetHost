@@ -4,7 +4,7 @@ class Admin::HomeController < ApplicationController
   #----------
 
   def chooser
-    @assets = Asset.paginate(:per_page => 24, :page => 1)
+    @assets = Asset.paginate(:per_page => 24, :page => 1, :order => "updated_at desc")
     
     render :layout => 'minimal'
   end
