@@ -5,4 +5,5 @@
 //= require backbone
 //= require simplemodal
 //= require tooltipsy
+//= require exif
 //= require_tree .

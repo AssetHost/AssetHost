@@ -529,13 +529,38 @@ class AssetHost.Models
                 <% if (STATUS == 'uploading') { %>
                     (<%= PERCENT %>%)
                 <% }; %>
+                <% if (!xhr) { %>
                 <button class="remove small awesome red">x</button>
                 <button class="upload small awesome green">Upload</button>
+                <% }; %>
                 '''
 
             initialize: ->
-                @render()
                 @model.bind "change", => @render()
+                
+                @img = ''
+
+                # try to read file on disk
+                file = @model.get('file')
+                if file.type.match('image.*')
+                    reader = new FileReader()
+                    
+                    reader.onload = (e) => 
+                        console.log "got reader.onload for ", e
+                        @img = $ "<img/>", {
+                            class: "thumb",
+                            src: e.target.result,
+                            title: file.name
+                        }
+                        
+                        m = /^([^,]+),(.*)$/.exec(e.target.result)
+                        @exif = EXIF.readFromBinaryFile(window.atob(m[2]))
+                        
+                        
+                        
+                    reader.readAsDataURL(file)
+
+                @render()
 
             _remove: (evt) ->
                 console.log "calling remove for ",this
@@ -551,7 +576,8 @@ class AssetHost.Models
                     name: @model.get('name'),
                     size: @model.readableSize(),
                     STATUS: @model.get('STATUS'),
-                    PERCENT: @model.get('PERCENT')
+                    PERCENT: @model.get('PERCENT'),
+                    xhr: if @model.xhr then true else false
                 }))
 
                 return this

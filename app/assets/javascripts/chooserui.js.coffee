@@ -167,7 +167,7 @@ class AssetHost.ChooserUI
                     (i,f) -> if f.xhr then i else i+1
                 , 0)
                 
-                $( @el ).html if staged > 0 then _.template(@template,{count:staged}) else ''
+                $( @el ).html if staged > 1 then _.template(@template,{count:staged}) else ''
                     
                 return @
         })
