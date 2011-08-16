@@ -148,20 +148,21 @@ class AssetHost.Models
             
     @AssetSearchView:
         Backbone.View.extend({
-            initialize: ->
-                @collection.bind('all', => @render() )
-            
+            className: "search_box"
+
             template:
                 '''
-                <div class="search_box">
-                <input type="text" style="width: 150px" value="<%= query %>"/>
+                <input type="text" style="width: 200px" value="<%= query %>"/>
                 <button class="large awesome orange">Search</button>
                 '''
                 
             events: {
                 'click button': 'search'
             }
-            
+
+            initialize: ->
+                @collection.bind('all', => @render() )
+                        
             search: ->
                 query = $( @el ).find("input")[0].value
                 console.log "in search for ", query
@@ -217,9 +218,13 @@ class AssetHost.Models
                 @_views = {}
                 @collection.bind "reset", => 
                     _(@_views).each (a) => $(a.el).detach(); @_views = {}
+                    @render()
                             
             pages: ->
                 @_pages ?= (new AssetHost.Models.PaginationLinks(@collection)).render()
+                
+            loading: ->
+                $(@el).fadeOut()
             
             render: ->
                 # set up views for each collection member
@@ -229,6 +234,9 @@ class AssetHost.Models
                 
                 # make sure all of our view elements are added
                 $(@el).append( _(@_views).map (v) -> v.el )
+                
+                # clear loading status
+                $(@el).fadeIn()
             
                 return this
         })
@@ -525,14 +533,15 @@ class AssetHost.Models
             tagName: "li"
             template:
                 '''
-                <%= name %>: <%= size %> 
-                <% if (STATUS == 'uploading') { %>
-                    (<%= PERCENT %>%)
-                <% }; %>
                 <% if (!xhr) { %>
-                <button class="remove small awesome red">x</button>
-                <button class="upload small awesome green">Upload</button>
+                    <button class="remove small awesome red">x</button>
+                    <button class="upload small awesome green">Upload</button>
                 <% }; %>
+                <% if (STATUS == 'uploading') { %>
+                    <b>(<%= PERCENT %>%)</b>
+                    <br/>
+                <% }; %>
+                <%= name %>: <%= size %> 
                 '''
 
             initialize: ->
@@ -555,8 +564,8 @@ class AssetHost.Models
                         
                         m = /^([^,]+),(.*)$/.exec(e.target.result)
                         @exif = EXIF.readFromBinaryFile(window.atob(m[2]))
-                        
-                        
+                                                    
+                        @render()
                         
                     reader.readAsDataURL(file)
 
@@ -573,12 +582,16 @@ class AssetHost.Models
                 $( @el ).attr('class',@model.get("STATUS"))
 
                 $( @el ).html( _.template(@template,{
+                    exif: @exif,
                     name: @model.get('name'),
                     size: @model.readableSize(),
                     STATUS: @model.get('STATUS'),
                     PERCENT: @model.get('PERCENT'),
                     xhr: if @model.xhr then true else false
                 }))
+                
+                if @img
+                    $( @el ).prepend( @img )
 
                 return this
         })

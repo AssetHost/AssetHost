@@ -153,7 +153,7 @@ ul.asset_sizes {
 	}
 	
 	ul.uploads li {
-           height: 32px;
+           min-height: 32px;
     }
 	
 	
@@ -167,6 +167,13 @@ ul.asset_sizes {
 	   font-weight: bold;
 	}
 	
+}
+
+.search_box {
+    input {
+       padding: 4px;
+       font-size: 14px;
+    }
 }
 
 form.formtastic {

@@ -19,6 +19,11 @@ ul.assets, ul.uploads li {
     p {
        margin: 2px 0;
     }
+    
+    img {
+        max-width: 100px;
+        max-height: 100px;
+    }
 }
 
 #my_assets {

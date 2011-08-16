@@ -19,6 +19,7 @@ class AssetHost.BrowserUI
                         
         @browserEl = $( @options['assetBrowserEl'] )
         @browser = new AssetHost.Models.AssetBrowserView({collection: @assets})
+        @browserEl.html @browser.el
 
         @browserEl.after( @browser.pages().el )
         
@@ -28,9 +29,7 @@ class AssetHost.BrowserUI
         # add search box
         @search = new AssetHost.Models.AssetSearchView({collection:@assets})
         $('#search_box').html @search.render().el
-        
-        @_loadingAssets = false
-        
+                
         # -- Handle Routing -- #
         
         @router = new @Router
@@ -64,20 +63,10 @@ class AssetHost.BrowserUI
         $(@browserEl).delegate "li", "dragstart", (evt) ->
             if (url = $(evt.currentTarget).attr('data-asset-url'))
                 evt.originalEvent.dataTransfer.setData('text/uri-list',url)
-                                    
-        @assets.bind 'reset', (assets) => 
-            @browserEl.html @browser.render().el
-            @assetsLoading false
-                
-        # load recent assets into asset browser
-        #if !@_assetsLoading
-        #    @loadAssets { query: '', page: 1, force: true }
-    
+                                        
         @assets.trigger('reset')
     
-    #---------------------#
-    # -- Asset Browser -- #
-    #---------------------#
+    #----------
         
     navToAssets: ->
         page = @assets.page()
@@ -92,6 +81,8 @@ class AssetHost.BrowserUI
         else
             @router.navigate("/")
     
+    #----------
+    
     # given a query string and/or page number, grab assets via the API and 
     # fill in the asset browser
     loadAssets: (options = {}) -> 
@@ -99,8 +90,8 @@ class AssetHost.BrowserUI
         pDirty = options['page'] && Number(options['page']) != Number(@assets.page())
                         
         if qDirty || pDirty || options['force']
-            # display loading status
-            @assetsLoading true
+            # display loading status. browserView will clear on its own
+            @browser.loading()
         
             # fire off AJAX API request
             @assets.query(options['query'])
@@ -108,17 +99,7 @@ class AssetHost.BrowserUI
             @assets.fetch()
         
             return false
-        
-    #----------
-        
-    assetsLoading: (bool) ->
-        if bool
-            @aloaderEl.show()
-            @_assetsLoading = true
-        else 
-            @aloaderEl.hide()
-            @_assetsLoading = false
-    
+                
     #----------
     
     clearDisplay: ->
