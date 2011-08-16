@@ -31,9 +31,9 @@ class Asset < ActiveRecord::Base
 	  :styles => Proc.new { Output.paperclip_sizes },
 	  :processors => [:asset_thumbnail],
 	  :storage => :filesystem,
-	  :path => ":rails_root/public/images/:id_:fingerprint_:sprint.:extension",
-	  :trueurl => "http://#{::ASSET_SERVER}/images/:id_:fingerprint_:sprint.:extension",
-	  :url => "http://#{::ASSET_SERVER}/i/:fingerprint/:id-:style.:extension",
+	  :path => AssetHostSecrets[:path],
+	  :trueurl => AssetHostSecrets[:trueurl],
+	  :url => AssetHostSecrets[:url],
 	  :use_timestamp => false
 	  
   treat_as_image_asset :image
