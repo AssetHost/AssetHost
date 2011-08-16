@@ -184,7 +184,6 @@ GEM
       railties (~> 3.1.0.rc1)
       sass (>= 3.1.4)
       sprockets (>= 2.0.0.beta.9)
-    sequel (3.26.0)
     sinatra (1.2.6)
       rack (~> 1.1)
       tilt (< 2.0, >= 1.2.2)
@@ -211,7 +210,7 @@ PLATFORMS
 
 DEPENDENCIES
   capistrano
-  coffee-rails (~> 3.1.0.rc)
+  coffee-rails
   delayed_paperclip!
   devise
   formtastic (~> 2.0.0.rc1)
@@ -225,8 +224,7 @@ DEPENDENCIES
   rails (= 3.1.0rc5)
   redis-store (= 1.0.0.rc1)
   resque
-  sass-rails (~> 3.1.0.rc)
-  sequel
+  sass-rails
   thinking-sphinx!
   uglifier
   will_paginate!
