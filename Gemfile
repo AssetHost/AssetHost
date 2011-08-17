@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'http://gems.github.com/'
 
-gem 'rails', '3.1.0rc5'
+gem 'rails', '3.1.0rc6'
 gem 'jquery-rails'
 
 gem "redis-store", "1.0.0.rc1"
