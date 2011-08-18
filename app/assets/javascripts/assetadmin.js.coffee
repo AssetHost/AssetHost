@@ -3,9 +3,9 @@
 
 class AssetHost.AssetAdmin
     DefaultOptions:
-        {
-            el: ""
-        }
+        el: ""
+        replace: ''
+        replacePath: ''
         
     constructor: (asset,options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
@@ -14,6 +14,16 @@ class AssetHost.AssetAdmin
         @preview = new AssetAdmin.PreviewView({model: @asset})
         @form = new AssetAdmin.FormView({model: @asset})
         $( @options.el ).html(@preview.el)
+        
+        if @options.replace
+            # set up replace image uploader
+            @chooser = new AssetHost.ChooserUI
+                dropEl: @options.replace
+                assets: false
+                uploads: true
+                limit: 1
+                uploadPath: @options.replacePath
+                saveButton: false
                 
     #----------
         

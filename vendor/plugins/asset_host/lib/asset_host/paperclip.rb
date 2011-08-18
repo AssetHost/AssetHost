@@ -78,6 +78,30 @@ module Paperclip
       @normalized_styles
     end
     
+    #----------
+
+    # overwrite to only delete original when clear() is called.  styles will 
+    # be deleted by the thumbnailer
+    def queue_existing_for_delete #:nodoc:
+      return unless file?
+
+      @queued_for_delete = [path(:original)]
+
+      instance_write(:file_name, nil)
+      instance_write(:content_type, nil)
+      instance_write(:file_size, nil)
+      instance_write(:updated_at, nil)
+    end
+    
+    #----------
+    
+    def delete_style(path)
+      @queued_for_delete = [ path ]
+      self.flush_deletes()
+    end
+    
+    #----------
+    
     def enqueue
       Resque.enqueue(AssetHost::ResqueJob,self.instance.class.name,self.instance.id,self.name)
     end
@@ -240,6 +264,7 @@ module Paperclip
       @size = options[:size]
       @output = options[:output]
       @asset = attachment ? attachment.instance : nil
+      @attachment = attachment
       
       Paperclip.log("asset is #{@asset} -- output is #{@output}")
       
@@ -263,7 +288,6 @@ module Paperclip
       dst = nil
 
       if @prerender || ao
-        tmpao = nil
         if !ao 
           # register empty AssetObject to denote processing
           ao = @asset.outputs.create(:output_id => @output)
@@ -307,8 +331,30 @@ module Paperclip
         
         Paperclip.log("[ewr] dst print is #{print}")
         
-        ao.attributes = { :fingerprint => print, :width => width, :height => height }
+        if ao.fingerprint
+          # -- existing thumbnail -- #
+          @controller ||= ActionController::Base.new
+          
+          # cache is under "img:{image_fingerprint}:{style}"
+          # to delete our file, calling path() would already give us the new 
+          # fingerprint, so we have to replace it with our old fingerprint
+          
+          path = @attachment.path(ao.output.code)
+          path.gsub!(@asset.image_fingerprint,ao.image_fingerprint)
+
+          Paperclip.log("[EWR] Deleting old thumbnail at #{path}")
+          @attachment.delete_style(path)
+
+          # now delete the old cache
+          Paperclip.log("[EWR] Deleting old cache at #{"img:"+[ao.image_fingerprint,ao.output.code].join(":")}")
+          @controller.expire_fragment("img:"+[ao.image_fingerprint,ao.output.code].join(":"))
+        end
+        
+        ao.attributes = { :fingerprint => print, :width => width, :height => height, :image_fingerprint => @asset.image_fingerprint }
         ao.save
+        
+        # just to be safe...
+        @asset.outputs(true)
       end
             
       return dst

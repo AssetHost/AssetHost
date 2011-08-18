@@ -6,15 +6,25 @@
 
 <div id="editform">
 <%= semantic_form_for(@asset, :as => :asset, :url => a_asset_path(@asset)) do |f| %>
+	<div class="fourW">
 	<%= f.inputs :name => "Basics" do %>
 		<%= f.input :title %>
-		<%= f.input :caption, :as => :text, :input_html => {:rows => 3} %>
+		<%= f.input :caption, :as => :text, :input_html => {:rows => 5} %>
 	<% end %>
 	
 	<%= f.inputs :name => "Rights" do %>
 		<%= f.input :owner %>
 		<%= f.input :url %>
 	<% end %>
+	</div>
+	<div class="twoW endcap">
+		<h2>Replace:</h2>
+		<div id="replacedrop" style="height: 180px;margin-top: 16px">
+			<p style="font-size: 18px;line-height: 24px;color: #aaa;text-align: center;margin: 8px">Drop File Here to Replace Asset</p>
+		</div>
+	</div>
+	
+	<br style="clear:both"/>
 	
 	<%= f.inputs :name => "Metadata" do %>
 		<%= f.input :image_taken, :as => :date %>
@@ -30,5 +40,12 @@
 </div>
 
 <script type="text/javascript">
-    assetAdm = new AssetHost.AssetAdmin(<%= @asset.json.to_json.html_safe %>,{el:"#asset"})
+    assetAdm = new AssetHost.AssetAdmin(
+		<%= @asset.json.to_json.html_safe %>,
+		{
+			el: "#asset",
+			replace: "#replacedrop",
+			replacePath: "<%= replace_a_asset_path @asset %>"
+		}
+	)
 </script>

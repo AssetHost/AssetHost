@@ -87,12 +87,12 @@ class Asset < ActiveRecord::Base
   #----------
   
   def output_by_style(style)
-    @_outputs ||= self.outputs.inject({}) do |h,o|
+    outputs = self.outputs.inject({}) do |h,o|
       h[o.output.code] = o
       h
     end
     
-    @_outputs[style.to_s] || false
+    outputs[style.to_s] || false
   end
   
   def rendered_outputs

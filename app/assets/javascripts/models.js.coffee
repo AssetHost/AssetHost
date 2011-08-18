@@ -319,13 +319,11 @@ class AssetHost.Models
     #----------
     
     @SaveAndCloseView:
-        Backbone.View.extend({
+        Backbone.View.extend
             events: { 'click button': 'saveAndClose' }
             initialize: ->
-                @collection.bind("reset", => @render() )
-                @collection.bind("add", => @render() )
-                @collection.bind("change", => @render() )
-                @collection.bind("remove", => @render() )
+                @collection.bind "all", => @render()                
+                @render()
             
             template:
                 '''
@@ -337,12 +335,11 @@ class AssetHost.Models
             
             saveAndClose: ->
                 console.log "saveAndClose Clicked with ",@collection
-                @trigger('saveAndClose',@collection.toJSON())
+                @trigger 'saveAndClose', @collection.toJSON()
             
             render: ->
-                $( @el ).html( _.template(@template,{count:@collection.size()}))
-                return this
-        })
+                $( @el ).html _.template(@template,{count:@collection.size()})
+                return @
         
     #----------
         
@@ -462,7 +459,6 @@ class AssetHost.Models
     @QueuedFile:
         Backbone.Model.extend({
             sync: @queuedSync
-            urlRoot: '/a/assets/upload'
 
             upload: ->
                 return false if @xhr
@@ -486,7 +482,7 @@ class AssetHost.Models
                             @set {"ASSET": $.parseJSON(@xhr.responseText)}
                             @trigger "uploaded", this
 
-                @xhr.open('POST',this.urlRoot, true);
+                @xhr.open('POST',this.collection.urlRoot, true);
                 @xhr.setRequestHeader('X_FILE_NAME', @get('file').fileName)
                 @xhr.setRequestHeader('CONTENT_TYPE', @get('file').type)
                 @xhr.setRequestHeader('HTTP_X_FILE_UPLOAD','true')
@@ -514,11 +510,12 @@ class AssetHost.Models
     #----------
 
     @QueuedFiles: 
-        Backbone.Collection.extend({
+        Backbone.Collection.extend
             model: @QueuedFile
-
-
-        })
+            urlRoot: "/a/assets/upload"
+            
+            initialize: (models,options) ->
+                @urlRoot = options.urlRoot
 
     #----------
 

@@ -2,12 +2,14 @@
 
 class AssetHost.ChooserUI
     DefaultOptions:
-        {
-            dropEl: "#my_assets",
-            modal: "asset_modal",
-            browser: '',
-            saveButton: 1
-        }
+        dropEl: "#my_assets"
+        modal: "asset_modal"
+        browser: ''
+        saveButton: 1
+        assets: true
+        uploads: true
+        limit: 0
+        uploadPath: '/a/assets/upload'
 
     #----------
 
@@ -23,11 +25,12 @@ class AssetHost.ChooserUI
         @drop = $( @options['dropEl'] )
         
         # hang onto whatever starts out in drop... we'll use it when it's empty
-        @emptyMsg = $ '<div/>', { html: @drop.html() }
+        @emptyMsg = $ '<div/>', html: @drop.html()
         @drop.html @emptyMsg
         
+        # set up collection and view to manage assets
         @myassets = new AssetHost.Models.Assets
-        @assetsView = new AssetHost.Models.AssetDropView({collection: @myassets})
+        @assetsView = new AssetHost.Models.AssetDropView collection: @myassets
         
         @assetsView.bind 'click', (asset) =>  
             asset.editModal().open()
@@ -35,34 +38,37 @@ class AssetHost.ChooserUI
         @assetsView.bind 'remove', (asset) => 
             if confirm("Remove?")
                 @myassets.remove(asset)
-                
+        
+        # connect to our AssetBrowser instance, if one is given        
         if @browser
             @browser.assets.bind "selected", (asset) => 
                 console.log "got selected from ", asset
                 @myassets.add(asset)
                 asset.editModal().open()
                     
-        @uploads = new AssetHost.Models.QueuedFiles
+        # set up collection to manage uploads and convert to assets
+        @uploads = new AssetHost.Models.QueuedFiles null, urlRoot:@options.uploadPath
         @uploads.bind "uploaded", (f) =>
             @myassets.add(f.get('ASSET'))
             @uploads.remove(f)
         
-        @uploadsView = new AssetHost.Models.QueuedFilesView({collection:@uploads})
+        @uploadsView = new AssetHost.Models.QueuedFilesView collection:@uploads
         
         # manage the msg that shows when we have no assets or uploads
         @myassets.bind "all", () => @_manageEmptyMsg()
         @uploads.bind "all", () => @_manageEmptyMsg()
         
         # manage the upload all button
-        @uploadAll = new ChooserUI.UploadAllButton({collection:@uploads})
+        @uploadAll = new ChooserUI.UploadAllButton collection:@uploads
         @drop.after @uploadAll.el
         
         # add our two lists into the drop zone
         @drop.append(@assetsView.el,@uploadsView.el)
         
+        # should we add a Save and Close button to the display?
         if @options.saveButton
-            @saveAndClose = new AssetHost.Models.SaveAndCloseView({collection: @myassets}).render()
-            @saveAndClose.bind 'saveAndClose', (json) => @trigger('saveAndClose',json)
+            @saveAndClose = new AssetHost.Models.SaveAndCloseView collection: @myassets
+            @saveAndClose.bind 'saveAndClose', (json) => @trigger 'saveAndClose', json
             @drop.after @saveAndClose.el
             
         # attach drag-n-drop listeners to my_assets
@@ -88,7 +94,7 @@ class AssetHost.ChooserUI
 
             if !asset
                 asset = new AssetHost.Models.Asset(obj)
-                asset.fetch({success:(a)=>a.set({caption:obj.caption});@myassets.add(a)})
+                asset.fetch success:(a)=>a.set({caption:obj.caption});@myassets.add(a)
     
     #----------
     
@@ -110,34 +116,40 @@ class AssetHost.ChooserUI
     # be made into an asset), and if so add it to our display.  
     _dropDrop: (evt) ->
         evt = evt.originalEvent
-                
+        
+        evt.stopPropagation()
+        evt.preventDefault()
+        
+        # first thing we need to test is whether we have a limit on uploads
+        if @options.limit && @uploads.length >= @options.limit
+            # we're at our limit...  shake our UI element and then do nothing
+            console.log "upload attempted above limit..."
+            $(@drop).effect "shake", {times: 3}, 100
+            return false
+            
+        # if we get here, we're allowed to take an upload
         if evt.dataTransfer.files.length > 0
             # drop is file(s)... stage for uploader
-
-            console.log("We got files!")            
+            console.log "We got files!"            
             for f in evt.dataTransfer.files
-                @uploads.add({ name: f.name, size: f.size, file: f })
+                @uploads.add name: f.name, size: f.size, file: f
 
         else
             # drop is a URL. Pass it to AssetHost API and see what happens
-            
-            uri = evt.dataTransfer.getData('text/uri-list')        
+            uri = evt.dataTransfer.getData 'text/uri-list'
             console.log "uri-list is ", uri
             
-            jQuery.ajax("/api/as_asset",{
+            jQuery.ajax "/api/as_asset",
                 data: { url: uri},
                 success: (data) => 
                     # did we get an Asset in response?
                     if data.id
                         # Yes...  Add as asset
-                        @myassets.add(data)
+                        @myassets.add data
                     else
                         # No...  Display error
                         alert data.error
-            })
 		
-        evt.stopPropagation()
-        evt.preventDefault()
         false
     
     #----------

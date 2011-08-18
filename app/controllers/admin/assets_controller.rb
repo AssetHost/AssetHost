@@ -114,11 +114,22 @@ class Admin::AssetsController < ApplicationController
       render :text => 'ERROR' and return
     end
     
+    puts "file is #{params[:file]}"
+    
     # tell paperclip to replace our image
     @asset.image = params[:file]
     
+    # force _grab_dimensions to run early so that we can load in EXIF
+    @asset.image._grab_dimensions()
+    
+    [
+      ['title','image_title'],
+      ['caption','image_description'],
+      ['owner','image_copyright']
+    ].each {|f| @asset[f[0]] = @asset[f[1]] }
+    
     if @asset.save
-      render :text => @asset.id
+      render :text => @asset.json
     else
       puts "Error: #{@asset.errors.to_s}"
       render :text => 'ERROR'
