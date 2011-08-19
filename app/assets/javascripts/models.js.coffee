@@ -194,11 +194,9 @@ class AssetHost.Models
 
                 @render()
                 
-                $(@el).find('button')[0].addEventListener(
-                    "click", 
-                    (evt) => console.log("click on ",@model);@model.modal().open(), 
+                $(@el).find('button')[0].addEventListener "click",
+                    (evt) => @trigger "click", @model
                     true
-                )
                                 
                 @model.bind "change", => @render()
                                 
@@ -231,7 +229,8 @@ class AssetHost.Models
                 @collection.each (a) => 
                     # create a view unless one exists
                     @_views[a.cid] ?= new AssetHost.Models.AssetBrowserAssetView({model:a})
-                
+                    @_views[a.cid].bind "click", (a) => @trigger "click", a
+                    
                 # make sure all of our view elements are added
                 $(@el).append( _(@_views).map (v) -> v.el )
                 
@@ -245,7 +244,10 @@ class AssetHost.Models
     
     @AssetModalView:
         Backbone.View.extend({
-            events: { 'click button.select': 'select' }
+            events: 
+                'click button.select': '_select'
+                'click button.admin': '_admin'
+                
             template:
                 '''
                 <div class="ah_asset_browse">
@@ -254,26 +256,36 @@ class AssetHost.Models
                     <h2><%= owner %></h2>
                     <h2><%= size %></h2>
                     <p><%= caption %></p> 
-                
-                    <button class="select large awesome orange">Select Asset</button>
+                                    
+                    <% if (admin) { %><button class="admin medium awesome yellow">View in Admin</button><% }; %>
+                    <% if (select) { %><button class="select large awesome orange">Select Asset</button><% }; %>
                 </div>
                 '''
 
             open: (options) ->
+                @options = options || {}
+                console.log "modal options is ", @options
+                
                 $(@render().el).dialog(_(_({}).extend({
                     modal: true,
                     width: 600
-                })).extend( options || {} ))
+                })).extend( @options.options || {} ))
                 
             close: ->
                 $(@el).dialog('close')
             
-            select: ->
+            _select: ->
                 @close()
                 @model.trigger('selected',@model)    
             
+            _admin: ->
+                @close()
+                @model.trigger('admin',@model)
+            
             render: ->
-                $( @el ).html( _.template(@template,@model.toJSON()))
+                $( @el ).html _.template @template,_(@model.toJSON()).extend
+                    select: if @options.select? then @options.select else true
+                    admin: if @options.admin? then @options.admin else false
             
                 return this
         })

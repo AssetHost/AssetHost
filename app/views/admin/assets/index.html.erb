@@ -12,7 +12,9 @@
 		root_path: '/a/assets',
 		assets:<%= (@assets.map { |a| a.json }).to_json.html_safe %>,
 		page: <%= @assets.current_page %>,
-		total: <%= @assets.total_entries %>
+		total: <%= @assets.total_entries %>,
+		modalSelect: true,
+		modalAdmin: false
 	})
 	browser.assets.bind('selected',function (a) { 
 		console.log("got selected for ",a)

@@ -4,67 +4,63 @@ class AssetHost.BrowserUI
     DefaultOptions:
         {
             assetBrowserEl: "#asset_browser",
-            assetLoadingEl: "#assets_loading",
+            modalSelect: true
+            modalAdmin: true            
         }
         
     constructor: (options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
                 
-        @assets = new AssetHost.Models.PaginatedAssets(@options['assets']||[])
-        if @options['page']
-            @assets.page( @options['page'] ) 
+        @assets = new AssetHost.Models.PaginatedAssets @options.assets||[]
+        if @options.page
+            @assets.page @options.page
         
-        if @options['total']
-            @assets.total_entries = @options['total']
+        if @options.total
+            @assets.total_entries = @options.total        
                         
-        @browserEl = $( @options['assetBrowserEl'] )
-        @browser = new AssetHost.Models.AssetBrowserView({collection: @assets})
-        @browserEl.html @browser.el
+        @browserEl = $( @options.assetBrowserEl )
+        @browser = new AssetHost.Models.AssetBrowserView collection: @assets
 
-        @browserEl.after( @browser.pages().el )
-        
-        @aloaderEl = $( @options['assetLoadingEl'] )
-        @modal = $( @options['modal'] )
-        
+        @browserEl.html @browser.el
+        @browserEl.after @browser.pages().el
+                
         # add search box
-        @search = new AssetHost.Models.AssetSearchView({collection:@assets})
+        @search = new AssetHost.Models.AssetSearchView collection:@assets
         $('#search_box').html @search.render().el
                 
         # -- Handle Routing -- #
         
         @router = new @Router
-        @router.bind("route:asset",(id) => @previewAsset id )
-        @router.bind("route:index", => @clearDisplay() )
-        @router.bind("route:search", (page,query=null) => 
+        @router.bind "route:asset", (id) => @previewAsset id
+        @router.bind "route:index", => @clearDisplay()
+        @router.bind "route:search", (page,query) => 
             @clearDisplay()
-            @loadAssets { query: query, page: page }
-        )
+            @loadAssets query:query, page:page
         
         # -- Handle Events from UI Elements -- #
 
-        @browser.pages().bind("page", (page) => 
+        @browser.pages().bind "page", (page) => 
             @clearDisplay()
-            @loadAssets { page: page }
+            @loadAssets page:page
             @navToAssets()
-        )
         
         @search.bind "search", (query) => 
             @clearDisplay()
-            @loadAssets { query: query, page: 1 }
+            @loadAssets query:query, page:1
             @navToAssets()
             
         @browser.bind "click", (asset) =>
             console.log "clicked asset ", asset 
             @clearDisplay()
-            asset.modal().show()
+            @_previewAsset(asset)
             
-        Backbone.history.start({pushState: true, root: @options['root_path']})
+        Backbone.history.start pushState:true, root:@options.root_path
         
         $(@browserEl).delegate "li", "dragstart", (evt) ->
-            if (url = $(evt.currentTarget).attr('data-asset-url'))
-                evt.originalEvent.dataTransfer.setData('text/uri-list',url)
+            if url = $(evt.currentTarget).attr 'data-asset-url'
+                evt.originalEvent.dataTransfer.setData 'text/uri-list', url
                                         
-        @assets.trigger('reset')
+        @assets.trigger 'reset'
     
     #----------
         
@@ -122,7 +118,11 @@ class AssetHost.BrowserUI
             @_previewAsset(asset)
         
     _previewAsset: (asset) ->
-        asset.modal().open({close: => @navToAssets()})
+        asset.modal().open 
+            options:
+                close:  => @navToAssets(),
+            select: @options.modalSelect,
+            admin:  @options.modalAdmin
     
     #----------    
     

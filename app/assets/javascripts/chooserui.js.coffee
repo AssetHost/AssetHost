@@ -3,7 +3,6 @@
 class AssetHost.ChooserUI
     DefaultOptions:
         dropEl: "#my_assets"
-        modal: "asset_modal"
         browser: ''
         saveButton: 1
         assets: true
@@ -45,6 +44,10 @@ class AssetHost.ChooserUI
                 console.log "got selected from ", asset
                 @myassets.add(asset)
                 asset.editModal().open()
+                
+            @browser.assets.bind "admin", (asset) => 
+                console.log "got admin event from ", asset
+                window.open("/a/assets/#{asset.get('id')}")
                     
         # set up collection to manage uploads and convert to assets
         @uploads = new AssetHost.Models.QueuedFiles null, urlRoot:@options.uploadPath
