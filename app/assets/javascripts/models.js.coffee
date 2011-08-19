@@ -302,11 +302,14 @@ class AssetHost.Models
                     <h2><%= owner %></h2>
                     
                     <textarea rows="4" style="width: 100%"><%= caption %></textarea>
-                    <button class="large awesome orange">Save Caption</button>
+                    <button class="save large awesome orange">Save Caption</button>
+                    <button class="admin medium awesome yellow">View in Admin</button>
                 </div>
                 '''
                 
-            events: { 'click button': 'save_caption' }
+            events:
+                'click button.save': '_save'
+                'click button.admin': '_admin'
             
             open: (options) ->
                 $(@render().el).dialog(_(_({}).extend({
@@ -317,10 +320,13 @@ class AssetHost.Models
             close: ->
                 $(@el).dialog('close')
             
-            save_caption: -> 
+            _save: -> 
                 caption = $( @el ).find("textarea")[0].value
                 @model.set({caption:caption})
                 @close()
+            
+            _admin: -> 
+                window.open("/a/assets/#{@model.get('id')}") 
                 
             render: ->
                 $( @el ).html( _.template(@template,@model.toJSON()))
