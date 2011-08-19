@@ -129,7 +129,7 @@ class Admin::AssetsController < ApplicationController
     ].each {|f| @asset[f[0]] = @asset[f[1]] }
     
     if @asset.save
-      render :text => @asset.json
+      render :json => @asset.json
     else
       puts "Error: #{@asset.errors.to_s}"
       render :text => 'ERROR'

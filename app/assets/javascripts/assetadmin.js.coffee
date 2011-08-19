@@ -10,10 +10,10 @@ class AssetHost.AssetAdmin
     constructor: (asset,options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
         
-        @asset = new AssetHost.Models.Asset(asset)
-        @preview = new AssetAdmin.PreviewView({model: @asset})
-        @form = new AssetAdmin.FormView({model: @asset})
-        $( @options.el ).html(@preview.el)
+        @asset = new AssetHost.Models.Asset asset
+        @preview = new AssetAdmin.PreviewView model: @asset
+        @form = new AssetAdmin.FormView model: @asset
+        $( @options.el ).html @preview.el
         
         if @options.replace
             # set up replace image uploader
@@ -24,20 +24,21 @@ class AssetHost.AssetAdmin
                 limit: 1
                 uploadPath: @options.replacePath
                 saveButton: false
+                afterUploadText: "Refresh",
+                afterUploadURL: window.location
                 
     #----------
         
     @FormView:
-        Backbone.View.extend({
+        Backbone.View.extend
             el: "#editform"
             initialize: ->
                 #Backbone.ModelBinding.call(this)    
-        })
         
     #----------
     
     @PreviewView:
-        Backbone.View.extend({
+        Backbone.View.extend
             template: 
                 """
                 <h1><%= title || image_file_name %></h1>
@@ -52,9 +53,7 @@ class AssetHost.AssetAdmin
                 """
                 
             events:
-                {
-                    'click li': '_sizeClick'
-                }
+                'click li': '_sizeClick'
 
             initialize: -> 
                 @size = "wide"
@@ -73,7 +72,4 @@ class AssetHost.AssetAdmin
                 console.log("data is ",data)
                 $( @el ).html _.template(@template, data)
                 return this
-        })
-            
-            
         

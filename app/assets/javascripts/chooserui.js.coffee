@@ -51,7 +51,7 @@ class AssetHost.ChooserUI
         @uploads.bind "uploaded", (f) =>
             @myassets.add(f.get('ASSET'))
             @uploads.remove(f)
-        
+
         @uploadsView = new AssetHost.Models.QueuedFilesView collection:@uploads
         
         # manage the msg that shows when we have no assets or uploads
@@ -61,6 +61,15 @@ class AssetHost.ChooserUI
         # manage the upload all button
         @uploadAll = new ChooserUI.UploadAllButton collection:@uploads
         @drop.after @uploadAll.el
+        
+        # manage button that pops up after uploads
+        if @options.afterUploadURL and @options.afterUploadText
+            @afterUpload = new ChooserUI.AfterUploadButton 
+                collection:@uploads, 
+                text:@options.afterUploadText, 
+                url:@options.afterUploadURL
+                
+            @drop.after @afterUpload.el
         
         # add our two lists into the drop zone
         @drop.append(@assetsView.el,@uploadsView.el)
@@ -151,6 +160,37 @@ class AssetHost.ChooserUI
                         alert data.error
 		
         false
+    
+    #----------
+    
+    @AfterUploadButton:
+        Backbone.View.extend
+            template:
+                """
+                <button id="afterUpload" class="large awesome green">
+                    <%= text %>
+                </button>
+                """
+                
+            events:
+                'click button': '_clicked'
+                
+            initialize: (options) ->
+                @text = options.text
+                @url = options.url
+                
+                @ids = []
+
+                @collection.bind "uploaded", (f) => 
+                    @ids.push f.get('ASSET').id
+                    @render()                
+                                
+            _clicked: ->
+                window.location = _.template @url.replace(/{{([^}]+)}}/,"<%= $1 %>"), ids:@ids.join(",") 
+                
+            render: ->
+                if @ids
+                    $(@el).html _.template @template, {text: @text}
     
     #----------
     

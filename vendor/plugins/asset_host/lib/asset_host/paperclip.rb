@@ -271,7 +271,7 @@ module Paperclip
       super
             
       @convert_options = [ 
-        "-gravity #{ @asset.image_gravity || "Center" }", "-strip", "-quality 70", @convert_options 
+        "-gravity #{ @asset.image_gravity? ? @asset.image_gravity : "Center" }", "-strip", "-quality 70", @convert_options 
       ].flatten.compact
       
       Paperclip.log("[ewr] Convert options are #{@convert_options}")

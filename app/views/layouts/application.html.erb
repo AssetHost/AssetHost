@@ -43,7 +43,8 @@
     chooser = new AssetHost.ChooserUI({
 		dropEl: "#filedrop",
 		saveButton: 0,
-		afterUpload: { text: "Manage Metadata", url: "<%= metadata_a_assets_path %>" } 
+		afterUploadText: "Manage Metadata", 
+		afterUploadURL: "<%= metadata_a_assets_path + "?ids={{ids}}" %>"
 	})
 <% end %>
 
