@@ -157,12 +157,17 @@ class AssetHost.Models
                 '''
                 
             events: {
-                'click button': 'search'
+                'click button': 'search',
+                'keypress input:text': '_keypress'
             }
 
             initialize: ->
                 @collection.bind('all', => @render() )
                         
+            _keypress: (e) ->
+                if e.which == 13
+                    @search()
+                
             search: ->
                 query = $( @el ).find("input")[0].value
                 console.log "in search for ", query
