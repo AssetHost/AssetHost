@@ -3,7 +3,6 @@
 //= require jquery-ui
 //= require underscore
 //= require backbone
-//= require simplemodal
 //= require tooltipsy
 //= require exif
 //= require_tree .

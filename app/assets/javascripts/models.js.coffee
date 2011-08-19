@@ -174,7 +174,7 @@ class AssetHost.Models
                 @trigger "search", query
                 
             render: ->
-                $( @el ).html( _.template(@template,{query:@collection.query()}))
+                $(@el).html _.template @template, query:@collection.query()
                 return this
         })
         
@@ -185,12 +185,14 @@ class AssetHost.Models
             tagName: "li"
             template:
                 '''
-                    <button><%= tags.thumb %></button>
-                    <span id="asset_tip_<%= id %>" style="display: none">
-                        <h3><%= title %></h3>
-                		<%= owner %>
-                		<br/><%= size %>            		
-                    </span>          
+                <button><%= tags.thumb %></button>
+                '''
+                
+            tipTemplate:
+                '''
+                <h3><%= title %></h3>
+        		<%= owner %>
+        		<br/><%= size %>                
                 '''
                 
             initialize: ->
@@ -202,12 +204,16 @@ class AssetHost.Models
                 $(@el).find('button')[0].addEventListener "click",
                     (evt) => @trigger "click", @model
                     true
+                    
+                # add tooltip
+                $(@el).tooltipsy
+                    alignTo: 'element'
+                    content: _.template @tipTemplate, @model.toJSON()
                                 
                 @model.bind "change", => @render()
                                 
-                                
             render: ->
-                $( @el ).html( _.template @template, @model.toJSON() )
+                $( @el ).html _.template @template, @model.toJSON() 
                 return this
         })
         

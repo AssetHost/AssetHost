@@ -80,9 +80,7 @@ ul.asset_sizes {
 	}
 }
 
-.tooltip {
-	position: absolute!important;
-	overflow:hidden;
+.tooltipsy {
 	font-size: 11px;
 	z-index: 10000!important;
 	background: transparentize(#fff,0.1);
