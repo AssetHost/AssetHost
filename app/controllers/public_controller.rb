@@ -7,7 +7,7 @@ class PublicController < ApplicationController
     # if we have a cache key with aprint and style, assume we're good 
     # to just return that value
     if img = read_fragment("img:"+[params[:aprint],params[:style]].join(":"))
-      send_file img, :type => "image/jpeg" and return
+      send_file img, :type => "image/jpeg", :disposition => 'inline' and return
       #redirect_to img, status => :found and return
     end
     
@@ -39,7 +39,7 @@ class PublicController < ApplicationController
         
         #url = @asset.image.trueurl(style.first.code)
         write_fragment("img:"+[@asset.image_fingerprint,style.first.code].join(":"), path)
-        send_file path, :type => "image/jpeg" and return
+        send_file path, :type => "image/jpeg", :disposition => 'inline' and return
         
         #redirect_to url, :status => :found and return        
       else
