@@ -43,10 +43,12 @@
     li {
         display: inline;
         float: left;
+        margin: 0;
+        padding: 0;
     }    
     
     .nav {
-        padding-top: 4px;
+        padding-top: 8px;
         padding-bottom: 4px;
         
         div {
@@ -81,6 +83,11 @@
     }
 }
 
+.slideview:focus {
+    border: inherit;
+    outline: none;
+}
+
 .slide {
     .credit {
         font-size: 10px;
@@ -89,6 +96,7 @@
     }
     
     p {
-        margin: 4px 4px;
+        margin: 0;
+        padding: 4px 4px;
     }
 }

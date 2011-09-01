@@ -166,6 +166,7 @@ class AssetHost.Slideshow
             render: (w,h) ->
                 $(@el).css "position", "absolute"                
                 $(@el).css "width", w+"px"
+                $(@el).css "height", h+"px"
                 $(@el).attr "tabindex", -1
 
                 totalw = @collection.length * w
