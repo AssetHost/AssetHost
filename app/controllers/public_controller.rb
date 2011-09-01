@@ -70,4 +70,14 @@ class PublicController < ApplicationController
   def test
     render :layout => "preauth"
   end
+  
+  #----------
+  
+  def slideshow
+    @assets = Asset.find([24888,24854,24853,24852,24851])
+    
+    @assets.unshift Asset.find(24866)
+    
+    render :layout => "preauth"
+  end
 end

@@ -42,6 +42,7 @@ AssetHost::Application.routes.draw do
   match '/i/:aprint/:id-:style.:extension', :to => 'public#image', :as => :image, :constraints => { :id => /\d+/, :style => /[^\.]+/}
   
   match '/test', :to => "public#test"
+  match '/slideshow', :to => "public#slideshow"
         
   root :to => 'public#index'
 end
