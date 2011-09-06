@@ -4,7 +4,9 @@ class AssetHost.Slideshow
     DefaultOptions:
         el: "#photo",
         initial: 4,
-        start: 0
+        start: 0,
+        imgwidth: null,
+        imgheight: null
         
     constructor: (options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend options||{}
@@ -15,9 +17,9 @@ class AssetHost.Slideshow
             $('body').append @hidden
             console.log "hidden is ", @hidden
 
-            # -- get dimensions for our space -- #
+            # -- get our parent element -- #
+            
             @el = $ @options.el
-            console.log "width/height are ", @el.width(), @el.height()
         
             # -- create asset collection -- #
             
@@ -29,10 +31,17 @@ class AssetHost.Slideshow
             
             # -- set up our slides -- #
         
-            @slides = new Slideshow.Slides collection:@assets, hidden:@hidden, initial:@options.initial, nav:@nav
-            @el.before @slides.el
-            @slides.render @el.width(), @el.height()
-
+            @slides = new Slideshow.Slides 
+                collection: @assets
+                hidden:     @hidden
+                initial:    @options.initial
+                imgwidth:   @options.imgwidth
+                imgheight:  @options.imgheight
+                nav:        @nav
+                
+            @el.html @slides.el
+            @slides.render()
+            
             # -- bind slides and nav together -- #
             @nav.bind "slide", (idx) => @slides.slideTo(idx)
             @slides.bind "slide", (idx) => @nav.setCurrent(idx)
@@ -73,7 +82,7 @@ class AssetHost.Slideshow
                 
             initialize: ->
                 @slides = @options.slides
-                @hidden = @options.hidden            
+                @hidden = @options.hidden
                 
             #----------    
                 
@@ -89,6 +98,7 @@ class AssetHost.Slideshow
                 
                 console.log "text el's w/h is #{div.width()}/#{div.height()}"
                 
+                @textHeight = div.height()
                 @imgHeight = $(@el).height() - div.height()
 
                 # remove from hidden
@@ -107,7 +117,7 @@ class AssetHost.Slideshow
                     console.log "img w/h is", @img.width(), @img.height()
                     console.log "el w/h is ",$(@el).width(),@imgHeight
                     if @img.width() > $(@el).width()
-                        scale = $(@el).width / @img.width()
+                        scale = $(@el).width() / @img.width()
                         
                     if @img.height() > @imgHeight
                         vs = @imgHeight / @img.height()
@@ -153,7 +163,18 @@ class AssetHost.Slideshow
                 @hidden = @options.hidden
                 @slides = @collection.map (a) => new Slideshow.Slide model:a, slides:@, hidden:@hidden
                 
-                @nav = @options.nav
+                # we need to know the text height of our first slide to 
+                # dimension space for the rest of the slides
+                s = @slides[0]
+                $(s.el).css "width", @options.imgwidth+"px"
+                s.render()
+                txth = s.textHeight
+                console.log "slide 0 text height is ", txth
+                
+                @swidth = @options.imgwidth
+                @sheight = @options.imgheight + txth
+                
+                console.log "slide height should be ", @sheight
                 
                 @queued = []
                 @loaded = []
@@ -163,25 +184,31 @@ class AssetHost.Slideshow
             
             #----------
                 
-            render: (w,h) ->
-                $(@el).css "position", "absolute"                
-                $(@el).css "width", w+"px"
-                $(@el).css "height", h+"px"
+            render: () ->
+                #$(@el).css "position", "absolute"                
                 $(@el).attr "tabindex", -1
 
-                totalw = @collection.length * w
+                $(@el).css "width", @swidth+"px"
+
+                totalw = @collection.length * @swidth
                 
-                if @nav
-                    # -- position nav and then subtract from height -- #
-                    $(@el).html @nav.el
-                    @nav.render()
+                # height defaults to slide height
+                svheight = @sheight
+                
+                if @options.nav
+                    $(@el).html @options.nav.el
+                    @options.nav.render()
                     
-                    navh = $(@nav.el).outerHeight()
-                    console.log("nav height is ",navh)
-                    h = h - navh
+                    navh = $(@options.nav.el).outerHeight()
+                    
+                    # add nav height to slideview height
+                    svheight = svheight + navh
+
+                # now set height...
+                $(@el).css "height", svheight+"px"
                 
                 # create view tray
-                @view = $ '<ul/>', style:"position:relative;width:#{totalw}px;height:#{h}px"
+                @view = $ '<ul/>', style:"position:relative;width:#{totalw}px;height:#{@sheight}px"
                 
                 # drop view into element
                 $(@el).prepend @view
@@ -189,9 +216,8 @@ class AssetHost.Slideshow
                 # add our slides                
                 _(@slides).each (s,idx) => 
                     s.bind "imgload", => @_loaded s, idx
-                
-                    $(s.el).css "width", w+"px"
-                    $(s.el).css "height", h+"px"
+                    $(s.el).css "width", @swidth+"px"
+                    $(s.el).css "height", @sheight+"px"
                     $(@view).append s.render().el
                     
                 # create our load queue
