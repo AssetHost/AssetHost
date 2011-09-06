@@ -9,28 +9,14 @@
     #lead_photo {
         font: 12px normal Arial, Helvetica, sans-serif;
         margin: 4px 0;
-        background: #eee;
-        padding-bottom: 4px;
-       
-       .image {
-           margin: 0 auto;
-       }
-              
-       .credit {
-           font-size: 10px;
-           text-align: right;
-           color: #777;
-       }
-       
-       p {
-           margin: 4px 0;
-       }
+        padding-bottom: 4px;       
     }
 }
 
 .slideview {
     background: #fff;
     overflow: hidden;
+    margin: 0 auto;
 
     font: 12px normal Arial, Helvetica, sans-serif;
 

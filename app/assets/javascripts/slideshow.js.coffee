@@ -6,7 +6,8 @@ class AssetHost.Slideshow
         initial: 4,
         start: 0,
         imgwidth: null,
-        imgheight: null
+        imgheight: null,
+        margin: 12
         
     constructor: (options) ->
         @options = _(_({}).extend(this.DefaultOptions)).extend options||{}
@@ -15,7 +16,6 @@ class AssetHost.Slideshow
             # -- create hidden element for dimensioning -- #
             @hidden = $ "<div/>", style:"position:absolute; top:-10000px; width:0px; height:0px;"
             $('body').append @hidden
-            console.log "hidden is ", @hidden
 
             # -- get our parent element -- #
             
@@ -38,6 +38,7 @@ class AssetHost.Slideshow
                 imgwidth:   @options.imgwidth
                 imgheight:  @options.imgheight
                 nav:        @nav
+                margin:     @options.margin
                 
             @el.html @slides.el
             @slides.render()
@@ -95,9 +96,7 @@ class AssetHost.Slideshow
                 
                 # get dimensions for .text div
                 div = @$ ".text"
-                
-                console.log "text el's w/h is #{div.width()}/#{div.height()}"
-                
+                                
                 @textHeight = div.height()
                 @imgHeight = $(@el).height() - div.height()
 
@@ -191,7 +190,11 @@ class AssetHost.Slideshow
                 $(@el).css "width", @swidth+"px"
 
                 totalw = @collection.length * @swidth
-                
+
+                # check if slide0 has a right margin, and adjust width accordingly
+                if @options.margin
+                    totalw = totalw + @collection.length * @options.margin
+                                    
                 # height defaults to slide height
                 svheight = @sheight
                 
@@ -218,6 +221,10 @@ class AssetHost.Slideshow
                     s.bind "imgload", => @_loaded s, idx
                     $(s.el).css "width", @swidth+"px"
                     $(s.el).css "height", @sheight+"px"
+                    
+                    if @options.margin
+                        $(s.el).css "margin-right", @options.margin+"px"
+                        
                     $(@view).append s.render().el
                     
                 # create our load queue
@@ -234,7 +241,6 @@ class AssetHost.Slideshow
 
             _keyhandler: (e) ->
                 # is this a keypress we care about?
-                console.log "in keyhandler for ", e.which
                 if e.which == 37
                     @slideBy(-1)
                 else if e.which == 39
@@ -256,8 +262,6 @@ class AssetHost.Slideshow
             slideBy: (idx) ->
                 t = @current + idx
                 
-                console.log "slideBy target is #{t}"
-
                 if @slides[t]
                     @slideTo(t)
 
