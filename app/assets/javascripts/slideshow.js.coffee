@@ -1,16 +1,20 @@
 #= require assethost
+#= require jquery
+#= require underscore
+#= require backbone
+#= require models
 
 class AssetHost.Slideshow
     DefaultOptions:
-        el: "#photo",
-        initial: 4,
-        start: 0,
-        imgwidth: null,
-        imgheight: null,
+        el: "#photo"
+        initial: 4
+        start: 0
+        imgwidth: null
+        imgheight: null
         margin: 12
         
     constructor: (options) ->
-        @options = _(_({}).extend(this.DefaultOptions)).extend options||{}
+        @options = _(_({}).extend(@DefaultOptions)).extend options||{}
 
         $ => 
             # -- create hidden element for dimensioning -- #
@@ -84,30 +88,39 @@ class AssetHost.Slideshow
             initialize: ->
                 @slides = @options.slides
                 @hidden = @options.hidden
+                @index = @options.index
                 
             #----------    
                 
             render: ->
-                # render caption and credit
-                $(@el).html _.template @template, credit:@model.get("credit"), caption:@model.get("caption")
+                # we have to render twice...  once to hidden and once to @el. 
+                # this allows us to get dimensions
                 
-                # attach to hidden dom
-                @hidden.append @el
+                # create temp element and render
+                tmp = $ "<div/>", width:$(@el).css("width")
+                $(tmp).html _.template @template, credit:@model.get("credit"), caption:@model.get("caption")
+                @hidden.append tmp
                 
-                # get dimensions for .text div
-                div = @$ ".text"
-                                
-                @textHeight = div.height()
-                @imgHeight = $(@el).height() - div.height()
-
-                # remove from hidden
-                $(@el).detach()                
-                    
+                # get dimensions
+                @textHeight = $(tmp).height()
+                @imgHeight = $(@el).height() - @textHeight
+                
+                # and remove...
+                $(tmp).detach()
+                
+                # now render caption and credit for real
+                $(@el).html _.template @template, 
+                    credit:     @model.get("credit")
+                    caption:    @model.get("caption") 
+                    url:        @model.get("url")
+                                    
                 @
                 
             #----------
                 
             loadImage: ->
+                if @slides.current == @index then $(@el).fadeOut() else $(@el).hide()
+                
                 @img = $ "<img/>", src:@model.get("normal")
                 @hidden.append @img
                 @img.load (evt) =>
@@ -136,12 +149,10 @@ class AssetHost.Slideshow
                     
                     # -- add to our element -- #
                     
-                    @img.detach()
-                    @img.hide()
-                    
+                    @img.detach()                    
                     $(@el).prepend @img
                     
-                    if @slides.current == @ then @img.fadeIn('slow') else @img.show()
+                    if @slides.current == @index then $(@el).fadeIn('slow') else $(@el).show()
                     
                     # -- tell the loader that we're done -- #
                     
@@ -160,7 +171,11 @@ class AssetHost.Slideshow
 
             initialize: ->
                 @hidden = @options.hidden
-                @slides = @collection.map (a) => new Slideshow.Slide model:a, slides:@, hidden:@hidden
+                @slides = []
+                
+                @collection.each (a,idx) => 
+                    s = new Slideshow.Slide model:a, slides:@, hidden:@hidden, index:idx
+                    @slides[idx] = s
                 
                 # we need to know the text height of our first slide to 
                 # dimension space for the rest of the slides
@@ -220,10 +235,8 @@ class AssetHost.Slideshow
                 _(@slides).each (s,idx) => 
                     s.bind "imgload", => @_loaded s, idx
                     $(s.el).css "width", @swidth+"px"
-                    $(s.el).css "height", @sheight+"px"
-                    
-                    if @options.margin
-                        $(s.el).css "margin-right", @options.margin+"px"
+                    $(s.el).css "height", @sheight+"px"                    
+                    $(s.el).css "left", @swidth*idx + (@options.margin||0)*idx + "px"
                         
                     $(@view).append s.render().el
                     
@@ -328,11 +341,11 @@ class AssetHost.Slideshow
             template:
                 '''
                 <div style="width: 15%;">
-                    <button <% print(prev ? "data-idx='"+prev+"'" : "class='disabled'"); %> >Prev</button>
+                    <button <% print(prev ? "data-idx='"+prev+"' class='prev-arrow'" : "class='disabled prev-arrow'"); %> >Prev</button>
                 </div>
                 <div class="buttons" style="width:70%;"></div>
                 <div style="width: 15%">
-                    <button <% print(next ? "data-idx='"+next+"'" : "class='disabled'"); %> >Next</button>
+                    <button <% print(next ? "data-idx='"+next+"' class='next-arrow'" : "class='disabled next-arrow'"); %> >Next</button>
                 </div>
                 <br style="clear:both;line-height:0;height:0"/>
                 '''
