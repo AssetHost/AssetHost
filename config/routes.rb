@@ -1,5 +1,6 @@
 AssetHost::Application.routes.draw do  
   devise_for :users, :module => "admin"
+  devise_for :api_users
   
   namespace :a, :module => "admin" do 
     

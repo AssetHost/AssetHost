@@ -9,4 +9,12 @@ class ApplicationController < ActionController::Base
       # ok
     end
   end
+  
+  #----------
+  def authenticate_api_user!
+    if !current_api_user
+      head :error
+    end
+  end
+  #----------
 end

@@ -1,6 +1,6 @@
 class Api::UtilityController < ApplicationController
   
-  before_filter :authenticate_user!
+  before_filter :authenticate_api_user!
   
   # Take a URL and try to find or create an asset out of it
   def as_asset
