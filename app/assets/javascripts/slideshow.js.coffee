@@ -242,7 +242,7 @@ class AssetHost.Slideshow
                     
                 # create our load queue
                 @queueSlides _.range 0,4 
-                @slideTo 0
+                #@slideTo 0
             
             #----------
             
