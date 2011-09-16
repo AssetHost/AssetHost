@@ -12,8 +12,8 @@ class ApplicationController < ActionController::Base
   
   #----------
   def authenticate_api_user!
-    if !current_api_user
-      head :error
+    if !current_api_user && !current_user
+      head :unauthorized
     end
   end
   #----------

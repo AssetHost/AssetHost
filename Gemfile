@@ -1,21 +1,21 @@
 source 'http://rubygems.org'
 source 'http://gems.github.com/'
 
-gem 'rails', '3.1.0rc6'
+gem 'rails'
 gem 'jquery-rails'
 
-gem "redis-store", "1.0.0.rc1"
+gem "redis-store"
 
 gem 'mysql2'
 
 gem 'rack-raw-upload', :git => "git://github.com/newbamboo/rack-raw-upload.git"
 gem 'capistrano'
-gem 'formtastic', '~> 2.0.0.rc1'
+gem 'formtastic', '~> 2.0.0.rc5'
 
 gem "mini_exiftool"
 gem "paperclip", :git => 'git://github.com/SCPR/paperclip.git'
 gem "resque"
-gem "delayed_paperclip", :git => 'git://github.com/jstorimer/delayed_paperclip.git'
+gem "delayed_paperclip", :git => 'git://github.com/SCPR/delayed_paperclip.git'
 
 gem "will_paginate", :git => 'git://github.com/xspond/will_paginate.git', :branch => 'rails3-1'
 gem 'thinking-sphinx', :git => 'git://github.com/freelancing-god/thinking-sphinx.git', :branch => 'rails3'
