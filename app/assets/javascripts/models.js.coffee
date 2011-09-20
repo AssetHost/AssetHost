@@ -225,7 +225,7 @@ class AssetHost.Models
             tagName: "li"
             template:
                 '''
-                <button><%= tags.thumb %></button>
+                <button data-asset-url="<%= url %>" draggable="true"><%= tags.thumb %></button>
                 '''
                 
             tipTemplate:
@@ -618,7 +618,7 @@ class AssetHost.Models
 
                 # try to read file on disk
                 file = @model.get('file')
-                if file.type.match('image.*')
+                if file.type.match('image.*') and window.FileReader?
                     reader = new FileReader()
                     
                     reader.onload = (e) => 
