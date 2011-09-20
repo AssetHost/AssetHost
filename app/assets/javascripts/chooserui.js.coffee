@@ -35,9 +35,15 @@ class AssetHost.ChooserUI
             asset.editModal().open()
         
         @assetsView.bind 'remove', (asset) => 
-            if confirm("Remove?")
-                @myassets.remove(asset)
-        
+            modal = $("<div/>", title:'Remove Asset?', text:"Remove this asset?").dialog
+                resizeable: false
+                height: 140
+                modal: true
+                buttons:
+                    "Remove": => 
+                        @myassets.remove(asset); modal.dialog("close")
+                    Cancel: => modal.dialog("close")
+                
         # connect to our AssetBrowser instance, if one is given        
         if @browser
             @browser.assets.bind "selected", (asset) => 

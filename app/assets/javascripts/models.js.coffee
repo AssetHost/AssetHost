@@ -94,45 +94,86 @@ class AssetHost.Models
         
     #----------
     
+    @AssetDropAssetView:
+        Backbone.View.extend
+            tagName: 'li'
+            
+            template:
+                """
+                <button class="delete small awesome red">x</button>
+                <%= tags.thumb %>
+                <b><%= title %></b>
+                <p><%= chop %></p>
+                """
+            
+            events:
+                'click button.delete': "_remove"
+                'click': '_click'
+            
+            #----------
+                
+            initialize: ->
+                @drop = @options.drop
+                @model.bind "change", => @render()
+                @render()
+                
+            #----------
+            
+            _remove: ->
+                console.log ""
+                @drop.trigger 'remove', @model
+                false
+                
+            #----------
+            
+            _click: (evt) ->
+                if not $(evt.currentTarget).hasClass("delete")
+                    @drop.trigger 'click', @model
+                
+            #----------
+                
+            render: ->
+                $( @el ).html( _.template(@template,_(@model.toJSON()).extend chop:@model.chopCaption() ))
+                $(@el).attr "data-asset-id", @model.get("id")
+                @
+    
+    #----------
+    
     @AssetDropView:
-        Backbone.View.extend({
+        Backbone.View.extend
             tagName: "ul"
             className: "assets"
                 
-            events:
-                {
-                    'click li button': '_remove',
-                    'click li': '_click'
-                }
-                
             initialize: ->
-                @collection.bind("reset", => @render() )
-                @collection.bind("add", => @render() )
-                @collection.bind("change", => @render() )
-                @collection.bind("remove", => @render() )
-            
-            template:
-                '''
-                <% assets.each(function(a) { %>
-                    <li data-asset-id="<%= a.get('id') %>">
-                        <button class="delete small awesome red">x</button>
-                        <%= a.get('tags').thumb %>
-                        <b><%= a.get('title') %></b>
-                        <p><%= a.chopCaption() %></p>
-                    </li>
-                <% }); %>
-                '''
+                @_views = {}
+
+                @collection.bind 'add', (f) => 
+                    console.log "add event from ", f
+                    @_views[f.cid] = new Models.AssetDropAssetView({model:f,drop:@})
+                    @render()
+
+                @collection.bind 'remove', (f) => 
+                    console.log "remove event from ", f
+                    $(@_views[f.cid].el).detach()
+                    delete @_views[f.cid]
+                    @render()
+
+                @collection.bind 'reset', (f) => 
+                    console.log "reset event from ", f
+                    @_views = {}
+                
+            #----------
                         
-            _remove: (evt) -> 
-                @trigger 'remove', @collection.get( $(evt.currentTarget.parentElement).attr('data-asset-id') )
-                false
-            
-            _click: (evt) ->
-                @trigger 'click', @collection.get( $(evt.currentTarget).attr('data-asset-id') )
-            
             render: ->
-                $( @el ).html( _.template(@template,{assets:@collection}))
-                $( @el ).sortable({
+                # set up views for each collection member
+                @collection.each (f) => 
+                    # create a view unless one exists
+                    @_views[f.cid] ?= new Models.AssetDropAssetView({model:f,drop:@})
+
+                # make sure all of our view elements are added
+                $(@el).append( _(@_views).map (v) -> v.el )
+
+                $( @el ).sortable
                     update: (evt,ui) => 
                         console.log "ui is ",ui
                         console.log "ul children is ",evt.target.children
@@ -140,9 +181,8 @@ class AssetHost.Models
                             id = $(li).attr('data-asset-id')
                             @collection.get(id).attributes.ORDER = idx+1
                             console.log("set idx for #{id} to #{idx+1}")
-                })
-                this
-        })
+
+                @
         
     #----------
             
