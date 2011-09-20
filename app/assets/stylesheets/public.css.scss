@@ -57,11 +57,11 @@ ul.assets, ul.uploads li {
    }
        
    ul.assets li {
-       height: 86px;
+       min-height: 86px;
    }
        
    ul.uploads li {
-       height: 32px;
+       min-height: 32px;
    }
        
    ul.uploads li.uploading {
