@@ -254,6 +254,7 @@ class AssetHost.Models
                                 
             render: ->
                 $( @el ).html _.template @template, @model.toJSON() 
+                $(@el).attr "draggable", true
                 return this
         })
         
