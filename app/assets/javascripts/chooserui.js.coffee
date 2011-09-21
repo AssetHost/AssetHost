@@ -112,7 +112,13 @@ class AssetHost.ChooserUI
 
             if !asset
                 asset = new AssetHost.Models.Asset(obj)
-                asset.fetch success:(a)=>a.set({caption:obj.caption});@myassets.add(a)
+                asset.fetch success:(a)=>
+                    a.set caption:obj.caption
+                    
+                    if obj.ORDER
+                        a.set ORDER:obj.ORDER 
+                        
+                    @myassets.add(a)
     
     #----------
     

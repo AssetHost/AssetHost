@@ -179,8 +179,8 @@ class AssetHost.Models
                         console.log "ul children is ",evt.target.children
                         _(evt.target.children).each (li,idx) => 
                             id = $(li).attr('data-asset-id')
-                            @collection.get(id).attributes.ORDER = idx+1
-                            console.log("set idx for #{id} to #{idx+1}")
+                            @collection.get(id).attributes.ORDER = idx
+                            console.log("set idx for #{id} to #{idx}")
 
                 @
         
@@ -405,6 +405,9 @@ class AssetHost.Models
             
             saveAndClose: ->
                 console.log "saveAndClose Clicked with ",@collection
+                
+                # make sure collection is sorted before we return it
+                @collection.sort()
                 @trigger 'saveAndClose', @collection.toJSON()
             
             render: ->
