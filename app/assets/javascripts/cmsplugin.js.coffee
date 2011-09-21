@@ -30,7 +30,8 @@ class AssetHost.CMSPlugin
                 asset = {
                     id: el.value,
                     caption: $( _.template("#"+@options.assetID,{idx:idx,field:@options.caption}) )[0].value,
-                    ORDER: $(_.template("#"+@options.assetID,{idx:idx,field:@options.order}) )[0].value
+                    #ORDER: $(_.template("#"+@options.assetID,{idx:idx,field:@options.order}) )[0].value
+                    ORDER: idx
                 }
                 
                 console.log "original caption is ", asset.caption
