@@ -622,7 +622,7 @@ class AssetHost.Models
 
                 # try to read file on disk
                 file = @model.get('file')
-                if file.type.match('image.*') and window.FileReader?
+                if file.type.match('image.*')
                     reader = new FileReader()
                     
                     reader.onload = (e) => 

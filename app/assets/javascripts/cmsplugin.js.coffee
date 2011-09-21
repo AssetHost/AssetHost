@@ -119,7 +119,7 @@ class AssetHost.CMSPlugin
                 <b><%= asset.title %> (<%= asset.size %>)</b>
                 <p><%= asset.caption %></p>
                 <input type="hidden" id="<%= id.id %>" name="<%= id.name %>" value="<%= asset.id %>" />
-                <input type="hidden" id="<%= caption.id %>" name="<%= caption.name %>" value="<%= asset.caption %>" />
+                <input type="hidden" id="<%= caption.id %>" name="<%= caption.name %>" value="<%= (asset.caption||"").replace(/"/g,'&quot;') %>" />
                 <input type="hidden" id="<%= order.id %>" name="<%= order.name %>" value="<%= idx+1 %>" />
                 <% _(extras).each(function(ex) { %>
                     <input type="hidden" id="<%= ex.id %>" name="<%= ex.name %>" value="<%= ex.value %>" />
