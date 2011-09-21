@@ -119,6 +119,8 @@ class AssetHost.ChooserUI
                         a.set ORDER:obj.ORDER 
                         
                     @myassets.add(a)
+                    
+        @myassets.sort()
     
     #----------
     
