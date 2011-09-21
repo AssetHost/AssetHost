@@ -78,11 +78,11 @@ class AssetHost.CMSPlugin
                     # do we have this asset?
                     if asset = @assets.get(a.id)
                         # yes... check for changed caption
-                        asset.set({caption:a.caption,ORDER:a.ORDER})
+                        asset.set({caption:a.caption,ORDER:i})
                     else
                         # no, needs to be added
                         asset = new AssetHost.Models.Asset(a)
-                        asset.fetch(success: (aobj)=>aobj.set({caption:a.caption,ORDER:a.ORDER});@assets.add(aobj))
+                        asset.fetch(success: (aobj)=>aobj.set({caption:a.caption,ORDER:i});@assets.add(aobj))
                     
                     found[ a.id ] = true
                 
