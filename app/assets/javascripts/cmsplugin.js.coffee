@@ -132,7 +132,8 @@ class AssetHost.CMSPlugin
 
             render: ->
                 if @model.get('tags')
-                    idx = @model.collection.indexOf(@model)
+                    idx = @model.get('ORDER')
+                    #idx = @model.collection.indexOf(@model)
                                         
                     if @options.rows[idx]
                         extras = @options.rows[idx].extras
