@@ -149,14 +149,11 @@ class AssetHost.Models
 
                 @collection.bind 'add', (f) => 
                     console.log "add event from ", f
-                    @_views[f.cid] = new Models.AssetDropAssetView({model:f,drop:@})
-                    @render()
+                    @collection.sort()
 
                 @collection.bind 'remove', (f) => 
                     console.log "remove event from ", f
-                    $(@_views[f.cid].el).detach()
-                    delete @_views[f.cid]
-                    @render()
+                    @collection.sort()
 
                 @collection.bind 'reset', (f) => 
                     console.log "reset event from ", f                    
