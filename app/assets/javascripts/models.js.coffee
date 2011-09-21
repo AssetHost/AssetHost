@@ -159,8 +159,10 @@ class AssetHost.Models
                     @render()
 
                 @collection.bind 'reset', (f) => 
-                    console.log "reset event from ", f
+                    console.log "reset event from ", f                    
+                    _(@_views).each (av) => $(av.el).detach()
                     @_views = {}
+                    @render()
                 
             #----------
                         
@@ -181,6 +183,7 @@ class AssetHost.Models
                             id = $(li).attr('data-asset-id')
                             @collection.get(id).attributes.ORDER = idx
                             console.log("set idx for #{id} to #{idx}")
+                        @collection.sort()
 
                 @
         
@@ -267,7 +270,8 @@ class AssetHost.Models
             initialize: ->
                 @_views = {}
                 @collection.bind "reset", => 
-                    _(@_views).each (a) => $(a.el).detach(); @_views = {}
+                    _(@_views).each (a) => $(a.el).detach()
+                    @_views = {}
                     @render()
                             
             pages: ->
