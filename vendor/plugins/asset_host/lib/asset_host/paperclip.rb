@@ -243,11 +243,29 @@ module Paperclip
         return false
       end
       
+      # -- determine metadata -- #
+      
+      title = ""
+      description = ""
+      copyright = ""
+      
+      if p.credit =~ /Getty Images/
+        # smart import for Getty Images photos
+        copyright = [p.by_line,p.credit].join("/")
+        title = p.headline
+        description = p.description
+      elsif p.credit =~ /AP/
+        # smart import for AP photos
+        copyright = [p.by_line,p.credit].join("/")
+        title = p.title
+        description = p.description
+      end
+      
       instance_write(:width,p.image_width)
       instance_write(:height,p.image_height)
-      instance_write(:title,p.title)
-      instance_write(:description,p.description)
-      instance_write(:copyright,p.copyright)
+      instance_write(:title,title)
+      instance_write(:description,description)
+      instance_write(:copyright,copyright)
       instance_write(:taken,p.datetime_original)
       
       true
@@ -271,7 +289,7 @@ module Paperclip
       super
             
       @convert_options = [ 
-        "-gravity #{ @asset.image_gravity? ? @asset.image_gravity : "Center" }", "-strip", "-quality 70", @convert_options 
+        "-gravity #{ @asset.image_gravity? ? @asset.image_gravity : "Center" }", "-strip", "-quality 80", @convert_options 
       ].flatten.compact
       
       Paperclip.log("[ewr] Convert options are #{@convert_options}")

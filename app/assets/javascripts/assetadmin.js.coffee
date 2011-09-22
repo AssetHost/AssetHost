@@ -41,7 +41,7 @@ class AssetHost.AssetAdmin
         Backbone.View.extend
             template: 
                 """
-                <h1><%= title || image_file_name %></h1>
+                <h1><%= title || id %></h1>
                 <%= tags[ tag ] %>
                 
                 <ul class="asset_sizes">
