@@ -31,8 +31,8 @@ class AssetHost.ChooserUI
         @myassets = new AssetHost.Models.Assets
         @assetsView = new AssetHost.Models.AssetDropView collection: @myassets
         
-        @assetsView.bind 'click', (asset) =>  
-            asset.editModal().open()
+        @assetsView.bind 'click', (asset) =>
+            new ChooserUI.EditModal model:asset
         
         @assetsView.bind 'remove', (asset) => 
             modal = $("<div/>", title:'Remove Asset?', text:"Remove this asset?").dialog
@@ -177,6 +177,48 @@ class AssetHost.ChooserUI
                         alert data.error
 		
         false
+    
+    #----------
+    
+    @EditModal:
+        Backbone.View.extend
+            className: "ah_asset_edit"
+                
+            events:
+                'click button.save': '_save'
+                'click button.admin': '_admin'
+            
+            #----------
+            
+            initialize: (options) ->
+                $(@render().el).dialog(_(_({}).extend({
+                    modal: true,
+                    width: 660,
+                    title: "Edit Asset"
+                })).extend( options || {} ))
+                
+            #----------
+                
+            close: ->
+                $(@el).dialog 'close'
+            
+            #----------
+            
+            _save: -> 
+                caption = $( @el ).find("textarea")[0].value
+                @model.set({caption:caption})
+                @close()
+            
+            #----------
+            
+            _admin: -> 
+                window.open("/a/assets/#{@model.get('id')}") 
+            
+            #----------    
+            
+            render: ->
+                $(@el).html JST["templates/edit_modal"] @model.toJSON()
+                @
     
     #----------
     

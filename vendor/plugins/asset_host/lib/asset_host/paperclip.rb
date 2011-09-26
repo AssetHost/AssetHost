@@ -26,7 +26,7 @@ module AssetHost
         self.send("before_save", :"grab_dimensions_for_#{name}")
         self.send("after_save", :"rerender_on_gravity_change_for_#{name}")
         
-        ::Paperclip.interpolates "sprint", do |attachment,style_name|
+        ::Paperclip.interpolates "sprint" do |attachment,style_name|
           sprint = nil
           if style_name == :original
             sprint = 'original'

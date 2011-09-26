@@ -27,7 +27,8 @@ gem "oa-oauth", :require => "omniauth/oauth"
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails'
+  gem 'sass-rails', :git => "git://github.com/rails/sass-rails.git", :branch => "3-1-stable"
+  gem 'eco'
   gem 'coffee-rails'
   gem 'uglifier'
 end
