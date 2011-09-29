@@ -38,6 +38,20 @@ class Api::AssetsController < ApplicationController
   end
   
   #----------
+  
+  def update
+    asset = Asset.find(params[:id])
+
+    response.headers['Access-Control-Allow-Origin'] = "*"
+
+    if asset.update_attributes(params[:asset])
+      render :json => asset.json
+    else
+      render :text => asset.errors.full_messages.join(" | "), :status => :error
+    end
+  end
+  
+  #----------
 
   def tag
     begin

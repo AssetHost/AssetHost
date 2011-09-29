@@ -28,6 +28,11 @@ class Admin::AssetsController < ApplicationController
   
   def upload  
     file = params[:file]
+    
+    # FIXME: Put in place to keep Firefox 7 happy
+    if !file.original_filename
+      file.original_filename = "upload.jpg"
+    end
             
     asset = Asset.new(:title => file.original_filename.sub(/\.\w{3}$/,''))
     asset.image = file

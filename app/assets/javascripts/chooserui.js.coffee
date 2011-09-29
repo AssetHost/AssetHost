@@ -191,23 +191,53 @@ class AssetHost.ChooserUI
             #----------
             
             initialize: (options) ->
+                # stash model attributes for later comparison
+                @original = 
+                    title: @model.get("title")
+                    owner: @model.get("owner")
+                    notes: @model.get("notes")
+                
                 $(@render().el).dialog(_(_({}).extend({
                     modal: true,
                     width: 660,
                     title: "Edit Asset"
                 })).extend( options || {} ))
                 
+                # bind model to form
+                Backbone.ModelBinding.bind(this)
+                
+                # attach listener for metadata changes
+                @model.bind "change", =>                    
+                    if _(@original).any((v,k) => v != @model.get(k))
+                        @meta_dirty = true
+                        @$(".meta_dirty").show()
+                    else 
+                        @meta_dirty = false
+                        @$(".meta_dirty").hide()
+                
             #----------
                 
             close: ->
+                Backbone.ModelBinding.unbind(this)
                 $(@el).dialog 'close'
             
             #----------
             
             _save: -> 
-                caption = $( @el ).find("textarea")[0].value
-                @model.set({caption:caption})
-                @close()
+                # see whether we should save anything back to the server
+                if @meta_dirty || @$("#save_caption_check")[0].checked
+                    @model.clone().fetch success:(m)=>
+                        # set title,owner,notes
+                        attr = title:@model.get("title"),owner:@model.get("owner"),notes:@model.get("notes")                        
+                    
+                        if @$("#save_caption_check")[0].checked
+                            attr.caption = @model.get("caption")
+                        
+                        m.save(attr)
+                        @close()
+                        
+                else
+                    @close()
             
             #----------
             
@@ -218,6 +248,16 @@ class AssetHost.ChooserUI
             
             render: ->
                 $(@el).html JST["templates/edit_modal"] @model.toJSON()
+                
+                # set metadata state
+                @$(".meta_dirty").hide()
+                
+                # set default state for caption save checkbox
+                if @model.get("caption") && @model.get("caption") != ''
+                    # leave it unchecked
+                else
+                    @$("#save_caption_check")[0].checked = true
+                
                 @
     
     #----------
