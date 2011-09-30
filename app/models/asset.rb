@@ -9,6 +9,7 @@ class Asset < ActiveRecord::Base
 	define_index do
     indexes title
     indexes caption
+    indexes notes
     has created_at
     has updated_at
   end
@@ -52,6 +53,7 @@ class Asset < ActiveRecord::Base
       :tags       => self.image.tags,
       :urls       => Output.paperclip_sizes.inject({}) { |h, (s,v)| h[s] = self.image.url(s); h },
       :url        => "http://#{ASSET_SERVER}/api/assets/#{self.id}/",
+      :notes      => self.notes,
       :created_at => self.created_at,
       :taken_at   => self.image_taken || self.created_at
     }
