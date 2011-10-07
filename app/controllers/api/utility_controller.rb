@@ -10,6 +10,12 @@ class Api::UtilityController < ApplicationController
     
     # see if we have a loader for this URL
     if asset = AssetHost.as_asset(params[:url])
+      # set hidden flag if desired
+      if params[:hidden] && params[:hidden] != ""
+        asset.is_hidden = true
+        asset.save()
+      end
+      
       render :json => { 
         :id => asset.id, 
         :title => asset.title, 
