@@ -4,13 +4,14 @@ class Api::AssetsController < ApplicationController
 
   def index
     if params[:q] && params[:q] != ''
-      @assets = Asset.search(params[:q],
+      @assets = Asset.visible.search(params[:q],
         :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
         :per_page => 24,
-        :field_weights => { :title => 10, :caption => 3 }
+        :field_weights => { :title => 10, :caption => 3 },
+        :order => "created_at DESC, @relevance DESC"
       )
     else
-      @assets = Asset.paginate(
+      @assets = Asset.visible.paginate(
         :order => "updated_at desc",
         :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
         :per_page => 24

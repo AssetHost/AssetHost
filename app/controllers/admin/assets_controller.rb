@@ -2,26 +2,32 @@ class Admin::AssetsController < ApplicationController
   before_filter :authenticate_user!
   
   skip_before_filter :verify_authenticity_token, :only => [:upload, :replace]
+  
+  #----------
 
   def index
-    @assets = Asset.paginate(
+    @assets = Asset.visible.paginate(
       :order => "updated_at desc",
       :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
       :per_page => 24
     )
   end
   
+  #----------
+  
   def search
-    @assets = Asset.search params[:q], 
+    @assets = Asset.visible.search params[:q], 
 	    :page => params[:page] || 1, 
-	    :per_page => 36,
+	    :per_page => 24,
 	    :field_weights => {
 	      :title => 10,
 	      :caption => 5
 	    },
 	    :order => "created_at DESC, @relevance DESC"
 	    
-	  
+	  @query = params[:q]
+	    
+	  render :action => :index
   end
   
   #----------

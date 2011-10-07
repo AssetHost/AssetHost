@@ -26,6 +26,8 @@ class Asset < ActiveRecord::Base
     [ "Bottom Right",     "SouthEast" ]
   ]
   
+  scope :visible, where(:is_hidden => false)
+  
   has_many :outputs, :class_name => "AssetOutput", :order => "created_at desc", :dependent => :destroy
   		
 	has_attached_file :image, 

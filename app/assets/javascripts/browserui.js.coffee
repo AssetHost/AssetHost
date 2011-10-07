@@ -14,6 +14,9 @@ class AssetHost.BrowserUI
         @assets = new AssetHost.Models.PaginatedAssets @options.assets||[]
         if @options.page
             @assets.page @options.page
+            
+        if @options.query
+            @assets.query @options.query
         
         if @options.total
             @assets.total_entries = @options.total        
@@ -82,7 +85,7 @@ class AssetHost.BrowserUI
     # given a query string and/or page number, grab assets via the API and 
     # fill in the asset browser
     loadAssets: (options = {}) -> 
-        qDirty = options['query'] && options['query'] != @assets.query()
+        qDirty = (options['query'] || @assets.query()) && options['query'] != @assets.query()
         pDirty = options['page'] && Number(options['page']) != Number(@assets.page())
                         
         if qDirty || pDirty || options['force']

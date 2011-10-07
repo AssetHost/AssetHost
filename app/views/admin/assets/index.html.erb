@@ -13,6 +13,7 @@
 		assets:<%= (@assets.map { |a| a.json }).to_json.html_safe %>,
 		page: <%= @assets.current_page %>,
 		total: <%= @assets.total_entries %>,
+		query: <%= @query ? ('"'+@query+'"').html_safe : "null" %>,
 		modalSelect: true,
 		modalAdmin: false
 	})

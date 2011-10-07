@@ -24,6 +24,7 @@ AssetHost::Application.routes.draw do
       end      
     end
     
+    match '/assets/p/:page/:q', :to => "assets#search", :as => "asset_search"
     match '/assets/p/(:page)', :to => "assets#index", :as => "asset_page"
     
     match 'chooser', :to => "home#chooser", :as => 'chooser'

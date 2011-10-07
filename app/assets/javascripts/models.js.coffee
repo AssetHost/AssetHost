@@ -82,7 +82,7 @@ class AssetHost.Models
             url: ->
                 @baseUrl + "?" + $.param({page:@_page,q:@_query})
                 
-            query: (q=null) ->
+            query: (q=@_query) ->
                 @_query = q if q?
                 @_query
                 
