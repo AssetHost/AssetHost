@@ -49,7 +49,7 @@ class AssetHost.ChooserUI
             @browser.assets.bind "selected", (asset) => 
                 console.log "got selected from ", asset
                 @myassets.add(asset)
-                asset.editModal().open()
+                new ChooserUI.EditModal model:asset
                 
             @browser.assets.bind "admin", (asset) => 
                 console.log "got admin event from ", asset

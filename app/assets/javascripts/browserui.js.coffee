@@ -59,7 +59,8 @@ class AssetHost.BrowserUI
             
         Backbone.history.start pushState:true, root:@options.root_path
         
-        $(@browserEl).delegate "li", "dragstart", (evt) ->
+        $(@browserEl).delegate "button", "dragstart", (evt) ->
+            console.log "got dragstart for ", evt
             if url = $(evt.currentTarget).attr 'data-asset-url'
                 evt.originalEvent.dataTransfer.setData 'text/uri-list', url
                                         
