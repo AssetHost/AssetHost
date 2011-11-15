@@ -29,6 +29,7 @@ class Asset < ActiveRecord::Base
   scope :visible, where(:is_hidden => false)
   
   has_many :outputs, :class_name => "AssetOutput", :order => "created_at desc", :dependent => :destroy
+  belongs_to :native, :polymorphic => true
   		
 	has_attached_file :image, 
 	  :styles => Proc.new { Output.paperclip_sizes },
@@ -44,7 +45,11 @@ class Asset < ActiveRecord::Base
 		    
   #----------
   
-  def json
+  def json(sizes=[])
+    sizes = nil
+    urls = nil
+    tags = nil
+    
     { 
       :id         => self.id, 
       :title      => self.title, 
@@ -90,7 +95,7 @@ class Asset < ActiveRecord::Base
   end
   
   #----------
-  
+    
   def output_by_style(style)
     outputs = self.outputs.inject({}) do |h,o|
       h[o.output.code] = o

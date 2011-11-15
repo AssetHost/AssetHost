@@ -224,9 +224,14 @@ module Paperclip
         return nil
       end
       
+      if (s.instance_variable_get :@other_args)[:rich] && self.instance.native
+        #return self.instance.native.tag(self.width(style),self.height(style))
+        args.merge!(self.instance.native.attrs())
+      end
+
       htmlargs = args.collect { |k,v| %Q!#{k}="#{v}"! }.join(" ")
-      
-      return %Q(<img src="#{self.url(style)}" width="#{self.width(style)}" height="#{self.height(style)}" alt="#{self.instance.title}" #{htmlargs}/>).html_safe
+
+      return %Q(<img src="#{self.url(style)}" width="#{self.width(style)}" height="#{self.height(style)}" alt="#{self.instance.title}" #{htmlargs}/>).html_safe        
     end
         
     #----------

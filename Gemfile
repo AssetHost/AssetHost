@@ -17,6 +17,8 @@ gem "paperclip", :git => 'git://github.com/SCPR/paperclip.git'
 gem "resque"
 gem "delayed_paperclip", :git => 'git://github.com/SCPR/delayed_paperclip.git'
 
+gem "brightcove-api"
+
 gem "will_paginate", :git => 'git://github.com/xspond/will_paginate.git', :branch => 'rails3-1'
 gem 'thinking-sphinx', :git => 'git://github.com/freelancing-god/thinking-sphinx.git', :branch => 'rails3'
 

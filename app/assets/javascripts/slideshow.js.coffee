@@ -1,6 +1,4 @@
 #= require assethost
-#= require jquery
-#= require underscore
 #= require backbone
 #= require models
 
