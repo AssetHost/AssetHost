@@ -24,10 +24,15 @@ AssetHost::Application.routes.draw do
       end      
     end
     
+    resources :brightcove do
+    end
+    
     match '/assets/p/:page/:q', :to => "assets#search", :as => "asset_search"
     match '/assets/p/(:page)', :to => "assets#index", :as => "asset_page"
     
     match 'chooser', :to => "home#chooser", :as => 'chooser'
+    
+    root :to => "home#index"
   end
   
   namespace :api do    
@@ -38,7 +43,7 @@ AssetHost::Application.routes.draw do
       end
     end 
 
-    match 'as_asset', :to => "utility#as_asset", :as => "as_asset"
+    match 'as_asset', :to => "utility#as_asset", :as => "as_asset"    
   end
     
   match '/i/:aprint/:id-:style.:extension', :to => 'public#image', :as => :image, :constraints => { :id => /\d+/, :style => /[^\.]+/}

@@ -1,0 +1,43 @@
+<% @page_title = "Brightcove Assets" %>
+
+<h1><%= @page_title %></h1>
+
+<hr/>
+
+<div class="twoW">
+	<h3>Import a Video</h3>
+</div>
+<div class="fourW endcap">
+	<p><i>Paste in the "Video ID" number from Brightcove.</i></p>
+
+	<%= form_tag a_brightcove_index_path, :method => :post do %>
+		Video ID: <%= text_field_tag :videoid %>
+		<%= submit_tag "Import" %>
+	<% end %>	
+</div>
+
+<br class="clear"/>
+<br/>
+<hr/>
+
+<div class='assetbox' id='asset_browser'></div>
+
+<script type="text/javascript">
+	var browser = new AssetHost.BrowserUI({
+		root_path: '/a/brightcove',
+		assets:<%= (@assets.map { |a| a.json }).to_json.html_safe %>,
+		page: <%= @assets.current_page %>,
+		total: <%= @assets.total_entries %>,
+		query: <%= @query ? ('"'+@query+'"').html_safe : "null" %>,
+		modalSelect: true,
+		modalAdmin: false
+	})
+	browser.assets.bind('selected',function (a) { 
+		console.log("got selected for ",a)
+		window.location = "/a/assets/"+a.get("id")
+	})
+	
+	$(".ui-widget-overlay").live('click', function(){
+	   $(".ui-dialog-titlebar-close").trigger('click');
+	});
+</script>
