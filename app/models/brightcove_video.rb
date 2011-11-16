@@ -1,5 +1,10 @@
 class BrightcoveVideo < Video
+  
   has_one :asset
+
+  def CLASS
+    "BrightcoveVideo"
+  end
   
   def attrs
     {

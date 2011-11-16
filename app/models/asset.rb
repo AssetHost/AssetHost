@@ -62,7 +62,8 @@ class Asset < ActiveRecord::Base
       :url        => "http://#{ASSET_SERVER}/api/assets/#{self.id}/",
       :notes      => self.notes,
       :created_at => self.created_at,
-      :taken_at   => self.image_taken || self.created_at
+      :taken_at   => self.image_taken || self.created_at,
+      :class      => self.native ? self.native.CLASS : nil
     }
   end
   
