@@ -10,7 +10,7 @@ class Api::UtilityController < ApplicationController
     
     # see if we have a loader for this URL
     if asset = AssetHost.as_asset(params[:url])
-      if param[:note] && param[:note] != ''
+      if params[:note] && param[:note] != ''
         asset.notes += "\n#{params[:note]}"
         asset.save()
       end
