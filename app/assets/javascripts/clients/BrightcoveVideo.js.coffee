@@ -41,7 +41,7 @@ class AssetHost.Client.BrightcoveVideo
         # create an element off-screen for loading
         @overlay = $ "<div/>", style:"position:relative;left:0;height:0;margin:0;padding:0;border:0"
         @el.before @overlay
-        @click = $ "<div/>", style:"width:#{@w}px;height:#{@h}px;background: rgba(255,0,0,0.5)"
+        @click = $ "<div/>", class:"BrightcoveVideoOverlay" style:"width:#{@w}px;height:#{@h}px"
         @overlay.append @click
         @click.bind "click", (e) => @launch()
         
