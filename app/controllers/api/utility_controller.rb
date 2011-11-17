@@ -10,6 +10,11 @@ class Api::UtilityController < ApplicationController
     
     # see if we have a loader for this URL
     if asset = AssetHost.as_asset(params[:url])
+      if param[:note] && param[:note] != ''
+        asset.notes += "\n#{params[:note]}"
+        asset.save()
+      end
+      
       # set hidden flag if desired
       if params[:hidden] && params[:hidden] != ""
         asset.is_hidden = true
