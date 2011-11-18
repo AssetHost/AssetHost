@@ -264,6 +264,10 @@ module Paperclip
         copyright = [p.by_line,p.credit].join("/")
         title = p.title
         description = p.description
+      else
+        copyright = p.byline || p.credit
+        title = p.title
+        description = p.description
       end
       
       instance_write(:width,p.image_width)

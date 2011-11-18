@@ -12,7 +12,7 @@ gem 'rack-raw-upload', :git => "git://github.com/newbamboo/rack-raw-upload.git"
 gem 'capistrano'
 gem 'formtastic', '~> 2.0.0.rc5'
 
-gem "mini_exiftool"
+gem "mini_exiftool", :git => 'git://github.com/SCPR/mini_exiftool.git'
 gem "paperclip", :git => 'git://github.com/SCPR/paperclip.git'
 gem "resque"
 gem "delayed_paperclip", :git => 'git://github.com/SCPR/delayed_paperclip.git'
