@@ -165,9 +165,7 @@ class AssetHost.Models
 
             $( @el ).sortable
                 update: (evt,ui) => 
-                    console.log "ui is ",ui
-                    console.log "ul children is ",evt.target.children
-                    _(evt.target.children).each (li,idx) => 
+                    _(@el.children).each (li,idx) => 
                         id = $(li).attr('data-asset-id')
                         @collection.get(id).attributes.ORDER = idx
                         console.log("set idx for #{id} to #{idx}")
