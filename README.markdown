@@ -28,22 +28,6 @@ The plugins should allow a UI for choosing assets to attach to the CMS,
 and should handle calling the backend server to get the HTML code for a 
 given asset context.
 
-## Rich Media Support
-
-Rich media assets are delivered as specially-tagged img tags, and are 
-replaced on the client-side via an AssetHost.Client plugin.
-
-### Brightcove Video
-
-Brightcove videos can be imported as assets and used to place videos into 
-image display contexts. The video is delivered as an img tag, and the 
-AssetHost.Client library will see the tag and call the 
-AssetHost.Client.Brightcove plugin. The plugin will place an overlay on top 
-of the image with a class of BrightcoveVideoOverlay.  When clicked, the 
-image will be replaced by a Brightcove player object.
-
-Brightcove assets can be imported using the interface at /a/brightcove/
-
 ### Workflow
 
 1. Photographer / Author / Editor goes to AssetHost and uploads or imports 
@@ -65,6 +49,22 @@ appropriate handling.
 
 5. AssetHost will return a 302 Found to the rendered image asset if it 
 exists, or render it on-the-fly if it does not yet exist.
+
+# Rich Media Support
+
+Rich media assets are delivered as specially-tagged img tags, and are 
+replaced on the client-side via an AssetHost.Client plugin.
+
+### Brightcove Video
+
+Brightcove videos can be imported as assets and used to place videos into 
+image display contexts. The video is delivered as an img tag, and the 
+AssetHost.Client library will see the tag and call the 
+AssetHost.Client.Brightcove plugin. The plugin will place an overlay on top 
+of the image with a class of BrightcoveVideoOverlay.  When clicked, the 
+image will be replaced by a Brightcove player object.
+
+Brightcove assets can be imported using the interface at /a/brightcove/
 
 # Image Storage
 
