@@ -8,18 +8,30 @@
 </head>
 <body>
 
-<div id="content">
-	<div class="blocks">
-		<div style="display: inline;float:right">
-			<% if current_user %>
-			<p style="margin: 0"><i>Logged in as <%= current_user.email %>. [<%= link_to "Log Out", destroy_user_session_path %>]</i></p>
-			<% end %>			
+<div class="navbar">
+	<div class="navbar-inner">
+		<div class="container-fluid">
+			<%= link_to "AssetHost", "#", :class => "brand" %>
+
+			<ul class="nav pull-right">
+				<li><%= link_to "Log Out", sign_out_path %></li>
+			</ul>
 		</div>
-		<h1>AssetHost</h1>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
 		<% if flash[:notice] %><div class="notice"><%= flash[:notice] %><% end %>
 		<% if flash[:alert] %><div class="notice"><%= flash[:alert] %><% end %>
-		<%= yield %>
+		</div>	
 	</div>
+	
+	<div id="content">
+	<%= yield %>
+	</div>
+	
 </div>
 </body>
 <%= render "shared/footerjs" %>

@@ -7,7 +7,7 @@ module AssetHostCore::Admin
     #----------
 
     def chooser
-      @assets = Asset.paginate(:per_page => 24, :page => 1, :order => "updated_at desc")
+      @assets = AssetHostCore::Asset.paginate(:per_page => 24, :page => 1, :order => "updated_at desc")
     
       render :layout => 'asset_host_core/minimal'
     end

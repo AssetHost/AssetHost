@@ -2,23 +2,24 @@
 	@page_title = "Drop Test"
 %>
 
-<div class="threeW">
-	<h2>Selected Assets:</h2>
-	
-	<div id="my_assets" style="">
-	<p><i>Drop assets here to add them to your story</i></p>
-	</div>	
+<div class="row-fluid">
+	<div class="span4">
+		<h3>Selected Assets:</h3>
+		
+		<div id="my_assets" style="">
+		<p><i>Drop assets here to add them to your story</i></p>
+		</div>	
+		
+	</div>
+	<div class="span8">
+		<div id="asset_browser" class="assetbox"></div>
+		
+		<br class="clear"/>
+		<div class="oneW"><h2>Search:</h2></div>
+		<div class="fiveW endcap" id="search_box"></div>
+		<br class="clear"/>
+	</div>
 </div>
-<div class="sixW endcap">
-	<div class="oneW"><h2>Search:</h2></div>
-	<div class="fiveW endcap" id="search_box"></div>
-	<br class="clear"/>
-	
-	<div id="asset_browser" class="assetbox"></div>
-	
-</div>
-
-<br class="clear"/>
 
 <script type="text/javascript">
 	chooser = new AssetHost.ChooserUI({
@@ -44,8 +45,4 @@
            window.close()
         })
 	})
-    	
-	$(".ui-widget-overlay").live('click', function(){
-	   $(".ui-dialog-titlebar-close").trigger('click');
-	});
 </script>
