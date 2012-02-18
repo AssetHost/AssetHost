@@ -1,0 +1,11 @@
+###
+Welcome to AssetHost
+###
+
+# stub console.log() for IE
+if !window.console
+    class window.console
+        @log: ->
+
+AssetHost ?= {}
+AssetHost.SERVER = "<%= Rails.application.config.assethost.server %>"
