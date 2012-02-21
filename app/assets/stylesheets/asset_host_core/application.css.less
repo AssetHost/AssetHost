@@ -351,8 +351,26 @@ span.asset_tip {
     } 
 }
 
+.BrightcoveVideoOverlay {
+    filter:alpha(opacity=50);
+    opacity: 0.5;
+    background: url('/assets/asset_host_core/videoplayer-play.png') bottom left no-repeat;
+    cursor: pointer;
+    -webkit-transition: opacity linear 0.2s;
+    -moz-transition: opacity linear 0.2s;
+    transition: opacity linear 0.2s;
+}
+
+.BrightcoveVideoOverlay:hover {
+    filter:alpha(opacity=90);
+    opacity: 0.9;
+    -webkit-transition: opacity linear 0.2s;
+    -moz-transition: opacity linear 0.2s;
+    transition: opacity linear 0.2s;
+}
 .ah_asset_edit {
     width: 660px;
     padding: 12px;
     max-height: inherit;
 }
+

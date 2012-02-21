@@ -30,8 +30,9 @@ class AssetHost.Client.BrightcoveVideo
         # button on it, and then on click we'll launch the video
         
         # get width and height from the img
-        @w = $(el).width()
-        @h = $(el).height()
+        @w = $(el).attr("width")
+        @h = $(el).attr("height")
+        console.log "height is #{@h} for ", el
         
         # get videoid from data-ah-videoid attribute
         @videoid = @el.attr("data-ah-videoid")

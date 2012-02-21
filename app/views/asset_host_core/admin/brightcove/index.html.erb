@@ -4,20 +4,20 @@
 
 <hr/>
 
-<div class="twoW">
-	<h3>Import a Video</h3>
-</div>
-<div class="fourW endcap">
-	<p><i>Paste in the "Video ID" number from Brightcove.</i></p>
+<div class="row">
+	<div class="span3">
+		<h3>Import a Video</h3>
+	</div>
+	<div class="span5">
+		<p><i>Paste in the "Video ID" number from Brightcove.</i></p>
 
-	<%= form_tag a_brightcove_index_path, :method => :post do %>
-		Video ID: <%= text_field_tag :videoid %>
-		<%= submit_tag "Import" %>
-	<% end %>	
+		<%= form_tag a_brightcove_index_path, :method => :post do %>
+			Video ID: <%= text_field_tag :videoid %>
+			<%= submit_tag "Import" %>
+		<% end %>			
+	</div>
 </div>
 
-<br class="clear"/>
-<br/>
 <hr/>
 
 <div class='assetbox' id='asset_browser'></div>

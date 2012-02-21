@@ -3,7 +3,7 @@ module AssetHostCore
     before_filter :authenticate_user!
   
     def index
-      @assets = AssetHostCore::Asset.visible.where(:native_type => 'BrightcoveVideo').paginate(
+      @assets = AssetHostCore::Asset.visible.where(:native_type => 'AssetHostCore::BrightcoveVideo').paginate(
         :order => "updated_at desc",
         :page => params[:page] =~ /^\d+$/ ? params[:page] : 1,
         :per_page => 24
