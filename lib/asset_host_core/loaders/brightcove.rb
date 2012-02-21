@@ -53,7 +53,7 @@ module AssetHostCore::Loaders
       end
       
       # create asset
-      a = ::Asset.new(
+      a = AssetHostCore::Asset.new(
         :title => resp["name"],
         :caption => resp["shortDescription"],
         :owner => AssetHostSecrets[:byline],
@@ -68,7 +68,7 @@ module AssetHostCore::Loaders
       a.image = self.image_file
       
       # now create our BrightcoveVideo native object
-      native = ::BrightcoveVideo.new(
+      native = AssetHostCore::BrightcoveVideo.new(
         :videoid => resp['id'],
         :length => resp['length']
       )

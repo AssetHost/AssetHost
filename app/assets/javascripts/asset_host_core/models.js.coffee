@@ -89,7 +89,7 @@ class AssetHost.Models
         
         template:
             """
-            <button class="delete small awesome red">x</button>
+            <button class="btn btn-danger delete">x</button>
             <%= tags ? tags.thumb : "INVALID" %>
             <b><%= title %></b>
             <p><%= chop %></p>
@@ -102,15 +102,38 @@ class AssetHost.Models
         #----------
             
         initialize: ->
+            @del_confirm = false
+            @del_timeout = null
+            
             @drop = @options.drop
             @model.bind "change", => @render()
             @render()
             
         #----------
         
-        _remove: ->
+        _remove: (evt) ->
             console.log ""
-            @drop.trigger 'remove', @model
+            
+            if @del_confirm
+                # delete
+                console.log "confirm is set. should delete", @model
+                clearTimeout @del_timeout
+                
+                # remove our model...
+                _.defer => @drop.trigger 'remove', @model
+            else
+                target = $(evt.target)
+                target.text "Really Delete?"
+                @del_confirm = true
+                
+                # set a reset timeout
+                @del_timeout = setTimeout =>
+                    target.text "x"
+                    @del_confirm = false
+                    @del_timeout = null
+                    console.log "reset confirm on delete button", target
+                , 2000
+            
             false
             
         #----------
@@ -178,7 +201,7 @@ class AssetHost.Models
         template:
             '''
             <input type="text" style="width: 200px" value="<%= query %>"/>
-            <button class="large awesome orange">Search</button>
+            <button class="btn">Search</button>
             '''
             
         events: 
@@ -334,7 +357,7 @@ class AssetHost.Models
         
         template:
             '''
-            <button id="saveAndClose" class="large awesome orange">
+            <button id="saveAndClose" class="btn btn-large btn-primary">
                 Save and Close
                 <% if (count) { %>(<%= count %> Assets)<% } %>
             </button>
@@ -531,8 +554,8 @@ class AssetHost.Models
         template:
             '''
             <% if (!xhr) { %>
-                <button class="remove small awesome red">x</button>
-                <button class="upload small awesome green">Upload</button>
+                <button class="btn btn-danger">x</button>
+                <button class="btn btn-primary">Upload</button>
             <% }; %>
             <% if (STATUS == 'uploading') { %>
                 <b>(<%= PERCENT %>%)</b>

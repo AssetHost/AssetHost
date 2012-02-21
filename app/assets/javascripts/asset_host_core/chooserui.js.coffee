@@ -1,5 +1,7 @@
 #= require ./assethost
 
+#= require ./templates/edit_modal
+
 class AssetHost.ChooserUI
     DefaultOptions:
         dropEl: "#my_assets"
@@ -35,14 +37,7 @@ class AssetHost.ChooserUI
             new ChooserUI.EditModal model:asset
         
         @assetsView.bind 'remove', (asset) => 
-            modal = $("<div/>", title:'Remove Asset?', text:"Remove this asset?").dialog
-                resizeable: false
-                height: 140
-                modal: true
-                buttons:
-                    "Remove": => 
-                        @myassets.remove(asset); modal.dialog("close")
-                    Cancel: => modal.dialog("close")
+            @myassets.remove(asset)
                 
         # connect to our AssetBrowser instance, if one is given        
         if @browser
@@ -182,7 +177,7 @@ class AssetHost.ChooserUI
     
     @EditModal:
         Backbone.View.extend
-            className: "ah_asset_edit"
+            className: "ah_asset_edit modal"
                 
             events:
                 'click button.save': '_save'
@@ -196,13 +191,9 @@ class AssetHost.ChooserUI
                     title: @model.get("title")
                     owner: @model.get("owner")
                     notes: @model.get("notes")
-                
-                $(@render().el).dialog(_(_({}).extend({
-                    modal: true,
-                    width: 660,
-                    title: "Edit Asset"
-                })).extend( options || {} ))
-                
+                    
+                $(@render().el).modal()
+                                
                 # bind model to form
                 Backbone.ModelBinding.bind(this)
                 
@@ -219,7 +210,7 @@ class AssetHost.ChooserUI
                 
             close: ->
                 Backbone.ModelBinding.unbind(this)
-                $(@el).dialog 'close'
+                $(@el).modal('hide')
             
             #----------
             
@@ -247,7 +238,7 @@ class AssetHost.ChooserUI
             #----------    
             
             render: ->
-                $(@el).html JST["templates/edit_modal"] @model.toJSON()
+                $(@el).html JST["asset_host_core/templates/edit_modal"] @model.toJSON()
                 
                 # set metadata state
                 @$(".meta_dirty").hide()
@@ -266,7 +257,7 @@ class AssetHost.ChooserUI
         Backbone.View.extend
             template:
                 """
-                <button id="afterUpload" class="large awesome green">
+                <button id="afterUpload" class="btn btn-large btn-success">
                     <%= text %>
                 </button>
                 """
@@ -297,7 +288,7 @@ class AssetHost.ChooserUI
         Backbone.View.extend({
             template:
                 """
-                <button id="uploadAll" class="large awesome orange">
+                <button id="uploadAll" class="btn btn-large btn-warning">
                     Upload All
                     <% if (count) { %>(<%= count %> Images)<% } %>
                 </button>

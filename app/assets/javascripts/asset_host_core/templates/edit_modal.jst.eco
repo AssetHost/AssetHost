@@ -3,7 +3,7 @@
 	<i>Uploaded at <%= @size %></i>
 </div>
 <div class="formtastic">
-	<button class="admin medium awesome yellow">View in Admin</button>
+	<button class="admin btn">View in Admin</button>
     
     <fieldset>
 		<h3>Asset Metadata (Global)</h3>				
@@ -18,23 +18,23 @@
 			</li>
 			<li class="input text">
 				<label for="notes" class="label">Notes</label>
-				<textarea id="notes" name="notes" rows=6><%= @notes %></textarea>
+				<textarea id="notes" name="notes" rows=4><%= @notes %></textarea>
 			</li>
 		</ol>
 	</fieldset>
 </div>
-<br style="clear:both"/>
+<br style="clear:both;line-height: 0"/>
 
 <h3 style="margin-top: 0">Story Caption:</h3>
-<textarea rows="4" style="width: 100%" id="caption"><%= @caption %></textarea>
+<textarea rows="4" style="width: 98%" id="caption"><%= @caption %></textarea>
 
 <div class="notice save_caption">
 	<input type="checkbox" id="save_caption_check"/> Also save caption back to AssetHost for future uses?
 </div>
 
-<div class="notice meta_dirty">
-	<b>Note:</b> Metadata (title, credit, notes) has been changed and will be saved to AssetHost.
+<div class="alert meta_dirty">
+	<strong>Note:</strong> Metadata (title, credit, notes) has been changed and will be saved to AssetHost.
 </div>
 
-<button class="save large awesome orange">Save Caption</button>
+<button class="save btn btn-primary">Save Caption</button>
 

@@ -7,14 +7,15 @@ module AssetHostCore
     VIA_LOCAL = 2
     VIA_UPLOAD = 3
 
-  	#define_index do
-    #  indexes title
-    #  indexes caption
-    #  indexes notes
-    #  indexes owner
-    #  has created_at
-    #  has updated_at
-    #end
+  	define_index do
+      indexes title
+      indexes caption
+      indexes notes
+      indexes owner
+      has created_at
+      has updated_at
+      where "is_hidden = 0"
+    end
 
     GRAVITY_OPTIONS = [
       [ "Center (default)", "Center"    ],
@@ -27,6 +28,8 @@ module AssetHostCore
       [ "Bottom Left",      "SouthWest" ],
       [ "Bottom Right",     "SouthEast" ]
     ]
+
+    default_scope includes(:outputs)
 
     scope :visible, where(:is_hidden => false)
 
@@ -100,12 +103,12 @@ module AssetHostCore
     #----------
 
     def output_by_style(style)
-      outputs = self.outputs.inject({}) do |h,o|
+      @s_outputs ||= self.outputs.inject({}) do |h,o|
         h[o.output.code] = o
         h
       end
 
-      outputs[style.to_s] || false
+      @s_outputs[style.to_s] || false
     end
 
     def rendered_outputs

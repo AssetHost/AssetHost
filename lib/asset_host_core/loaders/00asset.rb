@@ -18,7 +18,7 @@ module AssetHostCore::Loaders
     end
     
     def load
-      a = ::Asset.find(@id)
+      a = AssetHostCore::Asset.find(@id)
       return a
     rescue
       return nil

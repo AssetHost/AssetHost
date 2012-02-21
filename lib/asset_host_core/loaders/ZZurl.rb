@@ -35,7 +35,7 @@ module AssetHostCore::Loaders
       file = $~[1]
 
       # create asset
-      a = ::Asset.new(
+      a = AssetHostCore::Asset.new(
         :title => file,
         :caption => '',
         :owner => '',
