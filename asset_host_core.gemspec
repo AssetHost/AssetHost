@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = AssetHostCore::VERSION
   s.authors     = ["Eric Richardson"]
   s.email       = ["erichardson@scpr.org"]
-  s.homepage    = "TODO"
+  s.homepage    = "http://github.com/SCPR/AssetHost"
   s.summary     = "TODO: Summary of AssetHostCore."
   s.description = "TODO: Description of AssetHostCore."
 
@@ -19,14 +19,16 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 3.2.1"
   s.add_dependency "paperclip"
   s.add_dependency "brightcove-api"
-  s.add_dependency "delayed_paperclip"
+  #s.add_dependency "delayed_paperclip"
   s.add_dependency "will_paginate"
   s.add_dependency "thinking-sphinx"
   s.add_dependency "resque"
   s.add_dependency "less-rails-bootstrap"
   s.add_dependency "formtastic-bootstrap"
   s.add_dependency "thinking-sphinx"
+  s.add_dependency "mini_exiftool"
   
 
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency "rspec-rails"
 end

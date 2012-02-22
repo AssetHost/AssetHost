@@ -2,6 +2,8 @@ module AssetHostCore
   class Admin::AssetsController < ApplicationController
     before_filter :authenticate_user!
     
+    before_filter :load_asset, :only => [:show,:update,:replace,:destroy]
+    
     skip_before_filter :verify_authenticity_token, :only => [:upload, :replace]
 
     #----------
@@ -41,17 +43,21 @@ module AssetHostCore
         file.original_filename = "upload.jpg"
       end
 
-      asset = Asset.new(:title => file.original_filename.sub(/\.\w{3}$/,''))
-      asset.image = file
+      asset = nil
+      Asset.transaction do
+        asset = Asset.create(:title => file.original_filename.sub(/\.\w{3}$/,''))
+        asset.image = file
 
-      # force _grab_dimensions to run early so that we can load in EXIF
-      asset.image._grab_dimensions()
+        # force _grab_dimensions to run early so that we can load in EXIF
+        asset.image._grab_dimensions()
 
-      [
-        ['title','image_title'],
-        ['caption','image_description'],
-        ['owner','image_copyright']
-      ].each {|f| asset[f[0]] = asset[f[1]] }
+        [
+          ['title','image_title'],
+          ['caption','image_description'],
+          ['owner','image_copyright']
+        ].each {|f| asset[f[0]] = asset[f[1]] }        
+      end
+
 
       if asset.save
         render :json => asset.json
@@ -64,7 +70,6 @@ module AssetHostCore
     #----------
 
     def metadata
-      @assets = Asset.find(params[:ids].split(','))
     end
 
     #----------
@@ -81,33 +86,11 @@ module AssetHostCore
     #----------
 
     def show
-      @asset = Asset.find(params[:id])
-    end
-
-    #----------
-
-    def preview
-      @asset = Asset.find(params[:id])
-      @output = Output.find_by_code(params[:output])
-
-
-      respond_to do |format|
-        format.js { render :partial => "preview" }
-      end
-    end
-
-    #----------
-
-    def edit
-      @asset = Asset.find(params[:id])
-
     end
 
     #----------
 
     def update
-      @asset = Asset.find(params[:id])
-
       if @asset.update_attributes(params[:asset])
         flash[:notice] = "Successfully updated asset."
         redirect_to a_asset_path(@asset)
@@ -120,8 +103,6 @@ module AssetHostCore
     #----------
 
     def replace
-      @asset = Asset.find(params[:id])
-
       if !params[:file]
         render :text => 'ERROR' and return
       end
@@ -151,7 +132,17 @@ module AssetHostCore
     #----------
 
     def destroy
-
+      
+    end
+    
+    #----------
+    
+    protected
+    
+    def load_asset
+      @asset = Asset.find(params[:id])
+    rescue
+      redirect_to a_assets_path
     end
   end
 end

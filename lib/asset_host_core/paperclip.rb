@@ -54,7 +54,7 @@ module AssetHostCore
   #----------
 
   class ResqueJob
-    @queue = :paperclip
+    @queue = nil
 
     def self.perform(instance_klass, instance_id, attachment_name, *style_args)
       instance = instance_klass.constantize.find(instance_id)
@@ -69,9 +69,11 @@ module Paperclip
 
     # Overwrite styles loader to allow caching despite dynamic loading
     def styles
+      styling_option = @options[:styles]
+      
       if !@normalized_styles
         @normalized_styles = ActiveSupport::OrderedHash.new
-        @styles.call(self).each do |name, args|
+        styling_option.call(self).each do |name, args|
           @normalized_styles[name] = Paperclip::Style.new(name, args.dup, self)
         end
       end
@@ -94,8 +96,22 @@ module Paperclip
     end
 
     #----------
+    
+    def delete_style(style)
+      if style.to_sym == :original
+        # can't delete the original image through here
+        return false
+      end
+      
+      if self.exists?(style)
+        @queued_for_delete = [ self.path(style) ]
+        self.flush_deletes()
+      end
+    end
+    
+    #----------
 
-    def delete_style(path)
+    def delete_path(path)
       @queued_for_delete = [ path ]
       self.flush_deletes()
     end
@@ -246,9 +262,9 @@ module Paperclip
       return unless @queued_for_write[:original]
 
       begin
-        p = MiniExiftool.new(@queued_for_write[:original].path)
+        p = ::MiniExiftool.new(@queued_for_write[:original].path)
       rescue
-        Paperclip.log("[ewr] Failed to call MiniExifTool")
+        Paperclip.log("[ewr] Failed to call MiniExifTool on #{@queued_for_write[:original].path}")
         return false
       end
 
@@ -321,7 +337,7 @@ module Paperclip
       if @prerender || ao
         if !ao 
           # register empty AssetObject to denote processing
-          ao = @asset.outputs.create(:output_id => @output)
+          ao = @asset.outputs.create(:output_id => @output, :image_fingerprint => @asset.image_fingerprint)
           Paperclip.log("[ewr] Created tmpao to note processing for #{@output}")
         end
 
@@ -374,7 +390,7 @@ module Paperclip
           path.gsub!(@asset.image_fingerprint,ao.image_fingerprint)
 
           Paperclip.log("[EWR] Deleting old thumbnail at #{path}")
-          @attachment.delete_style(path)
+          @attachment.delete_path(path)
 
           # now delete the old cache
           Paperclip.log("[EWR] Deleting old cache at #{"img:"+[ao.image_fingerprint,ao.output.code].join(":")}")

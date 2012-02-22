@@ -1,8 +1,7 @@
 //= require jquery
 //= require jquery_ujs
-//= require jquery-ui
+//= require jquery-ui-1.8.17.sortable_w_effects
 //= require underscore
 //= require backbone
-//= require tooltipsy
 //= require exif
 //= require_tree .

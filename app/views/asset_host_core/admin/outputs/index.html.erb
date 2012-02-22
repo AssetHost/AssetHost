@@ -1,0 +1,26 @@
+<% @PAGE_TITLE = "Outputs" %>
+
+<h1>Outputs</h1>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Code</th>
+			<th>Size</th>
+			<th>Pre-rendered?</th>
+			<th>Rich?</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for o in @outputs do %>
+			<tr>
+				<td><%= link_to "#{o.code}", a_output_path(o.id) %></td>
+				<td><%= o.size %></td>
+				<td><%= o.prerender? ? "Yes" : "No" %></td>
+				<td><%= o.is_rich? ? "Yes" : "No" %></td>
+			</tr>
+		<% end %>		
+	</tbody>
+</table>
+
+<p><%= link_to "Create a new output", new_a_output_path, :class => "btn btn-primary" %></p>

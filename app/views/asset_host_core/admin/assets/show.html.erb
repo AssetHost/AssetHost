@@ -1,5 +1,5 @@
 <%
-	@page_title = "Asset: #{@asset.title}"
+	@PAGE_TITLE = "Asset: #{@asset.title}"
 %>
 
 <div id="asset"></div>
@@ -7,18 +7,13 @@
 <br/>
 
 <div id="editform">
-	<%= semantic_form_for(@asset, :as => :asset, :url => a_asset_path(@asset)) do |f| %>
+	<%= semantic_form_for(@asset, :as => :asset, :url => a_asset_path(@asset), :html => {:class => "form-horizontal"}) do |f| %>
 	<div class="row">
 		<div class="span6">
 		<%= f.inputs :name => "Basics" do %>
-			<%= f.input :title %>
-			<%= f.input :caption, :as => :text, :input_html => {:rows => 5} %>
-		<% end %>
-	
-		<%= f.inputs :name => "Rights" do %>
-			<%= f.input :owner %>
-			<%= f.input :url %>
-		<% end %>
+			<%= f.input :title, :hint => @asset.image_title? ? "From Image: #{@asset.image_title}" : nil %>
+			<%= f.input :caption, :as => :text, :input_html => {:rows => 5}, :hint => @asset.image_description? ? "From Image: #{@asset.image_description}" : nil %>
+		<% end %>	
 		</div>
 		<div class="span2">
 			<h3>Replace:</h3>
@@ -29,6 +24,12 @@
 	</div>
 	<div class="row">
 		<div class="span8">	
+			
+			<%= f.inputs :name => "Rights" do %>
+				<%= f.input :owner, :hint => @asset.image_copyright? ? "From Image: #{@asset.image_copyright}" : nil %>
+				<%= f.input :url %>
+			<% end %>
+			
 			<%= f.inputs :name => "Metadata" do %>
 				<div class="form-horizontal">
 				<%= f.input :image_taken, :as => :date %>

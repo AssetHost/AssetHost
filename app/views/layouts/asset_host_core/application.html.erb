@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AssetHost</title>
+  <title><%= @PAGE_TITLE ? @PAGE_TITLE + " | AssetHost" : "AssetHost | Media Dashboard" %></title>
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tag %>
@@ -35,7 +35,7 @@
 			<h3>Upload Assets</h3>
 			
 			<div id="filedrop" style="">
-        	<p style="font-size:24px;color: #aaa;text-align: center">Drop File(s) Here</i></p>
+        	<p style="font-size:24px;line-height:36px;color: #aaa;text-align: center">Drop File(s) Here</i></p>
         	</div>
 		</div>
 		<div class='span8'>

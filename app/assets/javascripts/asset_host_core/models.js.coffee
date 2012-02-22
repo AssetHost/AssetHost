@@ -554,8 +554,8 @@ class AssetHost.Models
         template:
             '''
             <% if (!xhr) { %>
-                <button class="btn btn-danger">x</button>
-                <button class="btn btn-primary">Upload</button>
+                <button class="btn btn-danger remove">x</button>
+                <button class="btn btn-primary upload">Upload</button>
             <% }; %>
             <% if (STATUS == 'uploading') { %>
                 <b>(<%= PERCENT %>%)</b>
