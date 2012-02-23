@@ -28,10 +28,12 @@ module AssetHostCore
         path = self.asset.image.path(self.output.code_sym)
         puts "gsub #{self.asset.image_fingerprint} -> #{imgfinger}"
         puts "ao imgfinger #{self.image_fingerprint_changed?} ? #{self.image_fingerprint_was} : #{self.image_fingerprint}"
-        path.gsub!(self.asset.image_fingerprint,imgfinger)
+        if path
+          path.gsub!(self.asset.image_fingerprint,imgfinger)
       
-        Rails.logger.debug("Deleting AssetOutput image at #{path}")
-        self.asset.image.delete_path(path)
+          Rails.logger.debug("Deleting AssetOutput image at #{path}")
+          self.asset.image.delete_path(path)
+        end
       
         # -- delete cached path -- #
       

@@ -132,7 +132,13 @@ module AssetHostCore
     #----------
 
     def destroy
-      
+      if @asset.destroy
+        flash[:notice] = "Deleted asset #{@asset.title}."
+        redirect_to a_assets_path
+      else
+        flash[:error] = "Unable to delete asset."
+        redirect_to a_asset_path(@asset)
+      end
     end
     
     #----------
