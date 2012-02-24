@@ -17,16 +17,33 @@ AssetHost is intended to run as two pieces: a backend asset server and
 lightweight frontend plugins that attach to the CMS system.  The pieces 
 should speak to each other using a secure API.
 
-### Backend Server
+### Backend Engine
+
+This repository provides the AssetHostCore engine, which can be run either 
+on the root of a standalone application (perhaps powering multiple frontend 
+applications) or at a namespace in an existing application.
 
 The backend server provides the primary UI for uploading, managing, and  
-serving assets. It is built in Ruby on Rails.
+serving assets. It also provides an API endpoint that can be accessed either 
+by the local application (this is how much of the admin works) or by other 
+applications or plugins.
 
-### Frontend Plugins
+A sample host application can be found at <http://github.com/SCPR/AssetHostApp>
 
-The plugins should allow a UI for choosing assets to attach to the CMS, 
-and should handle calling the backend server to get the HTML code for a 
-given asset context.
+### Plugins for Other Applications
+
+AssetHost provides an API and a Chooser UI that can be integrated into 
+your application, allowing you to integrate the system in a minimal amount 
+of code.
+
+_TODO: More documentation on CMS interaction. External Rails example. Django example._
+
+### Integrating with the AssetHost engine
+
+To integrate with a locally-installed AssetHostCore engine, simply make your 
+mapping data model belong to AssetHostCore::Asset.
+
+_TODO: More documentation on creating content/asset models._
 
 ### Workflow
 
