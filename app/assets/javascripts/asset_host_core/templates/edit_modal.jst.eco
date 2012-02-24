@@ -1,6 +1,6 @@
 <div class="" style="display:inline;float:left;width: 324px;margin-right: 12px">
-    <%- @tags.lead %>
-	<i>Uploaded at <%= @size %></i>
+    <%- @tags[ AssetHost.SIZES.modal ] %>
+	<br/><i>Uploaded at <%= @size %></i>
 </div>
 <div class="formtastic">
 	<button class="admin btn">View in Admin</button>

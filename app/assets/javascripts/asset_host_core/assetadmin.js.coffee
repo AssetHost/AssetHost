@@ -3,29 +3,30 @@
 
 class AssetHost.AssetAdmin
     DefaultOptions:
-        el: ""
-        replace: ''
-        replacePath: ''
+        el:             ""
+        replace:        ''
+        replacePath:    ''
         
-    constructor: (asset,options) ->
-        @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
+    constructor: (asset,options = {}) ->
+        @options = _.defaults options, @DefaultOptions
         
-        @asset = new AssetHost.Models.Asset asset
-        @preview = new AssetAdmin.PreviewView model: @asset
-        @form = new AssetAdmin.FormView model: @asset
+        @asset      = new AssetHost.Models.Asset    asset
+        @preview    = new AssetAdmin.PreviewView    model: @asset
+        @form       = new AssetAdmin.FormView       model: @asset
+        
         $( @options.el ).html @preview.el
         
         if @options.replace
             # set up replace image uploader
             @chooser = new AssetHost.ChooserUI
-                dropEl: @options.replace
-                assets: false
-                uploads: true
-                limit: 1
-                uploadPath: @options.replacePath
-                saveButton: false
-                afterUploadText: "Refresh",
-                afterUploadURL: window.location
+                dropEl:             @options.replace
+                assets:             false
+                uploads:            true
+                limit:              1
+                uploadPath:         @options.replacePath
+                saveButton:         false
+                afterUploadText:    "Refresh",
+                afterUploadURL:     window.location
                 
     #----------
         
@@ -56,7 +57,7 @@ class AssetHost.AssetAdmin
                 'click li': '_sizeClick'
 
             initialize: -> 
-                @size = "wide"
+                @size = AssetHost.SIZES.detail
                 @render()
 
             _sizeClick: (evt) ->

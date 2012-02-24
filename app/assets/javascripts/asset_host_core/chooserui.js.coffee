@@ -14,8 +14,8 @@ class AssetHost.ChooserUI
 
     #----------
 
-    constructor: (options) ->
-        @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
+    constructor: (options = {}) ->
+        @options = _.defaults options, @DefaultOptions
         
         # add in events
         _.extend(this, Backbone.Events)
@@ -53,14 +53,20 @@ class AssetHost.ChooserUI
         # set up collection to manage uploads and convert to assets
         @uploads = new AssetHost.Models.QueuedFiles null, urlRoot:@options.uploadPath
         @uploads.bind "uploaded", (f) =>
+            # add this to our selected assets
             @myassets.add(f.get('ASSET'))
+            
+            # also add it to our browser, just for fun
+            @browser?.assets.add f.get('ASSET')
+
+            # finally, remove the asset from our collection of uploads
             @uploads.remove(f)
 
         @uploadsView = new AssetHost.Models.QueuedFilesView collection:@uploads
         
         # manage the msg that shows when we have no assets or uploads
-        @myassets.bind "all", () => @_manageEmptyMsg()
-        @uploads.bind "all", () => @_manageEmptyMsg()
+        @myassets.bind "all",   => @_manageEmptyMsg()
+        @uploads.bind "all",    => @_manageEmptyMsg()
         
         # manage the upload all button
         @uploadAll = new ChooserUI.UploadAllButton collection:@uploads
@@ -69,9 +75,9 @@ class AssetHost.ChooserUI
         # manage button that pops up after uploads
         if @options.afterUploadURL and @options.afterUploadText
             @afterUpload = new ChooserUI.AfterUploadButton 
-                collection:@uploads, 
-                text:@options.afterUploadText, 
-                url:@options.afterUploadURL
+                collection: @uploads
+                text:       @options.afterUploadText
+                url:        @options.afterUploadURL
                 
             @drop.after @afterUpload.el
         
@@ -86,8 +92,8 @@ class AssetHost.ChooserUI
             
         # attach drag-n-drop listeners to my_assets
         @drop.bind "dragenter", (evt) => @_dropDragEnter evt
-        @drop.bind "dragover", (evt) => @_dropDragOver evt
-        @drop.bind "drop", (evt) => @_dropDrop evt
+        @drop.bind "dragover",  (evt) => @_dropDragOver evt
+        @drop.bind "drop",      (evt) => @_dropDrop evt
             
     #----------
     

@@ -90,7 +90,7 @@ class AssetHost.Models
         template:
             """
             <button class="btn btn-danger delete">x</button>
-            <%= tags ? tags.thumb : "INVALID" %>
+            <%= tags ? tags[ AssetHost.SIZES.thumb ] : "INVALID" %>
             <b><%= title %></b>
             <p><%= chop %></p>
             """
@@ -230,7 +230,7 @@ class AssetHost.Models
         tagName: "li"
         template:
             '''
-            <button data-asset-url="<%= url %>" draggable="true"><%= tags.thumb %></button>
+            <button data-asset-url="<%= url %>" draggable="true"><%= tags[ AssetHost.SIZES.thumb ] %></button>
             '''
             
         tipTemplate:
@@ -306,7 +306,7 @@ class AssetHost.Models
         template:
             '''
             <div class="ah_asset_browse modal-body">
-                <%= tags.lead %>
+                <%= tags[ AssetHost.SIZES.modal ] %>
                 <h1><%= title %></h1>
                 <h2><%= owner %></h2>
                 <h2><%= size %></h2>
@@ -389,8 +389,8 @@ class AssetHost.Models
         
         events: { 'click li': 'clickPage' }
         
-        initialize: (collection,options) ->
-            @options = _(_({}).extend(this.DefaultOptions)).extend( options || {} )
+        initialize: (collection,options = {}) ->
+            @options = _.defaults options, @DefaultOptions
 
             @collection = collection
             @collection.bind("reset", => @render() )
@@ -401,6 +401,7 @@ class AssetHost.Models
         
         template:
             '''
+            <br style="clear: both;"/>
             <ul>
             <% if (current > 1) { %>
                 <li data-page="<%= current - 1 %>" class="prev"><a href="#"><%= options.prev_label %></a></li>
