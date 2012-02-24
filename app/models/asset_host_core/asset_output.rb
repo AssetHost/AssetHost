@@ -26,8 +26,6 @@ module AssetHostCore
         # -- delete AssetOutput image -- #
 
         path = self.asset.image.path(self.output.code_sym)
-        puts "gsub #{self.asset.image_fingerprint} -> #{imgfinger}"
-        puts "ao imgfinger #{self.image_fingerprint_changed?} ? #{self.image_fingerprint_was} : #{self.image_fingerprint}"
         if path
           path.gsub!(self.asset.image_fingerprint,imgfinger)
       

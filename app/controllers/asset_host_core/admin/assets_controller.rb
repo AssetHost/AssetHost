@@ -70,6 +70,7 @@ module AssetHostCore
     #----------
 
     def metadata
+      @assets = Asset.where(:id => params[:ids].split(','))
     end
 
     #----------

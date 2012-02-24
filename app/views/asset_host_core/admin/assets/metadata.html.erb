@@ -2,7 +2,7 @@
 	@PAGE_TITLE = "Add Metadata"
 %>
 
-<%= semantic_form_for(@assets, :url => metadata_a_assets_path) do |f| %>
+<%= semantic_form_for(@assets, :as => :asset, :url => metadata_a_assets_path, :method => :put) do |f| %>
 	<% for asset in @assets %>
 		<%= f.fields_for "#{asset.id}", asset, :builder => Formtastic::FormBuilder do |af| %>
 			<hr/>

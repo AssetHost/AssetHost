@@ -20,6 +20,8 @@ RDoc::Task.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
+# load in resque tasks
+require 'resque/tasks'
 
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)

@@ -45,7 +45,7 @@ module AssetHostCore
           # loop a try to return it
         
           (0..5).each do 
-            if File.exists? path
+            if @asset.image.exists? style.code_sym
               send_file path, :type => "image/jpeg", :disposition => 'inline' and return
             end
           
@@ -66,7 +66,7 @@ module AssetHostCore
         # No, fire a render for the style
       
         # create an AssetOutput with no fingerprint
-        @asset.outputs.create(:output_id => style.id)
+        @asset.outputs.create(:output_id => style.id, :image_fingerprint => @asset.image_fingerprint)
       
         # and fire the queue  
         @asset.image.enqueue_styles(style.code)

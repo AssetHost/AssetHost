@@ -7,6 +7,8 @@ module AssetHostCore
     module ClassMethods
       def treat_as_image_asset(name)
         include InstanceMethods
+        
+        attachment_definitions[name][:delayed] = true
 
         define_method "grab_dimensions_for_#{name}" do
           if self.send("#{name}").dirty?
@@ -15,16 +17,23 @@ module AssetHostCore
           end
         end
 
-        define_method "rerender_on_gravity_change_for_#{name}" do 
-          if self[:image_gravity] && self.changed.include?("image_gravity")
-            ::Paperclip.log("[ewr] Reprocessing because of gravity change")
+        define_method "enqueue_delayed_processing_for_#{name}" do 
+          # we render on two things: image fingerprint changed, or image gravity changed
+          if self.previous_changes.include?("image_fingerprint") || self.previous_changes.include?("image_gravity")
+            ::Paperclip.log("[ewr] Reprocessing because of fingerprint or gravity change")
             self.attachment_for(name).enqueue
           end
         end
 
         # register our event handler
-        self.send("before_save", :"grab_dimensions_for_#{name}")
-        self.send("after_save", :"rerender_on_gravity_change_for_#{name}")
+        before_save :"grab_dimensions_for_#{name}"
+        
+        if respond_to?(:after_commit)
+          after_commit  :"enqueue_delayed_processing_for_#{name}"
+        else
+          after_save  :"enqueue_delayed_processing_for_#{name}"
+        end
+        
 
         ::Paperclip.interpolates"sprint" do |attachment,style_name|
           sprint = nil
@@ -32,6 +41,7 @@ module AssetHostCore
             sprint = 'original'
           else
             ao = attachment.instance.output_by_style(style_name)
+            ::Paperclip.log("[EWR] in sprint interpolation for #{style_name}: #{ao} -- #{ao.fingerprint}")
 
             if ao
               sprint = ao.fingerprint
@@ -46,7 +56,13 @@ module AssetHostCore
       end
 
       module InstanceMethods
-
+        # borrowed from delayed_paperclip... combines with [:delayed] above to turn off the inline processing
+        def attachment_for name
+          @_paperclip_attachments ||= {}
+          @_paperclip_attachments[name] ||= ::Paperclip::Attachment.new(name, self, self.class.attachment_definitions[name]).tap do |a|
+            a.post_processing = false if self.class.attachment_definitions[name][:delayed]
+          end
+        end
       end      
     end
   end
@@ -58,6 +74,11 @@ module AssetHostCore
 
     def self.perform(instance_klass, instance_id, attachment_name, *style_args)
       instance = instance_klass.constantize.find(instance_id)
+      
+      if style_args
+        style_args.collect! { |s| s.to_sym }
+      end
+      
       instance.send(attachment_name).reprocess!(*style_args)
     end
   end
@@ -119,7 +140,13 @@ module Paperclip
     #----------
 
     def enqueue
-      Resque.enqueue(AssetHostCore::ResqueJob,self.instance.class.name,self.instance.id,self.name)
+      # queue up any outputs that a) already exist or b) are set to prerender
+      styles = [
+        AssetHostCore::Output.where(:prerender => true).collect(&:code_sym),
+        self.instance.outputs.collect { |ao| ao.output.code_sym }
+      ].flatten.uniq
+      
+      Resque.enqueue(AssetHostCore::ResqueJob,self.instance.class.name,self.instance.id,self.name,*styles)
     end
 
     def enqueue_styles(styles)
@@ -300,6 +327,8 @@ module Paperclip
       true
     end
   end
+  
+  #----------
 
   class AssetThumbnail < Paperclip::Thumbnail
     attr_accessor :prerender
@@ -325,8 +354,7 @@ module Paperclip
     end
 
     # Perform processing, if prerender == true or we've had to render 
-    # this output before. Afterward, delete our old AssetOutput entry if 
-    # it exists
+    # this output before. Afterward, update our  AssetOutput entry 
     def make
       # do we have an AssetOutput already?
       ao = @asset.outputs.where(:output_id => @output).first
@@ -377,25 +405,6 @@ module Paperclip
         dst.rewind if dst.respond_to?(:rewind)
 
         Paperclip.log("[ewr] dst print is #{print}")
-
-        if ao.fingerprint
-          # -- existing thumbnail -- #
-          @controller ||= ActionController::Base.new
-
-          # cache is under "img:{image_fingerprint}:{style}"
-          # to delete our file, calling path() would already give us the new 
-          # fingerprint, so we have to replace it with our old fingerprint
-
-          path = @attachment.path(ao.output.code)
-          path.gsub!(@asset.image_fingerprint,ao.image_fingerprint)
-
-          Paperclip.log("[EWR] Deleting old thumbnail at #{path}")
-          @attachment.delete_path(path)
-
-          # now delete the old cache
-          Paperclip.log("[EWR] Deleting old cache at #{"img:"+[ao.image_fingerprint,ao.output.code].join(":")}")
-          @controller.expire_fragment("img:"+[ao.image_fingerprint,ao.output.code].join(":"))
-        end
 
         ao.attributes = { :fingerprint => print, :width => width, :height => height, :image_fingerprint => @asset.image_fingerprint }
         ao.save
