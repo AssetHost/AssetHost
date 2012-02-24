@@ -1,0 +1,16 @@
+###
+Welcome to AssetHost
+###
+
+# stub console.log() for IE
+if !window.console
+    class window.console
+        @log: ->
+
+AssetHost ?= {}
+AssetHost.SERVER = "<%= Rails.application.config.assethost.server %>"
+
+AssetHost.SIZES = 
+	thumb:	"<%= Rails.application.config.assethost.thumb_size || "thumb" %>"
+	modal:	"<%= Rails.application.config.assethost.modal_size || "modal" %>"
+	detail:	"<%= Rails.application.config.assethost.detail_size || "wide" %>"

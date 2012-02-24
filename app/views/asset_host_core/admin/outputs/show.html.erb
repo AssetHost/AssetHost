@@ -1,0 +1,21 @@
+<%
+	@PAGE_TITLE = "Output: #{@output.code}"
+%>
+
+<h1><%= @PAGE_TITLE %></h1>
+
+<dl>
+	<dt>Size:</dt>
+	<dd><%= @output.size %></dd>
+	<dt>Pre-render?</dt>
+	<dd><%= @output.prerender? ? "Yes" : "No" %></dd>
+	<dt>Rich Output?</dt>
+	<dd><%= @output.is_rich? ? "Yes" : "No" %></dd>
+	<dt>Rendered:</dt>
+	<dd>
+		<%= @output.asset_outputs.count() %> assets rendered.				
+	</dd>
+</dl>
+
+<%= link_to "Edit", edit_a_output_path(@output), :class => "btn btn-primary" %> &nbsp;
+<%= link_to "Delete", a_output_path(@output), :method => :delete, :confirm => "Are you sure you want to delete this output? All rendered assets will be deleted.", :class => "btn btn-danger" %>

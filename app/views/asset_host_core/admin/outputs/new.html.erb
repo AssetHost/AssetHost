@@ -1,0 +1,14 @@
+<% @PAGE_TITLE = "New Output" %>
+
+<h1>New Output</h1>
+
+<%= semantic_form_for @output, :url => a_outputs_path, :html => {:class => "form-horizontal"} do |f| %>
+	<%= f.inputs name:"Output" do %>
+		<%= f.input :code %>
+		<%= f.input :size %>
+		<%= f.input :extension %>
+		<%= f.input :prerender %>
+		<%= f.input :is_rich %>
+		<%= f.buttons %>
+	<% end %>
+<% end %>

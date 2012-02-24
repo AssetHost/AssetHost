@@ -1,0 +1,21 @@
+<% @PAGE_TITLE = "Edit Output: #{@output.code}" %>
+
+<h1><%= @PAGE_TITLE %></h1>
+
+<div class="alert">
+	<strong>Warning!</strong> Editing a size or extension requires that AssetHost delete all rendered assets for this output. They 
+	will be re-rendered on first request.
+</div>
+
+<%= semantic_form_for @output, :as => :output, :url => a_output_path(@output), :html => {:class => "form-horizontal"} do |f| %>
+	<%= f.inputs name:"Output" do %>
+		<%= f.input :code %>
+		<%= f.input :size %>
+		<%= f.input :extension %>
+		<%= f.input :prerender %>
+		<%= f.input :is_rich %>
+		<%= f.buttons %>
+	<% end %>
+<% end %>
+
+[<%= link_to "Cancel", a_output_path(@output) %>]

@@ -1,15 +1,5 @@
-AssetHost::Application.routes.draw do  
-  devise_for :users, :module => "admin"
-  devise_for :api_users
-  
+AssetHostCore::Engine.routes.draw do
   namespace :a, :module => "admin" do 
-    
-    resources :users
-    
-    resources :packages do
-      resources :outputs
-    end
-
     resources :assets, :id => /\d+/ do
       collection do 
         get :search
@@ -23,18 +13,19 @@ AssetHost::Application.routes.draw do
         post :replace
       end      
     end
-    
-    resources :brightcove do
-    end
-    
+
+    resources :outputs
+
+    resources :brightcove
+
     match '/assets/p/:page/:q', :to => "assets#search", :as => "asset_search"
     match '/assets/p/(:page)', :to => "assets#index", :as => "asset_page"
-    
+
     match 'chooser', :to => "home#chooser", :as => 'chooser'
     
     root :to => "home#index"
   end
-  
+
   namespace :api do    
     resources :assets, :id => /\d+/ do
       member do
@@ -47,9 +38,6 @@ AssetHost::Application.routes.draw do
   end
     
   match '/i/:aprint/:id-:style.:extension', :to => 'public#image', :as => :image, :constraints => { :id => /\d+/, :style => /[^\.]+/}
-  
-  match '/test', :to => "public#test"
-  match '/slideshow', :to => "public#slideshow"
-        
-  root :to => 'public#index'
+
+  root :to => "public#redirect"
 end

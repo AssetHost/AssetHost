@@ -1,0 +1,40 @@
+<div class="" style="display:inline;float:left;width: 324px;margin-right: 12px">
+    <%- @tags[ AssetHost.SIZES.modal ] %>
+	<br/><i>Uploaded at <%= @size %></i>
+</div>
+<div class="formtastic">
+	<button class="admin btn">View in Admin</button>
+    
+    <fieldset>
+		<h3>Asset Metadata (Global)</h3>				
+		<ol>
+			<li class="input stringish">
+				<label for="title" class="label">Title</label>
+				<input id="title" name="title" value="<%= @title %>">
+			</li>
+			<li class="input stringish">
+				<label for="owner" class="label">Credit</label>
+				<input id="owner" name="owner" value="<%= @owner %>">
+			</li>
+			<li class="input text">
+				<label for="notes" class="label">Notes</label>
+				<textarea id="notes" name="notes" rows=4><%= @notes %></textarea>
+			</li>
+		</ol>
+	</fieldset>
+</div>
+<br style="clear:both;line-height: 0"/>
+
+<h3 style="margin-top: 0">Story Caption:</h3>
+<textarea rows="4" style="width: 98%" id="caption"><%= @caption %></textarea>
+
+<div class="notice save_caption">
+	<input type="checkbox" id="save_caption_check"/> Also save caption back to AssetHost for future uses?
+</div>
+
+<div class="alert meta_dirty">
+	<strong>Note:</strong> Metadata (title, credit, notes) has been changed and will be saved to AssetHost.
+</div>
+
+<button class="save btn btn-primary">Save Caption</button>
+

@@ -1,0 +1,63 @@
+<%
+	@PAGE_TITLE = "Asset: #{@asset.title}"
+%>
+
+<div id="asset"></div>
+
+<br/>
+
+<div id="editform">
+	<%= semantic_form_for(@asset, :as => :asset, :url => a_asset_path(@asset), :html => {:class => "form-horizontal"}) do |f| %>
+	<div class="row">
+		<div class="span6">
+		<%= f.inputs :name => "Basics" do %>
+			<%= f.input :title, :hint => @asset.image_title? ? "From Image: #{@asset.image_title}" : nil %>
+			<%= f.input :caption, :as => :text, :input_html => {:rows => 5}, :hint => @asset.image_description? ? "From Image: #{@asset.image_description}" : nil %>
+		<% end %>	
+		</div>
+		<div class="span2">
+			<h3>Replace:</h3>
+			<div id="replacedrop" style="height: 180px;margin-top: 16px">
+				<p style="font-size: 18px;line-height: 24px;color: #aaa;text-align: center;margin: 8px">Drop File Here to Replace Asset</p>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span8">	
+			
+			<%= f.inputs :name => "Rights" do %>
+				<%= f.input :owner, :hint => @asset.image_copyright? ? "From Image: #{@asset.image_copyright}" : nil %>
+				<%= f.input :url %>
+			<% end %>
+			
+			<%= f.inputs :name => "Metadata" do %>
+				<div class="form-horizontal">
+				<%= f.input :image_taken, :as => :date %>
+				</div>
+				<%= f.input :image_gravity, :as => :select, :collection => AssetHostCore::Asset::GRAVITY_OPTIONS %>
+			<% end %>
+	
+			<%= f.inputs :name => "Internal" do %>
+				<%= f.input :notes %>
+			<% end %>
+	
+			<%= f.buttons %>
+			
+			<%= link_to "Destroy Asset", a_asset_path(@asset), :method => :delete, :class => "btn btn-danger", :confirm => "Are you sure you want to delete this asset? You are responsible for making sure no content is using it before deletion."%>
+		</div>
+	</div>
+	<% end %>
+</div>
+
+<script type="text/javascript">
+    assetAdm = new AssetHost.AssetAdmin(
+		<%= @asset.json.to_json.html_safe %>,
+		{
+			el: "#asset",
+			replace: "#replacedrop",
+			replacePath: "<%= replace_a_asset_path @asset %>"
+		}
+	)
+	
+	assetClient = new AssetHost.Client()
+</script>

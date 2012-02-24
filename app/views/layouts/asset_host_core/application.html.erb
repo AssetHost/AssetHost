@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= @PAGE_TITLE ? @PAGE_TITLE + " | AssetHost" : "AssetHost | Media Dashboard" %></title>
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tag %>
+</head>
+<body>
+
+<div class="navbar">
+	<div class="navbar-inner">
+		<div class="container">
+		
+		<%= link_to "AssetHost", a_assets_path, :class => "brand" %>
+		
+		<ul class="nav">
+			<li><%= link_to "Assets", a_assets_path %></li>
+			<li><%= link_to "Brightcove", a_brightcove_index_path %></li>
+			<% if current_user.is_admin? %>
+				<li><%= link_to "Manage Outputs", a_outputs_path %></li>
+			<% end %>
+		</ul>
+
+		<ul class="nav pull-right">
+			<li><%= link_to "Log Out", sign_out_path %></li>
+		</ul>
+		</div>
+	</div>
+</div>
+
+<div id="content" class="container">
+	<div class="row">
+		<div class="span4">
+			<h3>Upload Assets</h3>
+			
+			<div id="filedrop" style="">
+        	<p style="font-size:24px;line-height:36px;color: #aaa;text-align: center">Drop File(s) Here</i></p>
+        	</div>
+		</div>
+		<div class='span8'>
+			<% if flash[:notice] %>
+				<div class="alert alert-success"><%= flash[:notice] %></div>
+			<% end %>
+			
+			<% if flash[:error] %>
+				<div class="alert alert-error"><%= flash[:error] %></div>				
+			<% end %>
+			
+			<%= yield %>
+		</div>
+	</div>
+	<br class="clear"/>
+	<br/>
+</div>
+
+<% content_for :footerjss do %>
+    chooser = new AssetHost.ChooserUI({
+		dropEl: "#filedrop",
+		saveButton: 0,
+		afterUploadText: "Manage Metadata", 
+		afterUploadURL: "<%= metadata_a_assets_path + "?ids={{ids}}" %>"
+	})
+<% end %>
+
+</body>
+<%= render "shared/footerjs" %>
+</html>
