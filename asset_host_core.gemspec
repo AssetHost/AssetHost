@@ -10,16 +10,15 @@ Gem::Specification.new do |s|
   s.authors     = ["Eric Richardson"]
   s.email       = ["erichardson@scpr.org"]
   s.homepage    = "http://github.com/SCPR/AssetHost"
-  s.summary     = "TODO: Summary of AssetHostCore."
+  s.summary     = "One-stop-shop for media asset management, designed for a newsroom environment."
   s.description = "TODO: Description of AssetHostCore."
 
-  s.files = Dir["{app,config,db,lib,vendor}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib,vendor}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.markdown"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 3.2.1"
   s.add_dependency "paperclip"
   s.add_dependency "brightcove-api"
-  #s.add_dependency "delayed_paperclip"
   s.add_dependency "will_paginate"
   s.add_dependency "thinking-sphinx"
   s.add_dependency "resque"
