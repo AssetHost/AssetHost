@@ -57,7 +57,7 @@ class AssetHost.ChooserUI
             @myassets.add(f.get('ASSET'))
             
             # also add it to our browser, just for fun
-            @browser?.assets.add f.get('ASSET')
+            @browser?.assets?.add f.get('ASSET')
 
             # finally, remove the asset from our collection of uploads
             @uploads.remove(f)
