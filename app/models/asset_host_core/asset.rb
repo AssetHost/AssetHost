@@ -83,6 +83,12 @@ module AssetHostCore
     end
 
     #----------
+    
+    def tag(style)
+      self.image.tag(style)
+    end
+    
+    #----------
 
     def isPortrait?
       ( self.image_width >= self.image_height ) ? false : true
