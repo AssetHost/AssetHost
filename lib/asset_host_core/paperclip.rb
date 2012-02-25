@@ -155,13 +155,6 @@ module Paperclip
 
     #----------
 
-    def trueurl(style_name = default_style, use_timestamp = @use_timestamp)
-      url = original_filename.nil? ? interpolate(@default_url, style_name) : interpolate(@options[:trueurl], style_name)
-      use_timestamp && updated_at ? [url, updated_at].compact.join(url.include?("?") ? "&" : "?") : url
-    end
-
-    #----------
-
     def width(style = default_style)
       if !self.instance_read("width")
         return nil

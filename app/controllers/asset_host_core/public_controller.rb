@@ -38,7 +38,6 @@ module AssetHostCore
           # Yes, return a temporary redirect to the true image URL
           path = @asset.image.path(style.code)
         
-          #url = @asset.image.trueurl(style.first.code)
           write_fragment("img:"+[@asset.image_fingerprint,style.code].join(":"), path)
         
           # we have our filename, but the file may still not have been written yet.  

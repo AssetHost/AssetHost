@@ -41,12 +41,29 @@ module AssetHostCore
   	  :processors => [:asset_thumbnail],
   	  :storage => :filesystem,
   	  :path => Rails.application.config.assethost.path,
-  	  :trueurl => Rails.application.config.assethost.trueurl,
   	  :url => Rails.application.config.assethost.url,
   	  :use_timestamp => false
 
     treat_as_image_asset :image
-  	#process_in_background :image
+    
+
+    #----------
+    
+    AssetHostCore::Output.all.each do |o|
+      define_method o.code do
+        self.size(o.code)
+      end
+    end      
+    
+    #----------
+    
+    def size(code)
+      if !@_sizes
+        @_sizes = {}
+      end
+      
+      @_sizes[ code ] ||= AssetSize.new(self,Output.where(:code => code).first)      
+    end
 
     #----------
 
@@ -124,5 +141,25 @@ module AssetHostCore
     end
 
     #----------
+  end
+  
+  #----------
+  
+  class AssetSize
+    attr_accessor  :width
+    attr_accessor  :height
+    attr_accessor  :tag
+    attr_accessor :url
+    attr_accessor  :asset
+    attr_accessor  :output
+    
+    def initialize(asset,output)
+      @asset  = asset
+      @output = output
+      
+      [:width,:height,:tag,:url].each do |a|
+        self.send("#{a}=",@asset.image.send(a,output.code_sym))
+      end
+    end
   end
 end
