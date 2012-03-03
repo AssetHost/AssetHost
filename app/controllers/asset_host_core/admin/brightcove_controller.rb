@@ -1,6 +1,6 @@
 module AssetHostCore
   class Admin::BrightcoveController < ApplicationController
-    before_filter :authenticate_user!
+    before_filter :_authenticate_user!
   
     def index
       @assets = AssetHostCore::Asset.visible.where(:native_type => 'AssetHostCore::BrightcoveVideo').paginate(

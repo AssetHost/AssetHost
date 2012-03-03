@@ -17,13 +17,13 @@
 		<ul class="nav">
 			<li><%= link_to "Assets", a_assets_path %></li>
 			<li><%= link_to "Brightcove", a_brightcove_index_path %></li>
-			<% if current_user.is_admin? %>
+			<% if _current_user.is_admin? %>
 				<li><%= link_to "Manage Outputs", a_outputs_path %></li>
 			<% end %>
 		</ul>
 
 		<ul class="nav pull-right">
-			<li><%= link_to "Log Out", sign_out_path, :method => :delete %></li>
+			<li><%= link_to "Log Out", _sign_out_path, :method => :delete %></li>
 		</ul>
 		</div>
 	</div>

@@ -1,7 +1,7 @@
 module AssetHostCore
   class Api::AssetsController < ApplicationController
   
-    before_filter :authenticate_api_user!
+    before_filter :_authenticate_api_user!
 
     def index
       if params[:q] && params[:q] != ''

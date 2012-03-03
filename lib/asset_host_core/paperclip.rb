@@ -249,6 +249,7 @@ module Paperclip
       tags = {}
 
       self.styles.each do |style,v|
+        Rails.logger.debug "args is #{args}"
         tags[style] = self.tag(style,args)
       end
 
@@ -264,9 +265,11 @@ module Paperclip
         return nil
       end
 
+      Rails.logger.debug "style is #{s.instance_variable_get :@other_args}"
+
       if (s.instance_variable_get :@other_args)[:rich] && self.instance.native
         #return self.instance.native.tag(self.width(style),self.height(style))
-        args.merge!(self.instance.native.attrs())
+        args = args.merge(self.instance.native.attrs())
       end
 
       htmlargs = args.collect { |k,v| %Q!#{k}="#{v}"! }.join(" ")
