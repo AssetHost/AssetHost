@@ -36,16 +36,12 @@ module AssetHostCore
     has_many :outputs, :class_name => "AssetOutput", :order => "created_at desc", :dependent => :destroy
     belongs_to :native, :polymorphic => true
 
-  	has_attached_file :image, 
+  	has_attached_file :image, Rails.application.config.assethost.paperclip_options.merge({
   	  :styles => Proc.new { Output.paperclip_sizes },
-  	  :processors => [:asset_thumbnail],
-  	  :storage => :filesystem,
-  	  :path => Rails.application.config.assethost.path,
-  	  :url => Rails.application.config.assethost.url,
-  	  :use_timestamp => false
+  	  :processors => [:asset_thumbnail]  	  
+  	})
 
     treat_as_image_asset :image
-    
 
     #----------
     
