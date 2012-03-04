@@ -1,5 +1,5 @@
 module AssetHostCore
-  class Api::UtilityController < ApplicationController
+  class Api::UtilityController < AssetHostCore::ApplicationController
   
     before_filter :_authenticate_api_user!
   

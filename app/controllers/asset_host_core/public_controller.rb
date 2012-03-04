@@ -1,5 +1,5 @@
 module AssetHostCore
-  class PublicController < ApplicationController
+  class PublicController < AssetHostCore::ApplicationController
   
     # Given a fingerprint, id and style, determine whether the size has been cut. 
     # If so, redirect to the image file. If not, fire off a render process for 

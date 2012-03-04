@@ -1,5 +1,5 @@
 module AssetHostCore
-  class Admin::BrightcoveController < ApplicationController
+  class Admin::BrightcoveController < AssetHostCore::ApplicationController
     before_filter :_authenticate_user!
   
     def index

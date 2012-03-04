@@ -1,5 +1,5 @@
 module AssetHostCore
-  class Admin::OutputsController < ApplicationController
+  class Admin::OutputsController < AssetHostCore::ApplicationController
   
     before_filter :load_output, :except => [:index,:new,:create]
   

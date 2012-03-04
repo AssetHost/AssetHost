@@ -1,5 +1,5 @@
 module AssetHostCore
-  class Admin::HomeController < ApplicationController  
+  class Admin::HomeController < AssetHostCore::ApplicationController  
     def index
     
     end

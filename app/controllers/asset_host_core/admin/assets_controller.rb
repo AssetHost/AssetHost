@@ -1,5 +1,5 @@
 module AssetHostCore
-  class Admin::AssetsController < ApplicationController
+  class Admin::AssetsController < AssetHostCore::ApplicationController
     before_filter :_authenticate_user!
     
     before_filter :load_asset, :only => [:show,:update,:replace,:destroy]
