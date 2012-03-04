@@ -1,3 +1,5 @@
+require 'mini_exiftool'
+
 module AssetHostCore
   module Paperclip
     def self.included(base)
