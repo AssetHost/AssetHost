@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email       = ["erichardson@scpr.org"]
   s.homepage    = "http://github.com/SCPR/AssetHost"
   s.summary     = "One-stop-shop for media asset management, designed for a newsroom environment."
-  s.description = "TODO: Description of AssetHostCore."
+  s.description = "One-stop-shop for media asset management, designed for a newsroom environment."
 
   s.files = Dir["{app,config,db,lib,vendor}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.markdown"]
   s.test_files = Dir["test/**/*"]
