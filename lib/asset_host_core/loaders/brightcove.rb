@@ -31,7 +31,7 @@ module AssetHostCore::Loaders
     def load
       puts "in load for #{@id}"
       
-      brightcove = ::Brightcove::API.new(AssetHostSecrets[:brightcove_token])
+      brightcove = ::Brightcove::API.new( Rails.application.config.assethost.brightcove_token )
       
       begin
         # get our video info
