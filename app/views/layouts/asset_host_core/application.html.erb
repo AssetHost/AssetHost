@@ -14,6 +14,10 @@
 		
 		<%= link_to "AssetHost", a_assets_path, :class => "brand" %>
 		
+		<%= form_tag a_asset_search_path, :class => "navbar-search pull-left" %>
+			<input type="text" class="search-query" placeholder="Search" name="q"/>
+		</form>
+
 		<ul class="nav">
 			<li><%= link_to "Assets", a_assets_path %></li>
 			<li><%= link_to "Brightcove", a_brightcove_index_path %></li>

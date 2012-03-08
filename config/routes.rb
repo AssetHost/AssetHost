@@ -18,7 +18,8 @@ AssetHostCore::Engine.routes.draw do
 
     resources :brightcove
 
-    match '/assets/p/:page/:q', :to => "assets#search", :as => "asset_search"
+    match '/assets/search', :to => "assets#search", :as => "asset_search"
+    match '/assets/p/:page/:q', :to => "assets#search"
     match '/assets/p/(:page)', :to => "assets#index", :as => "asset_page"
 
     match 'chooser', :to => "home#chooser", :as => 'chooser'
