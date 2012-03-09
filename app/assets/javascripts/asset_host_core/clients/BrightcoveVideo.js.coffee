@@ -18,6 +18,7 @@ class AssetHost.Client.BrightcoveVideo
           <param name="isUI" value="true" />
           <param name="dynamicStreaming" value="true" />
           <param name="@videoPlayer" value="<%= videoid %>" />
+		  <param name="wmode" value="transparent" />
         </object>
         """
     
@@ -32,7 +33,6 @@ class AssetHost.Client.BrightcoveVideo
         # get width and height from the img
         @w = $(el).attr("width")
         @h = $(el).attr("height")
-        console.log "height is #{@h} for ", el
         
         # get videoid from data-ah-videoid attribute
         @videoid = @el.attr("data-ah-videoid")
