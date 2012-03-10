@@ -56,7 +56,7 @@ module AssetHostCore::Loaders
       a = AssetHostCore::Asset.new(
         :title => resp["name"],
         :caption => resp["shortDescription"],
-        :owner => AssetHostSecrets[:byline],
+        :owner => "",
         :image_taken => DateTime.strptime(resp["publishedDate"],"%Q"),
         :url => nil,
         :notes => "Brightcove import as ID #{resp['id']}"
