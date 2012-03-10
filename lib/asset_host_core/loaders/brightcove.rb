@@ -70,7 +70,8 @@ module AssetHostCore::Loaders
       # now create our BrightcoveVideo native object
       native = AssetHostCore::BrightcoveVideo.new(
         :videoid => resp['id'],
-        :length => resp['length']
+        :length => resp['length'],
+        flvurl: resp['FLVURL']
       )
       
       native.save()
