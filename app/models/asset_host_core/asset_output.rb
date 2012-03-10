@@ -14,6 +14,7 @@ module AssetHostCore
     def delete_cache
       # -- find fingerprints -- #
       
+      Rails::Logger.debug("AO d_c start for #{self.asset.id}/#{self.output.id}")
       # if we previously didn't have a fingerprint, nothing to delete
       if self.fingerprint_changed? && !self.fingerprint_was
         return true
@@ -35,7 +36,7 @@ module AssetHostCore
       
         # -- delete cached path -- #
       
-        Rails.cache.delete("img:"+[imgfinger,self.output.code].join(":"))
+        Rails.cache.delete("views/img:"+[imgfinger,self.output.code].join(":"))
       end
     end
   end
