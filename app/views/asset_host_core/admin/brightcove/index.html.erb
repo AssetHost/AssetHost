@@ -34,7 +34,7 @@
 	})
 	browser.assets.bind('selected',function (a) { 
 		console.log("got selected for ",a)
-		window.location = "/a/assets/"+a.get("id")
+		window.location = "#{AssetHost.PATH_PREFIX}/a/assets/"+a.get("id")
 	})
 
 </script>

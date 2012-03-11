@@ -3,6 +3,8 @@ require "resque"
 
 module AssetHostCore
   class Engine < ::Rails::Engine
+    @@mpath = nil
+    
     isolate_namespace AssetHostCore
 
     # initialize our config hash
@@ -33,6 +35,26 @@ module AssetHostCore
     # add resque's rake tasks
     rake_tasks do
       require "resque/tasks"
+    end
+
+    #----------
+    
+    def self.mounted_path
+      if @@mpath
+        return @@mpath.spec == '/' ? '' : @@mpath.spec
+      end
+      
+      # -- find our path -- #
+      
+      route = Rails.application.routes.routes.detect do |route|
+        route.app == self
+      end
+        
+      if route
+        @@mpath = route.path
+      end
+
+      return @@mpath.spec == '/' ? '' : @@mpath.spec
     end
   end
 end
