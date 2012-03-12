@@ -84,6 +84,10 @@ module AssetHostCore
         :native     => self.native ? self.native.CLASS : nil
       }
     end
+    
+    def as_json(options={})
+      self.json()
+    end
 
     #----------
 
