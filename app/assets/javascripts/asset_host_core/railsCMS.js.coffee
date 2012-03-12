@@ -20,7 +20,7 @@ class AssetHost.railsCMS
 
         # -- initialize our views -- #
         
-        @assetsView = new bdv4CMS.CMSAssets collection:@assets
+        @assetsView = new railsCMS.CMSAssets collection:@assets
         $(@options.el).html @assetsView.el
         
         window.addEventListener "message", (evt) => 
@@ -104,7 +104,7 @@ class AssetHost.railsCMS
                     
                 @collection.bind 'add', (f) => 
                     console.log "add event from ", f
-                    @_views[f.cid] = new bdv4CMS.CMSAsset({model:f,args:@options.args,rows:@options.rows})
+                    @_views[f.cid] = new railsCMS.CMSAsset({model:f,args:@options.args,rows:@options.rows})
                     @render()
 
                 @collection.bind 'remove', (f) => 
@@ -137,7 +137,7 @@ class AssetHost.railsCMS
             
             render: ->
                 @collection.each (a) => 
-                    @_views[a.cid] ?= new bdv4CMS.CMSAsset({model:a,args:@options.args,rows:@options.rows})
+                    @_views[a.cid] ?= new railsCMS.CMSAsset({model:a,args:@options.args,rows:@options.rows})
                 
                 views = _(@_views).sortBy (a) => a.model.get("ORDER")
                 $(@el).html( _(views).map (v) -> v.el )
