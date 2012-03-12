@@ -122,7 +122,7 @@ class AssetHost.railsCMS
                 console.log("evt is ",evt)
                 evt.originalEvent.stopPropagation()
                 evt.originalEvent.preventDefault()
-                newwindow = window.open("http://#{AssetHost.SERVER}/a/chooser", 'chooser', 'height=620,width=1000')
+                newwindow = window.open("http://#{AssetHost.SERVER}#{AssetHost.PATH_PREFIX}/a/chooser", 'chooser', 'height=620,width=1000')
                 
                 # attach a listener to wait for the LOADED message
                 window.addEventListener "message", (evt) => 
