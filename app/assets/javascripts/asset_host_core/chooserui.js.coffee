@@ -10,7 +10,7 @@ class AssetHost.ChooserUI
         assets: true
         uploads: true
         limit: 0
-        uploadPath: '/a/assets/upload'
+        uploadPath: "#{AssetHost.PATH_PREFIX}/a/assets/upload"
 
     #----------
 
@@ -48,7 +48,7 @@ class AssetHost.ChooserUI
                 
             @browser.assets.bind "admin", (asset) => 
                 console.log "got admin event from ", asset
-                window.open("/a/assets/#{asset.get('id')}")
+                window.open("#{AssetHost.PATH_PREFIX}/a/assets/#{asset.get('id')}")
                     
         # set up collection to manage uploads and convert to assets
         @uploads = new AssetHost.Models.QueuedFiles null, urlRoot:@options.uploadPath
@@ -239,7 +239,7 @@ class AssetHost.ChooserUI
             #----------
             
             _admin: -> 
-                window.open("/a/assets/#{@model.get('id')}") 
+                window.open("#{AssetHost.PATH_PREFIX}/a/assets/#{@model.get('id')}") 
             
             #----------    
             

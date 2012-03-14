@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
 	var browser = new AssetHost.BrowserUI({
-		root_path: '/a/assets',
+		root_path: "<%= AssetHostCore::Engine.mounted_path %>/a/assets",
 		assets:<%= (@assets.map { |a| a.json }).to_json.html_safe %>,
 		page: <%= @assets.current_page %>,
 		total: <%= @assets.total_entries %>,
@@ -14,7 +14,7 @@
 	})
 	browser.assets.bind('selected',function (a) { 
 		console.log("got selected for ",a)
-		window.location = "/a/assets/"+a.get("id")
+		window.location = "<%= AssetHostCore::Engine.mounted_path %>/a/assets/"+a.get("id")
 	})
 	
 </script>

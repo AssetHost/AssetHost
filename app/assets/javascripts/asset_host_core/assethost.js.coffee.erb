@@ -10,7 +10,10 @@ if !window.console
 AssetHost ?= {}
 AssetHost.SERVER = "<%= Rails.application.config.assethost.server %>"
 
+AssetHost.PATH_PREFIX = "<%= AssetHostCore::Engine.mounted_path %>"
 AssetHost.SIZES = 
 	thumb:	"<%= Rails.application.config.assethost.thumb_size || "thumb" %>"
 	modal:	"<%= Rails.application.config.assethost.modal_size || "modal" %>"
 	detail:	"<%= Rails.application.config.assethost.detail_size || "wide" %>"
+	
+
