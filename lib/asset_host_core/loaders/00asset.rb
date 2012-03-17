@@ -3,9 +3,9 @@ module AssetHostCore::Loaders
     attr_reader :source, :id
     
     def self.valid?(url)
-      if url =~ /#{Rails.application.config.assethost.server}\/api\/assets\/(\d+)\/?/
+      if url =~ /#{Rails.application.config.assethost.server}#{AssetHostCore::Engine.mounted_path}\/api\/assets\/(\d+)\/?/
         return self.new($~[1])
-      elsif url =~ /#{Rails.application.config.assethost.server}\/i\/[^\/]+\/(\d+)-/
+      elsif url =~ /#{Rails.application.config.assethost.server}#{AssetHostCore::Engine.mounted_path}\/i\/[^\/]+\/(\d+)-/
         return self.new($~[1])
       else  
         return nil
