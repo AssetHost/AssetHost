@@ -166,7 +166,7 @@ class AssetHost.ChooserUI
             uri = evt.dataTransfer.getData 'text/uri-list'
             console.log "uri-list is ", uri
             
-            jQuery.ajax "/api/as_asset",
+            jQuery.ajax "#{AssetHost.PATH_PREFIX}/api/as_asset",
                 data: { url: uri},
                 success: (data) => 
                     # did we get an Asset in response?
