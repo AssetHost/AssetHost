@@ -41,7 +41,7 @@ module AssetHostCore
     
     def self.mounted_path
       if @@mpath
-        return @@mpath.spec == '/' ? '' : @@mpath.spec
+        return @@mpath.spec.to_s == '/' ? '' : @@mpath.spec.to_s
       end
       
       # -- find our path -- #
@@ -54,7 +54,7 @@ module AssetHostCore
         @@mpath = route.path
       end
 
-      return @@mpath.spec == '/' ? '' : @@mpath.spec
+      return @@mpath.spec.to_s == '/' ? '' : @@mpath.spec.to_s
     end
   end
 end
