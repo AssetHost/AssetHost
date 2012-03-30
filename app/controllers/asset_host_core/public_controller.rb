@@ -7,9 +7,8 @@ module AssetHostCore
     def image
       # if we have a cache key with aprint and style, assume we're good 
       # to just return that value
-      if img = read_fragment("img:"+[params[:aprint],params[:style]].join(":"))
+      if img = Rails.cache.read("img:#{params[:id]}:#{params[:aprint]}:#{params[:style]}")
         send_file img, :type => "image/jpeg", :disposition => 'inline' and return
-        #redirect_to img, status => :found and return
       end
     
       @asset = Asset.where(:id => params[:id]).first
@@ -35,16 +34,18 @@ module AssetHostCore
     
       if ao.first
         if ao.first.fingerprint
-          # Yes, return a temporary redirect to the true image URL
-          path = @asset.image.path(style.code)
-        
-          write_fragment("img:"+[@asset.image_fingerprint,style.code].join(":"), path)
-        
-          # we have our filename, but the file may still not have been written yet.  
-          # loop a try to return it
+          # Yes, return the image
+                          
+          # the file may still not have been written yet. loop a try to return it
         
           (0..5).each do 
             if @asset.image.exists? style.code_sym
+              # got it.  cache and return
+              
+              path = @asset.image.path(style.code)
+              
+              Rails.cache.write("img:#{@asset.id}:#{@asset.image_fingerprint}:#{style.code}",path)
+              
               send_file path, :type => "image/jpeg", :disposition => 'inline' and return
             end
           
@@ -76,20 +77,6 @@ module AssetHostCore
       end    
     end
   
-    #----------
-  
-    def test
-      render :layout => "preauth"
-    end
-  
-    #----------
-  
-    def slideshow
-      @assets = Asset.find([24888,24854,24853,24852,24851])
-    
-      @assets.unshift Asset.find(24866)
-    
-      render :layout => "preauth"
-    end
+    #----------  
   end
 end
