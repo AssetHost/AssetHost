@@ -2,12 +2,17 @@
 	@PAGE_TITLE = "Add Metadata"
 %>
 
+<h1><%= @PAGE_TITLE %></h1>
+
 <%= semantic_form_for(@assets, :as => :asset, :url => metadata_a_assets_path, :method => :put) do |f| %>
 	<% for asset in @assets %>
+		<div class="row">
 		<%= f.fields_for "#{asset.id}", asset, :builder => Formtastic::FormBuilder do |af| %>
 			<hr/>
-			<div class="twoW"><%= asset.image.tag(:lsquare) %></div>
-			<div class="fourW endcap">
+			<div class="span3">
+				<%= asset.image.tag( Rails.application.config.assethost.modal_size ) %>
+			</div>
+			<div class="span5">
 				<%= af.inputs :name => "Asset #{asset.id}" do %>
 				<%= af.input :title %>
 				<%= af.input :caption, :as => :text, :input_html => {:rows => 3}%>
@@ -16,8 +21,8 @@
 				<% end %>
 			</div>
 			<br class="clear"/>
-			<hr/>
 		<% end %>
+		</div>
 	<% end %>
 	
 	<%= submit_tag "Update Metadata" %>

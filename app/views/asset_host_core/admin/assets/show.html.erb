@@ -41,8 +41,10 @@
 				<%= f.input :notes %>
 			<% end %>
 	
-			<%= f.buttons %>
-			
+			<%= f.actions %>
+
+			<br/>
+
 			<%= link_to "Destroy Asset", a_asset_path(@asset), :method => :delete, :class => "btn btn-danger", :confirm => "Are you sure you want to delete this asset? You are responsible for making sure no content is using it before deletion."%>
 		</div>
 	</div>
