@@ -81,7 +81,7 @@ module AssetHostCore
         :notes      => self.notes,
         :created_at => self.created_at,
         :taken_at   => self.image_taken || self.created_at,
-        :native     => self.native ? self.native.CLASS : nil
+        :native     => self.native ? self.native.as_json : nil
       }
     end
     
