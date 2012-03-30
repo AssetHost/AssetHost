@@ -11,7 +11,7 @@ module AssetHostCore
     
     def as_json
       {
-        :class    => "BrightcoveVideo"
+        :class    => "BrightcoveVideo",
         :videoid  => self.videoid,
         :length   => self.length
       }
