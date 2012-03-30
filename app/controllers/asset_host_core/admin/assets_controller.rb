@@ -104,14 +104,21 @@ module AssetHostCore
     #----------
 
     def replace
-      if !params[:file]
+      file = params[:file]
+      
+      if !file
         render :text => 'ERROR' and return
       end
 
-      puts "file is #{params[:file]}"
+      puts "file is #{file}"
+      
+      # FIXME: Put in place to keep Firefox 7 happy
+      if !file.original_filename
+        file.original_filename = "upload.jpg"
+      end
 
       # tell paperclip to replace our image
-      @asset.image = params[:file]
+      @asset.image = file
 
       # force _grab_dimensions to run early so that we can load in EXIF
       @asset.image._grab_dimensions()
