@@ -1,5 +1,11 @@
 module AssetHostCore
   class PublicController < AssetHostCore::ApplicationController
+    
+    def home
+      render :text => "", :status => :ok, :layout => false
+    end
+    
+    #----------
   
     # Given a fingerprint, id and style, determine whether the size has been cut. 
     # If so, redirect to the image file. If not, fire off a render process for 
@@ -79,4 +85,7 @@ module AssetHostCore
   
     #----------  
   end
+  
+  #----------
+
 end

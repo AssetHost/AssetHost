@@ -40,5 +40,5 @@ AssetHostCore::Engine.routes.draw do
     
   match '/i/:aprint/:id-:style.:extension', :to => 'public#image', :as => :image, :constraints => { :id => /\d+/, :style => /[^\.]+/}
 
-  root :to => "public#redirect"
+  root :to => "public#home"
 end
