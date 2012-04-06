@@ -35,8 +35,9 @@ module AssetHostCore
         else
           after_save  :"enqueue_delayed_processing_for_#{name}"
         end
-        
 
+        # -- Style fingerprint interpolation -- #
+        
         ::Paperclip.interpolates"sprint" do |attachment,style_name|
           sprint = nil
           if style_name == :original
@@ -120,20 +121,6 @@ module Paperclip
 
     #----------
     
-    def delete_style(style)
-      if style.to_sym == :original
-        # can't delete the original image through here
-        return false
-      end
-      
-      if self.exists?(style)
-        @queued_for_delete = [ self.path(style) ]
-        self.flush_deletes()
-      end
-    end
-    
-    #----------
-
     def delete_path(path)
       @queued_for_delete = [ path ]
       self.flush_deletes()

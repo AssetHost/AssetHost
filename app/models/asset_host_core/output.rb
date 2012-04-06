@@ -32,16 +32,8 @@ module AssetHostCore
     protected
     
     def delete_asset_outputs
-      # for each AssetOutput, we need to delete the object and queue the file 
-      # for deletion via Paperclip
-      
-      self.asset_outputs.each do |ao|
-        # first delete the file
-        ao.asset.image.delete_style ao.output.code_sym
-        
-        # next delete the AssetOutput
-        ao.destroy()
-      end
+      # destroy each AssetOutput, triggering file and cache deletion
+      self.asset_outputs.each { |ao| ao.destroy() }
     end
   end
 end

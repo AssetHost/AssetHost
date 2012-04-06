@@ -49,7 +49,7 @@ module AssetHostCore
               # got it.  cache and return
               
               path = @asset.image.path(style.code)
-              
+              Rails.logger.debug("PublicController cache_img_path for #{@asset.id}/#{style.code_sym} got #{path}")
               Rails.cache.write("img:#{@asset.id}:#{@asset.image_fingerprint}:#{style.code}",path)
               
               send_file path, :type => "image/jpeg", :disposition => 'inline' and return

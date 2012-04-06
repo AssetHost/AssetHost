@@ -37,8 +37,9 @@ module AssetHostCore
     belongs_to :native, :polymorphic => true
 
   	has_attached_file :image, Rails.application.config.assethost.paperclip_options.merge({
-  	  :styles => Proc.new { Output.paperclip_sizes },
-  	  :processors => [:asset_thumbnail]  	  
+  	  :styles       => Proc.new { Output.paperclip_sizes },
+  	  :processors   => [:asset_thumbnail],
+  	  :interpolator => self 
   	})
 
     treat_as_image_asset :image
@@ -126,11 +127,7 @@ module AssetHostCore
     #----------
 
     def output_by_style(style)
-      @s_outputs ||= self.outputs.inject({}) do |h,o|
-        h[o.output.code] = o
-        h
-      end
-
+      @s_outputs ||= self.outputs.inject({}) { |h,o| h[o.output.code] = o; h }
       @s_outputs[style.to_s] || false
     end
 
@@ -141,6 +138,97 @@ module AssetHostCore
     end
 
     #----------
+    
+    def self.interpolate(pattern,attachment,style)
+      # we support: 
+      # global:
+      #   :rails_root -- Rails.root
+      #
+      # style-based:
+      #   :style -- output code
+      #   :extension -- extension for Output
+      # 
+      # asset-based:
+      #   :id -- asset id
+      #   :fingerprint -- image fingerprint
+      #
+      # output-based:
+      #   :sprint -- AssetOutput fingerprint
+      
+      puts "interpolate called with pattern #{pattern}"
+      
+      # first see what we've been passed as a style. could be string, symbol, 
+      # Output or AssetOutput
+      
+      ao = nil
+      output = nil
+      asset = attachment.instance
+            
+      result = pattern.clone
+      
+      if style.respond_to?(:to_sym) && style.to_sym == :original
+        # special case...        
+      elsif style.is_a? AssetOutput
+        ao = style
+        output = ao.output
+      elsif style.is_a? Output
+        output = style
+        ao = attachment.instance.outputs.where(:output_id => output).first
+
+        if !ao
+          return nil
+        end
+      else
+        output = Output.where(:code => style).first
+
+        if !output
+          return nil
+        end
+        
+        ao = attachment.instance.outputs.where(:output_id => output).first
+      end
+      
+      # global rules
+      result.gsub!(":rails_root",Rails.root.to_s)
+      
+      if asset
+        # asset-based rules
+        result.gsub!(":id",asset.id.to_s)
+        result.gsub!(":fingerprint",asset.image_fingerprint)
+      else
+        if pattern =~ /:(?:id|fingerprint)/
+          return false
+        end
+      end
+      
+      if style.respond_to?(:to_sym) && style.to_sym == :original
+        # hardcoded handling for the original file
+        result.gsub!(":style","original")
+        result.gsub!(":extension",File.extname(attachment.original_filename).gsub(/^\.+/, ""))
+        result.gsub!(":sprint","original")
+      else
+        if output
+          # style-based rules
+          result.gsub!(":style",output.code.to_s)
+          result.gsub!(":extension",output.extension)        
+        else
+          if pattern =~ /:(?:style|extension)/
+            return false
+          end
+        end
+
+
+        if ao && ao.fingerprint
+          # output-based rules
+          result.gsub!(":sprint",ao.fingerprint)
+        else
+          result.gsub!(":sprint","NOT_YET_RENDERED")
+        end        
+      end
+      
+      return result
+        
+    end
   end
   
   #----------
