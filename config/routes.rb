@@ -34,6 +34,8 @@ AssetHostCore::Engine.routes.draw do
         get 'tag/:style', :action => :tag
       end
     end 
+    
+    resources :outputs
 
     match 'as_asset', :to => "utility#as_asset", :as => "as_asset"    
   end
