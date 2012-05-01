@@ -7,7 +7,7 @@ if !window.console
     class window.console
         @log: ->
 
-AssetHost ?= {}
+window.AssetHost ?= {}
 AssetHost.SERVER = "<%= Rails.application.config.assethost.server %>"
 
 AssetHost.PATH_PREFIX = "<%= AssetHostCore::Engine.mounted_path %>"
