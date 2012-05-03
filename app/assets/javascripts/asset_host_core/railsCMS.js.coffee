@@ -70,7 +70,7 @@ class AssetHost.railsCMS
             
             template:
                 '''
-                <%= asset.tags.thumb %>
+                <%= asset.tags[ AssetHost.SIZES.thumb ] %>
                 <b><%= asset.title %> (<%= asset.size %>)</b>
                 <p><%= asset.caption %></p>
                 '''
