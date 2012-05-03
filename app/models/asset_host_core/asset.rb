@@ -43,6 +43,9 @@ module AssetHostCore
   	})
 
     treat_as_image_asset :image
+    
+    after_commit :publish_asset_update, :if => :persisted?
+    after_commit :publish_asset_delete, :on => :destroy
 
     #----------
     
@@ -136,7 +139,7 @@ module AssetHostCore
         ["#{s[0]} (#{self.image.width(s[0])}x#{self.image.height(s[0])})",s[0]]
       end    
     end
-
+    
     #----------
     
     def self.interpolate(pattern,attachment,style)
@@ -228,6 +231,19 @@ module AssetHostCore
       
       return result
         
+    end
+    
+    #----------
+    
+    private 
+    def publish_asset_update
+      AssetHostCore::Engine.redis_publish :action => "UPDATE", :id => self.id
+      return true
+    end
+    
+    def publish_asset_delete
+      AssetHostCore::Engine.redis_publish :action => "DELETE", :id => self.id
+      return true
     end
   end
   

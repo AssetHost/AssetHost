@@ -4,6 +4,7 @@ require "resque"
 module AssetHostCore
   class Engine < ::Rails::Engine
     @@mpath = nil
+    @@redis_pubsub = nil
     
     isolate_namespace AssetHostCore
 
@@ -55,6 +56,30 @@ module AssetHostCore
       end
 
       return @@mpath.spec.to_s == '/' ? '' : @@mpath.spec.to_s
+    end
+    
+    #----------
+    
+    def self.redis_pubsub
+      if Rails.application.config.assethost.redis_pubsub && Rails.application.config.assethost.redis_pubsub.is_a?(Hash)
+        if @@redis_pubsub
+          return @@redis_pubsub
+        end
+        
+        return @@redis_pubsub ||= Redis.connect(:url => Rails.application.config.assethost.redis_pubsub[:server])
+      else
+        return false
+      end
+    end
+    
+    #----------
+    
+    def self.redis_publish(data)
+      if r = self.redis_pubsub
+        return r.publish(Rails.application.config.assethost.redis_pubsub[:key]||"AssetHost",data.to_json)
+      else
+        return false
+      end
     end
   end
 end
