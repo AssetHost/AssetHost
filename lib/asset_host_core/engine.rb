@@ -40,6 +40,12 @@ module AssetHostCore
 
     #----------
     
+    def self.public_routes
+      @@public_routes ||= ActionDispatch::Routing::RouteSet.new
+    end
+    
+    #----------
+    
     def self.mounted_path
       if @@mpath
         return @@mpath.spec.to_s == '/' ? '' : @@mpath.spec.to_s
@@ -80,6 +86,11 @@ module AssetHostCore
       else
         return false
       end
+    end
+  
+    #----------
+  
+    class Public < ::Rails::Engine
     end
   end
 end

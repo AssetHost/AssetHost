@@ -39,8 +39,10 @@ AssetHostCore::Engine.routes.draw do
 
     match 'as_asset', :to => "utility#as_asset", :as => "as_asset"    
   end
-    
-  match '/i/:aprint/:id-:style.:extension', :to => 'public#image', :as => :image, :constraints => { :id => /\d+/, :style => /[^\.]+/}
-
+  
   root :to => "public#home"
+end
+
+AssetHostCore::Engine::Public.routes.draw do
+  match '/:aprint/:id-:style.:extension', :to => 'public#image', :as => :image, :constraints => { :id => /\d+/, :style => /[^\.]+/}
 end

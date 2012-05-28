@@ -20,7 +20,11 @@
 
 		<ul class="nav">
 			<li><%= link_to "Assets", a_assets_path %></li>
-			<li><%= link_to "Brightcove", a_brightcove_index_path %></li>
+
+			<% for c in AssetHostCore::Natives.natives %>
+				<li><%= link_to c.display_name, "" %></li>
+			<% end %>
+
 			<% if _current_user.is_admin? %>
 				<li><%= link_to "Manage Outputs", a_outputs_path %></li>
 			<% end %>
