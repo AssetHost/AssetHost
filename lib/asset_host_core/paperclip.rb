@@ -82,7 +82,7 @@ module AssetHostCore
         style_args.collect! { |s| s.to_sym }
       end
       
-      instance.send(attachment_name).reprocess!(*style_args)
+      instance.send(attachment_name)._process!(*style_args)
     end
   end
 
@@ -90,6 +90,12 @@ end
 
 module Paperclip
   class Attachment
+    
+    def _process!(*styles)
+      assign self
+      post_process_styles(*styles)
+      flush_writes()
+    end
 
     # Overwrite styles loader to allow caching despite dynamic loading
     def styles
@@ -108,7 +114,11 @@ module Paperclip
 
     # overwrite to only delete original when clear() is called.  styles will 
     # be deleted by the thumbnailer
-    def queue_existing_for_delete #:nodoc:
+    def queue_some_for_delete
+      nil
+    end
+    
+    def queue_all_for_delete #:nodoc:
       return unless file?
 
       @queued_for_delete = [path(:original)]
