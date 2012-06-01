@@ -5,6 +5,7 @@ require "paperclip"
 require "asset_host_core/paperclip"
 require "asset_host_core/loaders"
 require "asset_host_core/config"
+require "asset_host_core/natives"
 
 Dir.glob("#{File.expand_path(File.join(File.dirname(__FILE__), 'asset_host_core/loaders'))}/*.rb").each {|imp| require imp }
 
