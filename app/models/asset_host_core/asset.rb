@@ -158,8 +158,6 @@ module AssetHostCore
       # output-based:
       #   :sprint -- AssetOutput fingerprint
       
-      puts "interpolate called with pattern #{pattern}"
-      
       # first see what we've been passed as a style. could be string, symbol, 
       # Output or AssetOutput
       

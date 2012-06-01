@@ -26,6 +26,8 @@ module AssetHostCore
     # -- post-initialization setup -- #
 
     config.after_initialize do
+      ::Paperclip.register_processor :asset_thumbnail, ::Paperclip::AssetThumbnail
+      
       # work around an issue where TS isn't seeing model directories if Rails hasn't appended the trailing slash
       ::ThinkingSphinx::Configuration.instance.model_directories << File.expand_path("../../../app/models",__FILE__) + "/"
       
@@ -38,6 +40,12 @@ module AssetHostCore
       require "resque/tasks"
     end
 
+    #----------
+    
+    def self.public_routes
+      @@public_routes ||= ActionDispatch::Routing::RouteSet.new
+    end
+    
     #----------
     
     def self.mounted_path
@@ -81,5 +89,6 @@ module AssetHostCore
         return false
       end
     end
+
   end
 end
