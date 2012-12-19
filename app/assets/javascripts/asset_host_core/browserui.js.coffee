@@ -1,6 +1,6 @@
 #= require ./assethost
-#= require twitter/bootstrap/tooltip
-#= require twitter/bootstrap/modal
+#= require twitter/bootstrap/bootstrap-tooltip
+#= require twitter/bootstrap/bootstrap-modal
 
 class AssetHost.BrowserUI
     DefaultOptions:

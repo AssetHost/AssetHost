@@ -4,6 +4,8 @@ module AssetHostCore
     
     after_save :delete_asset_outputs, :if => Proc.new { |o| o.size_changed? || o.extension_changed? }
     
+    attr_accessible :code, :size, :extension, :prerender, :is_rich
+    
     #----------
     
     def code_sym
