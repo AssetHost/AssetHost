@@ -32,7 +32,8 @@
 			page: <%= @assets.current_page %>,
 			total: <%= @assets.total_entries %>,
 			modalSelect: true,
-			modalAdmin: true
+			modalAdmin: true,
+      root_path: "<%= AssetHostCore::Engine.mounted_path %>"
 		})
 	})
 	

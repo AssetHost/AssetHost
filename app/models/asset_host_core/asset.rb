@@ -28,6 +28,8 @@ module AssetHostCore
       [ "Bottom Left",      "SouthWest" ],
       [ "Bottom Right",     "SouthEast" ]
     ]
+    
+    attr_accessible :title, :owner, :url, :caption, :notes, :image_gravity, :image_taken, :is_hidden
 
     default_scope includes(:outputs)
 

@@ -32,7 +32,7 @@ module AssetHostCore
       ::ThinkingSphinx::Configuration.instance.model_directories << File.expand_path("../../../app/models",__FILE__) + "/"
       
       # set our resque job's queue
-      AssetHostCore::ResqueJob.instance_variable_set :@queue, Rails.application.config.assethost.resque_queue      
+      AssetHostCore::ResqueJob.instance_variable_set :@queue, Rails.application.config.assethost.resque_queue || "assethost"    
     end
     
     # add resque's rake tasks

@@ -9,6 +9,8 @@ module AssetHostCore
     after_commit :cache_img_path, :if => Proc.new { |ao| ao.image_fingerprint? && ao.fingerprint? }
 
     scope :rendered, where("fingerprint != ''")
+    
+    attr_accessible :output_id, :image_fingerprint, :fingerprint, :width, :height, :asset_id
         
     #----------
         

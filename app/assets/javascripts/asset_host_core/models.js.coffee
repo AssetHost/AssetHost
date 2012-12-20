@@ -160,11 +160,17 @@ class AssetHost.Models
 
             @collection.bind 'add', (f) => 
                 console.log "add event from ", f
-                @collection.sort()
+                @render()
 
             @collection.bind 'remove', (f) => 
                 console.log "remove event from ", f
-                @collection.sort()
+                
+                # remove the given view
+                if @_views[f.cid]
+                  @_views[f.cid].$el.detach()
+                  delete @_views[f.cid]
+                
+                  @render()
 
             @collection.bind 'reset', (f) => 
                 console.log "reset event from ", f                    
