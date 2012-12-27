@@ -180,8 +180,8 @@ class AssetHost.Slideshow
                                   
                     # -- center -- #
                     
-                    @imgDiv.css "margin-left", ($(@el).width() - @img.width())/2
-                    @imgDiv.css "margin-top", (@imgHeight - @img.height())/2
+                    @imgDiv.css "margin-left", ($(@el).width() - (@imgSize.width * @scale))/2
+                    @imgDiv.css "margin-top", (@imgHeight - (@imgSize.height * @scale))/2
                     
                     # -- add to our element -- #
                     
@@ -349,7 +349,7 @@ class AssetHost.Slideshow
                 i = @queued.shift()
                 s = @slides[i]
                 
-                if !@loaded[i] || @loaded[i] == 0
+                if s && (!@loaded[i] || @loaded[i] == 0)
                     console.log "triggering load on #{i}"
                     @loaded[i] = 1
                     @active = i
