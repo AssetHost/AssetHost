@@ -172,7 +172,7 @@ class AssetHost.Models
                 
                   @render()
 
-            @collection.bind 'reset', (f) => 
+            @collection.bind 'reset sort', (f) => 
                 console.log "reset event from ", f                    
                 _(@_views).each (av) => $(av.el).detach()
                 @_views = {}
@@ -195,6 +195,7 @@ class AssetHost.Models
                         id = $(li).attr('data-asset-id')
                         @collection.get(id).attributes.ORDER = idx
                         console.log("set idx for #{id} to #{idx}")
+                        
                     @collection.sort()
 
             @
