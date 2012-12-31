@@ -22,7 +22,7 @@ class AssetHost.railsCMS
         
         @assetsView = new railsCMS.CMSAssets collection:@assets
         $(@options.el).html @assetsView.el
-        
+                
         window.addEventListener "message", (evt) => 
             if evt.data != "LOADED"
                 console.log "got reply of ", evt
@@ -71,7 +71,7 @@ class AssetHost.railsCMS
             template:
                 '''
                 <%= asset.tags[ AssetHost.SIZES.thumb ] %>
-                <b><%= asset.title %> (<%= asset.size %>)</b>
+                <b><%= asset.id %>: <%= asset.title %> (<%= asset.size %>)</b>
                 <p><%= asset.caption %></p>
                 '''
             
@@ -79,7 +79,12 @@ class AssetHost.railsCMS
             
             initialize: ->
                 @render()
-                $(@el).attr("data-asset-url",@model.get('api_url'))
+                @$el.attr("data-asset-url",@model.get('api_url'))
+                
+                @$el.on "dragstart", (evt) =>
+                    evt.originalEvent.dataTransfer.setData 'application/json', JSON.stringify(@model.toJSON())
+                    evt.originalEvent.dataTransfer.setData 'text/uri-list', @model.get("url")
+                
                 @model.bind "change", => @render()
 
             #----------
