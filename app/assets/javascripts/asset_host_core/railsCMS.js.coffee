@@ -22,7 +22,7 @@ class AssetHost.railsCMS
         
         @assetsView = new railsCMS.CMSAssets collection:@assets
         $(@options.el).html @assetsView.el
-        
+                
         window.addEventListener "message", (evt) => 
             if evt.data != "LOADED"
                 console.log "got reply of ", evt
@@ -71,7 +71,7 @@ class AssetHost.railsCMS
             template:
                 '''
                 <%= asset.tags[ AssetHost.SIZES.thumb ] %>
-                <b><%= asset.title %> (<%= asset.size %>)</b>
+                <b><%= asset.id %>: <%= asset.title %> (<%= asset.size %>)</b>
                 <p><%= asset.caption %></p>
                 '''
             
@@ -79,7 +79,12 @@ class AssetHost.railsCMS
             
             initialize: ->
                 @render()
-                $(@el).attr("data-asset-url",@model.get('api_url'))
+                @$el.attr("data-asset-url",@model.get('api_url'))
+                
+                @$el.on "dragstart", (evt) =>
+                    evt.originalEvent.dataTransfer.setData 'application/json', JSON.stringify(@model.toJSON())
+                    evt.originalEvent.dataTransfer.setData 'text/uri-list', @model.get("url")
+                
                 @model.bind "change", => @render()
 
             #----------
@@ -122,13 +127,13 @@ class AssetHost.railsCMS
                 console.log("evt is ",evt)
                 evt.originalEvent.stopPropagation()
                 evt.originalEvent.preventDefault()
-                newwindow = window.open("http://#{AssetHost.SERVER}#{AssetHost.PATH_PREFIX}/a/chooser", 'chooser', 'height=620,width=1000')
+                newwindow = window.open("#{AssetHost.SERVER}#{AssetHost.PATH_PREFIX}/a/chooser", 'chooser', 'height=620,width=1000')
                 
                 # attach a listener to wait for the LOADED message
                 window.addEventListener "message", (evt) => 
                     if evt.data == "LOADED"
                         # dispatch our event with the asset data
-                        newwindow.postMessage @collection.toJSON(), "http://#{AssetHost.SERVER}"
+                        newwindow.postMessage @collection.toJSON(), "#{AssetHost.SERVER}"
                 , false
                                     
                 return false
