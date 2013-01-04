@@ -6,7 +6,7 @@ class AssetHost.Models
     constructor: ->
         
     @Asset: Backbone.Model.extend
-        urlRoot: "http://#{AssetHost.SERVER}#{AssetHost.PATH_PREFIX}/api/assets/"
+        urlRoot: "#{AssetHost.SERVER}#{AssetHost.PATH_PREFIX}/api/assets/"
         
         modal: ->
             @_modal ?= new AssetHost.Models.AssetModalView({model: this})

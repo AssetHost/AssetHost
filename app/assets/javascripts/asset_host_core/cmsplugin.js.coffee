@@ -203,13 +203,13 @@ class AssetHost.CMSPlugin
             console.log("evt is ",evt)
             evt.originalEvent.stopPropagation()
             evt.originalEvent.preventDefault()
-            newwindow = window.open("http://#{AssetHost.SERVER}/a/chooser", 'chooser', 'height=620,width=1000')
+            newwindow = window.open("#{AssetHost.SERVER}/a/chooser", 'chooser', 'height=620,width=1000')
             
             # attach a listener to wait for the LOADED message
             window.addEventListener "message", (evt) => 
                 if evt.data == "LOADED"
                     # dispatch our event with the asset data
-                    newwindow.postMessage @collection.toJSON(), "http://#{AssetHost.SERVER}"
+                    newwindow.postMessage @collection.toJSON(), "#{AssetHost.SERVER}"
             , false
                                 
             return false

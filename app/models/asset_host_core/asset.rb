@@ -83,7 +83,7 @@ module AssetHostCore
         :sizes      => Output.paperclip_sizes.inject({}) { | h, (s,v) | h[s] = { :width => self.image.width(s), :height => self.image.height(s) }; h },
         :tags       => self.image.tags,
         :urls       => Output.paperclip_sizes.inject({}) { |h, (s,v)| h[s] = self.image.url(s); h },
-        :url        => "http://#{Rails.application.config.assethost.server}#{AssetHostCore::Engine.mounted_path}/api/assets/#{self.id}/",
+        :url        => "#{Rails.application.config.assethost.server}#{AssetHostCore::Engine.mounted_path}/api/assets/#{self.id}/",
         :notes      => self.notes,
         :created_at => self.created_at,
         :taken_at   => self.image_taken || self.created_at,
@@ -167,7 +167,7 @@ module AssetHostCore
       output = nil
       asset = attachment.instance
             
-      result = pattern.clone
+      result = pattern.clone || ''
       
       if style.respond_to?(:to_sym) && style.to_sym == :original
         # special case...        
